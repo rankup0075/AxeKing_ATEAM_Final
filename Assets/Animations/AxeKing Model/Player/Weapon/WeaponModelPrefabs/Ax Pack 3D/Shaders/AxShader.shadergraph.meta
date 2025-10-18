@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 4a143f855b8c2e44cb6c2bae4421cc5c
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294680
+  packageName: Ax Pack 3D
+  packageVersion: 1.0
+  assetPath: Assets/Ax Pack 3D/Shaders/AxShader.shadergraph
+  uploadId: 690167
