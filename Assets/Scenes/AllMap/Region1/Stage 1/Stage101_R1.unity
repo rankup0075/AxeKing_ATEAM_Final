@@ -5704,7 +5704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Portal
   targetScene: 
   portalID: StageToStageSelect
-  portalType: 1
+  portalType: 9
   isUnlocked: 1
   portalDirection: 0
   potionShopUI: {fileID: 0}
