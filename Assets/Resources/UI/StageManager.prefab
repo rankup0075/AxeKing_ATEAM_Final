@@ -1,0 +1,296 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1985036893663639755
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6771651631711415581}
+  - component: {fileID: 8902430930851671449}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6771651631711415581
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985036893663639755}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 635.2672, y: 245.97705, z: -0.17929}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8902430930851671449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985036893663639755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddb12ff8b74903d4589698c19a41aecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  regions:
+  - regionId: Region001
+    regionName: "1. \uC232\uC758 \uC785\uAD6C"
+    regionDescription: "\uACE0\uBE14\uB9B0\uC758 \uC9D1\uC774\uC790 \uAC70\uB300\uD55C
+      \uC232\uC758 \uC785\uAD6C\uC785\uB2C8\uB2E4."
+    rewards:
+    - rewardName: "\uACE8\uB4DC"
+      icon: {fileID: 0}
+    - rewardName: "\uACE0\uBE14\uB9B0\uC758 \uAC00\uC8FD"
+      icon: {fileID: 0}
+    stages:
+    - stageId: Stage101
+      stageName: "\uC232\uC758 \uC785\uAD6C 1"
+      sceneName: Stage101
+      thumbnail: {fileID: 0}
+      isUnlocked: 1
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage102
+      stageName: "\uC232\uC758 \uC785\uAD6C 2"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage103
+      stageName: "\uC232\uC758 \uC785\uAD6C 3"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage104
+      stageName: "\uC232\uC758 \uC785\uAD6C 5"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage105
+      stageName: "\uC232\uC758 \uC785\uAD6C 5"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    thumbnail: {fileID: 0}
+    isUnlocked: 1
+  - regionId: Region002
+    regionName: "2. \uB3CC \uBB34\uB364"
+    regionDescription: "\uB2E8\uB2E8\uD55C \uACE8\uB818\uB4E4\uC774 \uC9C0\uD0A4\uACE0
+      \uC788\uC2B5\uB2C8\uB2E4."
+    rewards:
+    - rewardName: "\uACE8\uB4DC"
+      icon: {fileID: 0}
+    - rewardName: "\uACE8\uB818\uC758 \uD30C\uD3B8"
+      icon: {fileID: 0}
+    stages:
+    - stageId: Stage201
+      stageName: "\uB3CC \uBB34\uB364 1"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage202
+      stageName: "\uB3CC \uBB34\uB364 2"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage203
+      stageName: "\uB3CC \uBB34\uB364 3"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage204
+      stageName: "\uB3CC \uBB34\uB364 4"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage205
+      stageName: "\uB3CC \uBB34\uB364 1"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    thumbnail: {fileID: 0}
+    isUnlocked: 0
+  - regionId: Region003
+    regionName: "3. \uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130"
+    regionDescription: "\uB180\uC774\uD130\uB77C\uACE0 \uBC29\uC2EC\uD558\uBA74 \uC548\uB429\uB2C8\uB2E4.
+      \uB728\uAC70\uC6B4 \uD654\uC5FC \uC815\uB839\uB4E4\uC744 \uC870\uC2EC\uD558\uC138\uC694."
+    rewards:
+    - rewardName: "\uACE8\uB4DC"
+      icon: {fileID: 0}
+    - rewardName: "\uD654\uC5FC \uAD6C\uC2AC"
+      icon: {fileID: 0}
+    stages:
+    - stageId: Stage301
+      stageName: "\uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130 1"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage302
+      stageName: "\uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130 2"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage303
+      stageName: "\uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130 3"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage304
+      stageName: "\uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130 4"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage305
+      stageName: "\uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130 5"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    thumbnail: {fileID: 0}
+    isUnlocked: 0
+  - regionId: Region004
+    regionName: "4. \uC5BC\uC5B4\uBD99\uC740 \uC0B0"
+    regionDescription: "\uC774\uACF3\uC740 \uB9E4\uC6B0 \uCD94\uC2B5\uB2C8\uB2E4."
+    rewards:
+    - rewardName: "\uACE8\uB4DC"
+      icon: {fileID: 0}
+    - rewardName: "\uB208\uBB3C \uC870\uAC01"
+      icon: {fileID: 0}
+    stages:
+    - stageId: Stage401
+      stageName: "\uC5BC\uC5B4\uBD99\uC740 \uC0B0 1"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage402
+      stageName: "\uC5BC\uC5B4\uBD99\uC740 \uC0B0 2"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage403
+      stageName: "\uC5BC\uC5B4\uBD99\uC740 \uC0B0 3"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage404
+      stageName: "\uC5BC\uC5B4\uBD99\uC740 \uC0B0 4"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage405
+      stageName: "\uC5BC\uC5B4\uBD99\uC740 \uC0B0 5"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    thumbnail: {fileID: 0}
+    isUnlocked: 0
+  - regionId: Region005
+    regionName: "5. \uACE0\uB300 \uC2E0\uC804"
+    regionDescription: "\uC131\uC2A4\uB7EC\uC6B4 \uC774\uACF3\uC5D0 \uD568\uBD80\uB85C
+      \uBC1C\uC744 \uB51B\uC9C0 \uB9C8\uC2DC\uC624."
+    rewards:
+    - rewardName: "\uACE8\uB4DC"
+      icon: {fileID: 0}
+    - rewardName: "\uCC22\uC5B4\uC9C4 \uACE0\uC11C"
+      icon: {fileID: 0}
+    stages:
+    - stageId: Stage501
+      stageName: "\uACE0\uB300 \uC2E0\uC804 1"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage502
+      stageName: "\uACE0\uB300 \uC2E0\uC804 2"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage503
+      stageName: "\uACE0\uB300 \uC2E0\uC804 3"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage504
+      stageName: "\uACE0\uB300 \uC2E0\uC804 4"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    - stageId: Stage505
+      stageName: "\uACE0\uB300 \uC2E0\uC804 5"
+      sceneName: 
+      thumbnail: {fileID: 0}
+      isUnlocked: 0
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    thumbnail: {fileID: 0}
+    isUnlocked: 0
+  - regionId: Region006
+    regionName: ???
+    regionDescription: "\uC2E0\uC5D0\uAC8C \uB300\uC801\uD558\uC2DC\uB294 \uAC81\uB2C8\uAE4C?"
+    rewards: []
+    stages:
+    - stageId: BeforeBoss
+      stageName: ???
+      sceneName: BeforeBoss
+      thumbnail: {fileID: 0}
+      isUnlocked: 1
+      isCompleted: 0
+      spawnPosition: {x: 0, y: 0, z: 0}
+    thumbnail: {fileID: 0}
+    isUnlocked: 1
+  stages: []
