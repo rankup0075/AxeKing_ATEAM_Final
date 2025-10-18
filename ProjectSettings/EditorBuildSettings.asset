@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Town.unity
+    guid: a5fa8397b84006e47a6da2f663bff14b
+  - enabled: 1
+    path: Assets/Scenes/AlchemistShop.unity
+    guid: 4f9710be9c055da48815f194496eb236
+  - enabled: 1
+    path: Assets/Scenes/EquipmentShop.unity
+    guid: 94471beb564490e4ab37a1b51bb573c5
+  - enabled: 1
+    path: Assets/Scenes/WareHouse.unity
+    guid: c4f73bbe94786d644b882df7e63733ec
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 1/Stage101_R2.unity
+    guid: 0f1f9663be72c97448ba224f2efdaa02
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region6/BeforeBoss.unity
+    guid: f912e0e2167222d40a30d61f40d31758
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 2/Stage102_R1.unity
+    guid: 403050a9f277c7642871680219503abc
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 3/Stage103_R1.unity
+    guid: 2efe8f3cc7ede5d4ba026ec24dffc105
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 3/Stage103_R2.unity
+    guid: 9127fdd51d41c344c83151aa9753d5a0
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 3/Stage103_R3.unity
+    guid: 4c16b63180892fe409612cab56dd8213
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 2/Stage102_R2.unity
+    guid: 91e1d628ad9bc3a4ba70ad9ff1ccab0b
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 2/Stage102_R3.unity
+    guid: 38a963cb37eae79488e496b15f6f09ad
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region6/Boss.unity
+    guid: 9ba12c39b53787a42bd8a700d65cb8fe
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 1/Stage101_R3.unity
+    guid: 6c788b361e0815140a8c24ec99aaf3db
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region1/Stage 1/Stage101_R1.unity
+    guid: 8349399a77cb99b439afda7502c97860
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_UseUCBPForAssetBundles: 0
