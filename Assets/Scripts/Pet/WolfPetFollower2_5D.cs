@@ -167,27 +167,62 @@ public class WolfPetFollower2_5D : MonoBehaviour
         if (player == null || playerRb == null || playerAnim == null)
             TryResolvePlayer();
 
+        var dm = DialogueManager.Instance;
+
+        // ✅ ESC로 대화창 닫기 (환경설정 대신)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (dm != null && dm.IsOpen)
+            {
+                dm.ForceClose();  // 대화 종료
+                return;           // 환경설정 열리지 않게
+            }
+        }
+
+        // ✅ Enter(또는 talkKey)로 대화 시작
         if (Input.GetKeyDown(talkKey))
         {
-            var dm = DialogueManager.Instance;
-            if (dm != null && dm.IsOpen) return;
+            // DialogueManager가 아직 등록되지 않았으면 찾아서 등록
+            if (DialogueManager.Instance == null)
+            {
+                DialogueManager.Instance = FindFirstObjectByType<DialogueManager>();
+                if (DialogueManager.Instance == null)
+                {
+                    Debug.LogError("[WolfPetFollower2_5D] DialogueManager를 Hierarchy에서 찾을 수 없습니다!");
+                    return;
+                }
+            }
 
+            dm = DialogueManager.Instance;
+            if (dm == null)
+            {
+                Debug.LogWarning("[WolfPetFollower2_5D] DialogueManager가 아직 초기화되지 않았습니다.");
+                return;
+            }
+
+            // 이미 열려 있다면 무시
+            if (dm.IsOpen)
+                return;
+
+            // 인게임 설정창이 열려 있으면 무시
             if (UIManager.Instance != null)
             {
                 var cg = UIManager.Instance.settingsPanel_InGame?.GetComponent<CanvasGroup>();
-                if (cg != null && cg.alpha > 0.5f) return;
+                if (cg != null && cg.alpha > 0.5f)
+                    return;
             }
 
-            if (player == null) return;
+            if (player == null)
+                return;
 
+            // 플레이어와 펫 거리 체크
             float sqrDist = (player.transform.position - transform.position).sqrMagnitude;
             if (sqrDist <= talkDistance * talkDistance)
             {
-                EnsureDialogueManager();
-                dm = DialogueManager.Instance;
-                if (dm == null)
+                // 모든 UI 필드 연결 확인
+                if (!dm.ValidateUI())
                 {
-                    Debug.LogError("[WolfPetFollower2_5D] DialogueManager 생성 실패");
+                    Debug.LogError("[WolfPetFollower2_5D] DialogueManager UI가 아직 연결되지 않았습니다. Canvas/Body/Input/Send 확인!");
                     return;
                 }
 
@@ -196,6 +231,7 @@ public class WolfPetFollower2_5D : MonoBehaviour
             }
         }
     }
+
 
     private void FixedUpdate()
     {
