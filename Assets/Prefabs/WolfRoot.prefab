@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5627533345835846229}
   - component: {fileID: 7025017740302600667}
   - component: {fileID: 2381509140448019236}
+  - component: {fileID: 4851555231184324096}
   m_Layer: 0
   m_Name: WolfRoot
   m_TagString: Pet
@@ -120,6 +121,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46679d5936bac9a40a640bc066b2f93d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WolfPetFollower2_5D
+  currentDomain: 0
+  currentStageIndex: 1
+  currentRoundIndex: 1
+  playerCurrentWeapon: "\uCD08\uAE09 \uB3C4\uB07C"
+  playerCurrentArmor: "\uCC9C \uAC11\uC637"
+  gearRules:
+  - domain: 0
+    bossName: "\uACE0\uBE14\uB9B0"
+    recommendedWeapon: "\uB3CC \uB3C4\uB07C"
+    recommendedArmor: "\uB3CC \uAC11\uC637"
+    reason: "\uACE0\uBE14\uB9B0\uC758 \uB2E8\uAC80 \uCD9C\uD608 \uD53C\uD574\uB97C
+      \uB2E8\uB2E8\uD55C \uB3CC \uC18C\uC7AC\uB85C \uC0C1\uC1C4."
+  - domain: 1
+    bossName: "\uBC14\uC704 \uACE8\uB818"
+    recommendedWeapon: "\uCCA0 \uB3C4\uB07C"
+    recommendedArmor: "\uCCA0 \uAC11\uC637"
+    reason: "\uBC14\uC704 \uACE8\uB818\uC758 \uB192\uC740 \uBC29\uC5B4\uB825\uC744
+      \uCCA0 \uB3C4\uB07C\uB85C \uAD00\uD1B5."
+  - domain: 2
+    bossName: "\uD654\uC5FC \uC815\uB839"
+    recommendedWeapon: "\uD654\uC5FC \uB3C4\uB07C"
+    recommendedArmor: "\uD654\uC5FC \uAC11\uC637"
+    reason: "\uD654\uC0C1 \uD328\uD134\uC744 \uD654\uC5FC \uC800\uD56D \uC7A5\uBE44\uB85C
+      \uC0C1\uC1C4."
+  - domain: 3
+    bossName: "\uC5BC\uC74C \uC815\uB839"
+    recommendedWeapon: "\uC5BC\uC74C \uB3C4\uB07C"
+    recommendedArmor: "\uC5BC\uC74C \uAC11\uC637"
+    reason: "\uB454\uD654 \uD328\uD134\uC744 \uB0C9\uAE30 \uC800\uD56D \uC7A5\uBE44\uB85C
+      \uC0C1\uC1C4."
+  - domain: 4
+    bossName: "\uC2E0\uBD09\uC790(\uC778\uAC04\uD615)"
+    recommendedWeapon: "\uC2E0\uC131\uD55C \uB3C4\uB07C"
+    recommendedArmor: "\uC2E0\uC131\uD55C \uAC11\uC637"
+    reason: "\uC800\uC8FC \uD328\uD134(\uB454\uD654/\uB3C4\uD2B8 \uD53C\uD574)\uC744
+      \uC2E0\uC131 \uC18D\uC131\uC73C\uB85C \uC0C1\uC1C4."
+  - domain: 5
+    bossName: "\uC0B0\uC2E0\uB839(\uCD5C\uC885\uBCF4\uC2A4)"
+    recommendedWeapon: "\uCD5C\uD6C4\uC758 \uB3C4\uB07C"
+    recommendedArmor: "\uCD5C\uD6C4\uC758 \uAC11\uC637"
+    reason: "\uC804\uCC9C\uD6C4 \uB300\uC751\uC774 \uD544\uC694\uD55C \uCD5C\uC885
+      \uD328\uD134\uC5D0 \uCD5C\uC885\uAE09 \uC7A5\uBE44\uAC00 \uD544\uC694."
   followDistance: 1.5
   walkFollowSpeed: 3
   runFollowSpeed: 7
@@ -127,6 +170,30 @@ MonoBehaviour:
   decel: 14
   anim: {fileID: 5627533345835846229}
   speedParam: Speed
+  petName: Wolf
+  talkDistance: 2
+  talkKey: 13
+--- !u!114 &4851555231184324096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4439164865027620757}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cfbb9b18ad266c47831975dcfd745e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetNavigator
+  player: {fileID: 0}
+  blacksmithPortalX: -17
+  alchemistPortalX: -5
+  wareHousePortalX: 5
+  questBoardX: 14
+  worldMapX: 22
+  shopPortalX: -13
+  equipmentShopX: -8
+  potionShopX: 3
 --- !u!1001 &566834348628507122
 PrefabInstance:
   m_ObjectHideFlags: 0

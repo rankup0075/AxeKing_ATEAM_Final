@@ -1,27 +1,25 @@
-﻿// Assets/Scripts/Pet/WolfPetFollower2_5D.cs
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Text;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
 public class WolfPetFollower2_5D : MonoBehaviour
 {
     public enum DomainTerritory
     {
-        ForestGate,       // 1영지: 숲의 입구 (고블린)
-        StoneGraves,      // 2영지: 돌 무덤 (바위 골렘)
-        FireSpiritPlay,   // 3영지: 화염 정령들의 놀이터 (화염 정령)
-        FrozenMountain,   // 4영지: 얼어붙은 산 (얼음 정령)
-        AncientTemple,    // 5영지: 고대 신전 (신봉자)
-        FinalSanctum      // 6영지: 최후의 신전 (산신령)
+        ForestGate,
+        StoneGraves,
+        FireSpiritPlay,
+        FrozenMountain,
+        AncientTemple,
+        FinalSanctum
     }
 
     [Header("Progress / World State")]
-    [Tooltip("현재 영지(도메인)")]
     public DomainTerritory currentDomain = DomainTerritory.ForestGate;
-
-    [Range(1, 3)] public int currentStageIndex = 1;   // 각 영지 3 스테이지
-    [Range(1, 3)] public int currentRoundIndex = 1;   // 각 스테이지 3 라운드(3라운드=미니보스)
+    [Range(1, 3)] public int currentStageIndex = 1;
+    [Range(1, 3)] public int currentRoundIndex = 1;
 
     [Header("Player Equipment")]
     public string playerCurrentWeapon = "초급 도끼";
@@ -37,7 +35,6 @@ public class WolfPetFollower2_5D : MonoBehaviour
         [TextArea(1, 3)] public string reason;
     }
 
-    // ✅ 요청한 장비/이유 세팅(영지별)
     [Header("Gear Rules by Domain")]
     public DomainGearRule[] gearRules =
     {
@@ -87,8 +84,8 @@ public class WolfPetFollower2_5D : MonoBehaviour
 
     [Header("Follow Settings")]
     public float followDistance = 1.5f;
-    public float walkFollowSpeed = 4f;
-    public float runFollowSpeed = 6f;
+    public float walkFollowSpeed = 3f;
+    public float runFollowSpeed = 7f;
     public float accel = 10f;
     public float decel = 14f;
 
@@ -101,25 +98,12 @@ public class WolfPetFollower2_5D : MonoBehaviour
     public float talkDistance = 2.0f;
     public KeyCode talkKey = KeyCode.Return;
 
-    // ============================
-    // ✅ 허브(마을) 포털/상점 배치 (왼→오)
-    //    무기/방어구 → 물약 → 창고 → 퀘스트 → 영지 포탈
-    //    실제 씬 좌표에 맞게 인스펙터에서 조정하세요.
-    // ============================
-    [Header("Hub Layout (Left → Right)")]
-    public float hubWeaponArmorShopX = -50f;
-    public float hubPotionShopX = -45f;
-    public float hubStorageX = -40f;
-    public float hubQuestBoardX = -35f;
-    public float hubDomainPortalX = -30f;
-    [Tooltip("플레이어가 이 범위 안에 있으면 해당 지점에 '있다/바로 옆'으로 판단")]
-    public float hubSnapTolerance = 2.0f;
-
+    // === 내부 필드 ===
     private Rigidbody rb;
     private float vx;
     private float zLock;
 
-    private PlayerController player;
+    [SerializeField] private PlayerController player; // 👈 인스펙터 수동 연결 가능
     private Animator playerAnim;
     private Rigidbody playerRb;
     private bool prevPlayerGrounded = true;
@@ -131,107 +115,141 @@ public class WolfPetFollower2_5D : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         if (!anim) anim = GetComponentInChildren<Animator>();
         zLock = transform.position.z;
+
+        // 처음 시도
         TryResolvePlayer();
+
+        // 💡 0.3초마다 자동 탐색 시도 (씬 전환, 생성 지연 대응)
+        InvokeRepeating(nameof(AutoRetryFindPlayer), 0.3f, 0.3f);
+    }
+
+    private void Start()
+    {
+        // 💡 혹시 Awake 시점에 Player가 아직 생성되지 않은 경우 대비
+        InvokeRepeating(nameof(TryResolvePlayer), 0.5f, 0.5f);
+    }
+
+    private void AutoRetryFindPlayer()
+    {
+        if (player == null)
+        {
+            TryResolvePlayer();
+        }
+        else
+        {
+            CancelInvoke(nameof(AutoRetryFindPlayer));
+            Debug.Log($"[WolfPetFollower2_5D] Player 지속 감지 성공 ✅ ({player.name})");
+        }
     }
 
     private void TryResolvePlayer()
     {
-        if (PlayerController.Instance != null)
+        try
         {
-            player = PlayerController.Instance;
-            playerAnim = player.GetComponent<Animator>();
-            playerRb = player.GetComponent<Rigidbody>();
-            return;
-        }
+            if (player != null) return;
 
-        var pObj = GameObject.FindGameObjectWithTag("Player");
-        if (pObj != null)
+            // 1️⃣ 현재 Scene 이름
+            string currentScene = SceneManager.GetActiveScene().name;
+
+            // 2️⃣ Scene 내부의 PlayerController만 탐색
+            var allPlayers = GameObject.FindObjectsOfType<PlayerController>(true);
+            foreach (var p in allPlayers)
+            {
+                // 씬 내부 또는 DontDestroyOnLoad 내부 PlayerController 모두 허용
+                if (p.gameObject.scene.name == currentScene || p.gameObject.scene.name == "DontDestroyOnLoad")
+                {
+                    player = p;
+                    playerAnim = p.GetComponent<Animator>();
+                    playerRb = p.GetComponent<Rigidbody>();
+                    Debug.Log($"[WolfPetFollower2_5D] PlayerRoot 연결 성공 ✅ ({p.name}, Scene={p.gameObject.scene.name})");
+                    return;
+                }
+            }
+
+            // 3️⃣ 이름 기반 탐색 시에도 DontDestroyOnLoad은 제외
+            var allObjs = GameObject.FindObjectsOfType<GameObject>();
+            foreach (var obj in allObjs)
+            {
+                if (obj.name.Contains("PlayerRoot") && obj.scene.name == currentScene)
+                {
+                    player = obj.GetComponent<PlayerController>();
+                    playerAnim = obj.GetComponent<Animator>();
+                    playerRb = obj.GetComponent<Rigidbody>();
+                    Debug.Log($"[WolfPetFollower2_5D] 이름 기반 Scene PlayerRoot 연결 성공 ✅ ({obj.name}, Scene={currentScene})");
+                    return;
+                }
+            }
+
+            Debug.LogWarning($"[WolfPetFollower2_5D] 현재 Scene({currentScene})에서 Player를 찾을 수 없습니다 ❌");
+
+            // ✅ 여기 추가 (player가 null이 아닐 경우 위치 확인용 로그)
+            if (player != null)
+            {
+                Debug.Log($"[디버그] PlayerRoot 위치: {player.transform.position}, Scene: {player.gameObject.scene.name}");
+            }
+        }
+        catch (Exception e)
         {
-            player = pObj.GetComponent<PlayerController>();
-            playerAnim = pObj.GetComponent<Animator>();
-            playerRb = pObj.GetComponent<Rigidbody>();
+            Debug.LogError($"[WolfPetFollower2_5D] TryResolvePlayer 예외: {e.Message}");
         }
     }
 
-    private void EnsureDialogueManager()
+
+    public void ForceAssignPlayer(PlayerController target)
     {
-        if (DialogueManager.Instance == null)
-        {
-            var go = new GameObject("DialogueManager");
-            go.AddComponent<DialogueManager>();
-        }
+        if (target == null) return;
+        player = target;
+        playerRb = target.GetComponent<Rigidbody>();
+        playerAnim = target.GetComponent<Animator>();
+        Debug.Log($"[WolfPetFollower2_5D] ForceAssignPlayer 완료 → {target.name}");
     }
 
     private void Update()
     {
-        if (player == null || playerRb == null || playerAnim == null)
-            TryResolvePlayer();
+        if (player == null) TryResolvePlayer();
+        if (player == null) return;
 
         var dm = DialogueManager.Instance;
 
-        // ✅ ESC로 대화창 닫기 (환경설정 대신)
+        // Esc 누르면 대화 닫기
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (dm != null && dm.IsOpen)
             {
-                dm.ForceClose();  // 대화 종료
-                return;           // 환경설정 열리지 않게
+                dm.ForceClose();
+                return;
             }
         }
 
-        // ✅ Enter(또는 talkKey)로 대화 시작
+        // 대화 시작
         if (Input.GetKeyDown(talkKey))
         {
-            // DialogueManager가 아직 등록되지 않았으면 찾아서 등록
-            if (DialogueManager.Instance == null)
+            if (dm == null)
             {
-                DialogueManager.Instance = FindFirstObjectByType<DialogueManager>();
-                if (DialogueManager.Instance == null)
+                dm = FindFirstObjectByType<DialogueManager>();
+                if (dm == null)
                 {
-                    Debug.LogError("[WolfPetFollower2_5D] DialogueManager를 Hierarchy에서 찾을 수 없습니다!");
+                    Debug.LogError("[WolfPetFollower2_5D] DialogueManager 없음!");
                     return;
                 }
             }
 
-            dm = DialogueManager.Instance;
-            if (dm == null)
-            {
-                Debug.LogWarning("[WolfPetFollower2_5D] DialogueManager가 아직 초기화되지 않았습니다.");
-                return;
-            }
+            if (dm.IsOpen) return;
 
-            // 이미 열려 있다면 무시
-            if (dm.IsOpen)
-                return;
-
-            // 인게임 설정창이 열려 있으면 무시
             if (UIManager.Instance != null)
             {
                 var cg = UIManager.Instance.settingsPanel_InGame?.GetComponent<CanvasGroup>();
-                if (cg != null && cg.alpha > 0.5f)
-                    return;
+                if (cg != null && cg.alpha > 0.5f) return;
             }
 
-            if (player == null)
-                return;
-
-            // 플레이어와 펫 거리 체크
             float sqrDist = (player.transform.position - transform.position).sqrMagnitude;
             if (sqrDist <= talkDistance * talkDistance)
             {
-                // 모든 UI 필드 연결 확인
-                if (!dm.ValidateUI())
-                {
-                    Debug.LogError("[WolfPetFollower2_5D] DialogueManager UI가 아직 연결되지 않았습니다. Canvas/Body/Input/Send 확인!");
-                    return;
-                }
-
-                string strongPrompt = BuildWolfSystemPrompt();
-                dm.StartAIDialogue(petName, strongPrompt, null);
+                string prompt = BuildWolfSystemPrompt();
+                dm.StartAIDialogue(petName, prompt, null);
             }
         }
     }
-
 
     private void FixedUpdate()
     {
@@ -240,9 +258,6 @@ public class WolfPetFollower2_5D : MonoBehaviour
         bool dialogueOpen = DialogueManager.Instance != null && DialogueManager.Instance.IsOpen;
         if (dialogueOpen)
         {
-            var pos = rb.position;
-            pos.z = zLock;
-            rb.MovePosition(pos);
             FaceTowardsPlayerSlow();
             if (anim) anim.SetFloat(speedParam, 0f);
             return;
@@ -252,7 +267,7 @@ public class WolfPetFollower2_5D : MonoBehaviour
         float runCutoff = Mathf.Max(0.6f * player.runSpeed, player.walkSpeed + 0.1f);
         bool playerRunningNow = vxPlayer >= runCutoff;
 
-        bool groundedNow = GetPlayerGroundedSafe();
+        bool groundedNow = Mathf.Abs(playerRb.linearVelocity.y) < 0.01f;
         if (prevPlayerGrounded && !groundedNow)
             rb.AddForce(Vector3.up * player.jumpForce, ForceMode.Impulse);
         prevPlayerGrounded = groundedNow;
@@ -290,93 +305,77 @@ public class WolfPetFollower2_5D : MonoBehaviour
         rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, want, 720f * Time.fixedDeltaTime));
     }
 
-    private bool GetPlayerGroundedSafe() => Mathf.Abs(playerRb.linearVelocity.y) < 0.01f;
-
-    // ==============
-    //  NAV 유틸
-    // ==============
-    private string GetPlayerHubZoneName(float x)
-    {
-        // 각 지점 근처면 그 지점 이름을 리턴
-        if (Mathf.Abs(x - hubWeaponArmorShopX) <= hubSnapTolerance) return "무기/방어구 상점";
-        if (Mathf.Abs(x - hubPotionShopX) <= hubSnapTolerance) return "물약 상점";
-        if (Mathf.Abs(x - hubStorageX) <= hubSnapTolerance) return "창고";
-        if (Mathf.Abs(x - hubQuestBoardX) <= hubSnapTolerance) return "퀘스트 게시판";
-        if (Mathf.Abs(x - hubDomainPortalX) <= hubSnapTolerance) return "영지 포탈";
-        return null; // 특정 지점 "바로 앞"은 아님
-    }
-
-    private string BuildNavHint(float x)
-    {
-        // 허브 왼→오 순으로 비교하며, 플레이어 위치 기준 ‘다음에 만날 것’과 ‘되돌아갈 것’을 간단히 말해줌
-        // 항상 1~2문장에 담기도록 짧게 반환
-        if (x < hubWeaponArmorShopX - hubSnapTolerance)
-            return "허브 서쪽 밖이야. 조금만 오른쪽으로 가면 무기/방어구 상점이 먼저 보여.";
-        if (x < hubPotionShopX - hubSnapTolerance)
-            return "지금 무기/방어구 상점 근처야. 물약 상점은 오른쪽에 있어.";
-        if (x < hubStorageX - hubSnapTolerance)
-            return "물약 상점 앞이야. 창고는 그 오른쪽이야.";
-        if (x < hubQuestBoardX - hubSnapTolerance)
-            return "창고 옆에 있어. 퀘스트 게시판은 바로 오른쪽.";
-        if (x < hubDomainPortalX - hubSnapTolerance)
-            return "퀘스트 게시판 근처야. 영지로 가는 포탈은 바로 오른쪽이야.";
-        // 영지 포탈을 넘어 오른쪽
-        return "영지 포탈을 지난 동쪽이 스테이지 입구야. 계속 오른쪽으로 가자.";
-    }
-
-    // 🐺 시스템 프롬프트(부드러운 말투 + 장비 조언 + 동적 좌우 내비 + 허브 배치)
+    // =============================
+    // 🧠 GPT 시스템 프롬프트 생성
+    // =============================
     private string BuildWolfSystemPrompt()
     {
-        Vector3 playerPos = player != null ? player.transform.position : Vector3.zero;
-        float px = playerPos.x;
-
         var rule = FindGearRule(currentDomain);
-        string zone = GetPlayerHubZoneName(px);     // 특정 지점에 '서 있다'면 이름, 아니면 null
-        string navHint = BuildNavHint(px);          // 현재 x기준 왼/오른쪽 힌트 1문장
-
-        const string HUB_PORTALS =
-            "허브(마을)는 왼쪽에서 오른쪽 순서로 ①무기/방어구 상점 → ②물약 상점 → ③창고 → ④퀘스트 게시판 → ⑤영지 포탈 이 배치되어 있다.";
-
         var sb = new StringBuilder();
-        // 페르소나: 부드럽고 다정한 톤, 가끔 의성어
-        sb.AppendLine($"너는 \"{petName}\"라는 이름의 늑대 펫이다. 주인의 곁을 지키는 부드럽고 다정한 동료다.");
-        sb.AppendLine("항상 한국어로 1~2문장만 말하고, 늑대다운 간결한 말투를 쓰되 딱딱하지 않게 말해라.");
-        sb.AppendLine("메타발언/이모지는 금지. 필요하면 아주 가끔 ‘킁’ 같은 짧은 의성어를 쓴다.");
 
-        // 허브 배치 + 진행 규칙
-        sb.AppendLine();
-        sb.AppendLine("[허브 배치 / 진행 규칙]");
-        sb.AppendLine($"- {HUB_PORTALS}");
-        sb.AppendLine("- 월드는 기본적으로 왼쪽→오른쪽(동쪽) 진행이지만, 플레이어의 현재 위치를 보고 좌/우를 정확하게 안내하라.");
-        sb.AppendLine("- 과설명/장문 금지. 친근하고 짧게.");
+        // 펫의 기본 성격
+        sb.AppendLine($"너는 \"{petName}\"라는 이름의 늑대 펫이다. 주인의 곁을 지키는 다정하고 충직한 동료다.");
+        sb.AppendLine("항상 한국어로 1~2문장만 대답하고, 늑대다운 간결한 말투를 유지하되 부드럽고 자연스럽게 말한다.");
+        sb.AppendLine("이모지, 메타발언, 농담은 절대 하지 않는다. 필요할 때는 짧게 '킁' 같은 의성어를 써라.");
 
-        // 현재 진행/장비
+        // 게임 진행 정보
         sb.AppendLine();
         sb.AppendLine("[현재 진행]");
-        sb.AppendLine($"- 영지: {DomainToKorean(currentDomain)} / 스테이지 {currentStageIndex} / 라운드 {currentRoundIndex} (3×3, 3라운드=미니보스)");
+        sb.AppendLine($"- 현재 영지: {DomainToKorean(currentDomain)}");
+        sb.AppendLine($"- 스테이지: {currentStageIndex}, 라운드: {currentRoundIndex}");
 
+        // 장비 정보
         sb.AppendLine();
-        sb.AppendLine("[장비]");
-        sb.AppendLine($"- 현재 장비 → 무기: {playerCurrentWeapon}, 방어구: {playerCurrentArmor}");
+        sb.AppendLine("[장비 정보]");
+        sb.AppendLine($"- 플레이어 장비 → 무기: {playerCurrentWeapon}, 방어구: {playerCurrentArmor}");
         sb.AppendLine($"- 권장 장비 → 무기: {rule.recommendedWeapon}, 방어구: {rule.recommendedArmor}");
         sb.AppendLine($"- 이유: {rule.reason}");
-        sb.AppendLine("- 현재 장비가 권장과 다르면, 부드럽게 한 문장으로 교체를 권하라.");
 
-        // 동적 내비 정보
+        // 현재 씬 / 위치 전달
+        string scene = SceneManager.GetActiveScene().name;
+        float posX = player != null ? player.transform.position.x : 0f;
+
         sb.AppendLine();
-        sb.AppendLine("[현재 위치 기반 내비]");
-        if (!string.IsNullOrEmpty(zone))
-            sb.AppendLine($"- 지금 위치: {zone} 근처.");
-        else
-            sb.AppendLine("- 지금 위치: 허브 내 특정 지점과 정확히 일치하진 않음.");
-        sb.AppendLine($"- 힌트: {navHint}");
+        sb.AppendLine("[현재 게임 상태]");
+        sb.AppendLine($"- 현재 씬: {scene}");
+        sb.AppendLine($"- 플레이어 위치 X좌표: {posX:F1}");
 
-        // 출력 규칙
+        // 주요 지점
+        float blacksmithX = -17f;
+        float alchemistX = -5f;
+        float storageX = 5f;
+        float questX = 14f;
+        float worldMapX = 22f;
+
+        // 📍 방향 계산 함수
+        string Dir(float target)
+        {
+            if (Mathf.Abs(target - posX) < 1f)
+                return "바로 근처";
+            else if (target > posX)
+                return "오른쪽";
+            else
+                return "왼쪽";
+        }
+
+        // 📍 플레이어 기준 방향 요약
         sb.AppendLine();
-        sb.AppendLine("[출력]");
-        sb.AppendLine("- 한국어 1~2문장, 부드럽고 다정한 늑대 톤.");
-        sb.AppendLine("- 상황에 맞게 '오른쪽/왼쪽'을 정확히 써서 안내하거나, 장비 한 줄 조언으로 마무리한다.");
+        sb.AppendLine("[위치 요약]");
+        sb.AppendLine($"- 대장장이의 방은 플레이어 기준으로 {Dir(blacksmithX)}에 있어요.");
+        sb.AppendLine($"- 연금술사의 방은 플레이어 기준으로 {Dir(alchemistX)}에 있어요.");
+        sb.AppendLine($"- 은신처는 플레이어 기준으로 {Dir(storageX)}에 있어요.");
+        sb.AppendLine($"- 퀘스트 게시판은 플레이어 기준으로 {Dir(questX)}에 있어요.");
+        sb.AppendLine($"- 월드 이동 지도는 플레이어 기준으로 {Dir(worldMapX)}에 있어요.");
 
+        // 🎯 GPT 대화 스타일
+        sb.AppendLine();
+        sb.AppendLine("[대화 스타일]");
+        sb.AppendLine("- X좌표 숫자를 말하지 말고, ‘왼쪽’, ‘오른쪽’, ‘가까이’, ‘조금 더 가면’ 같은 말로 방향을 표현하라.");
+        sb.AppendLine("- 예: ‘조금 왼쪽이에요.’, ‘바로 오른쪽이에요.’, ‘조금만 더 가면 보여요.’");
+        sb.AppendLine("- 감정이나 모험 관련 질문에는 따뜻하고 자연스럽게 반응하라.");
+        sb.AppendLine("- 항상 짧고 현실감 있는 톤으로, 1~2문장만 답한다.");
+
+        Debug.Log($"[Prompt] Player 위치 감지 성공 ✅ X={posX:F1}");
         return sb.ToString();
     }
 
@@ -384,7 +383,7 @@ public class WolfPetFollower2_5D : MonoBehaviour
     {
         foreach (var r in gearRules)
             if (r.domain == d) return r;
-        return null;
+        return gearRules.Length > 0 ? gearRules[0] : null;
     }
 
     private string DomainToKorean(DomainTerritory d)

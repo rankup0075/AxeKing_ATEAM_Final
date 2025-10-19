@@ -33,6 +33,10 @@ public class DialogueManager : MonoBehaviour
     private float _focusPingTimer = 0f;
     private readonly Queue<string> _pendingInputs = new Queue<string>();
 
+    // ---------- 대화 기억 ----------
+    private readonly List<string> chatHistory = new List<string>();
+    private const int MaxHistoryCount = 6; // 최근 6개 대화만 기억
+
     // ---------- OpenAI DTO ----------
     [Serializable] private class ResponsesPayload { public string model; public string input; public string instructions; public float temperature; }
     [Serializable] private class RespRoot { public List<RespMsg> output; public string output_text; public List<Choice> choices; }
@@ -56,10 +60,10 @@ public class DialogueManager : MonoBehaviour
     {
         if (!isOpen) return;
 
-        // ESC로 대화창 닫기 (환경설정 무시)
+        // ESC로 대화창 닫기
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Input.ResetInputAxes(); // ESC 입력 초기화
+            Input.ResetInputAxes();
             ForceClose();
             return;
         }
@@ -76,6 +80,9 @@ public class DialogueManager : MonoBehaviour
     // ========= 외부 호출 (대화 시작) =========
     public void StartAIDialogue(string speaker, string systemPrompt, Action onComplete = null)
     {
+        Debug.Log($"[AI 호출] 🐺 펫 이름: {speaker}");
+        Debug.Log($"[AI 호출] 📜 systemPrompt 미리보기:\n{systemPrompt}");
+
         EnsureUI();
 
         if (speakerText != null)
@@ -105,16 +112,15 @@ public class DialogueManager : MonoBehaviour
         EnsureFocusOnInput();
         UpdateIMECursorPos();
 
-        // 게임 멈춤
         Time.timeScale = 0f;
         Input.ResetInputAxes();
 
         _cachedSystemPrompt = string.IsNullOrEmpty(systemPrompt) ? defaultSystemPrompt : systemPrompt;
+        if (string.IsNullOrEmpty(_cachedSystemPrompt))
+            Debug.LogWarning("[AI 호출 경고] systemPrompt가 비어있습니다.");
+
         onComplete?.Invoke();
     }
-
-    public bool IsOpen => isOpen;
-    public static bool IsDialogueActive => Instance != null && Instance.isOpen;
 
     // ========= 대화 종료 =========
     public void ForceClose()
@@ -130,7 +136,6 @@ public class DialogueManager : MonoBehaviour
         Hide();
         EnableIME(false);
 
-        // 게임 재개
         Time.timeScale = 1f;
         Input.ResetInputAxes();
     }
@@ -140,7 +145,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogueCanvas == null || panel == null || bodyText == null || inputField == null || sendButton == null)
         {
-            Debug.LogError("[DialogueManager] UI가 연결되지 않았습니다. Hierarchy에서 Canvas, Text, InputField, Button을 연결하세요.");
+            Debug.LogError("[DialogueManager] UI가 연결되지 않았습니다.");
             return;
         }
 
@@ -163,16 +168,13 @@ public class DialogueManager : MonoBehaviour
         inputField.ActivateInputField();
         inputField.caretColor = kBlack;
         inputField.customCaretColor = true;
-
         inputField.caretPosition = inputField.text?.Length ?? 0;
-        inputField.selectionStringAnchorPosition = inputField.caretPosition;
-        inputField.selectionStringFocusPosition = inputField.caretPosition;
     }
 
     private void Show() { if (dialogueCanvas) dialogueCanvas.enabled = true; isOpen = true; }
     private void Hide() { if (dialogueCanvas) dialogueCanvas.enabled = false; isOpen = false; }
 
-    // ========= 채팅 메시지 출력 =========
+    // ========= 메시지 출력 & 대화 기억 =========
     private void AppendMessage(string speaker, string text)
     {
         if (!bodyText) return;
@@ -181,11 +183,15 @@ public class DialogueManager : MonoBehaviour
         if (string.IsNullOrEmpty(bodyText.text)) bodyText.text = line;
         else bodyText.text += "\n" + line;
 
+        // 🧠 대화 히스토리 기록
+        chatHistory.Add($"{speaker}: {text}");
+        if (chatHistory.Count > MaxHistoryCount)
+            chatHistory.RemoveAt(0);
+
         ForceTextBlack(bodyText);
         StartCoroutine(ScrollToBottomNextFrame());
     }
 
-    // ✅ 스크롤 자동 하단 유지
     private IEnumerator ScrollToBottomNextFrame()
     {
         yield return null;
@@ -222,11 +228,31 @@ public class DialogueManager : MonoBehaviour
         while (_pendingInputs.Count > 0)
         {
             string msg = _pendingInputs.Dequeue();
+
+            // 1️⃣ 위치 관련 질문이면 프롬프트 강화 (GPT에 넘김)
+            if (IsLikelyLocationQuery(msg))
+            {
+                Debug.Log("[AI] 위치 관련 질문 감지 ✅ GPT에게 전달");
+                _cachedSystemPrompt += "\n\n[위치 안내 규칙 보강]\n" +
+                    "- '어디', '위치' 등의 질문이 나오면 [위치 요약] 정보를 이용해 방향으로 대답하라.\n" +
+                    "- 예: '대장장이의 방은 왼쪽이에요.', '은신처는 조금 오른쪽이에요.'\n" +
+                    "- 절대 좌표나 X값은 말하지 말라.\n";
+            }
+
             yield return SendToOpenAI_Co(msg);
         }
     }
 
-    // ========= OpenAI 통신 =========
+    // ========= 위치 관련 문장 감지 =========
+    private bool IsLikelyLocationQuery(string text)
+    {
+        string[] patterns = { "어디", "위치", "이곳", "장소", "여기", "내가 있는 곳", "어딘가", "어디쯤", "어디로" };
+        foreach (string p in patterns)
+            if (text.Contains(p)) return true;
+        return false;
+    }
+
+    // ========= OpenAI 요청 =========
     private IEnumerator SendToOpenAI_Co(string userText)
     {
         isRequestRunning = true;
@@ -239,15 +265,28 @@ public class DialogueManager : MonoBehaviour
             yield break;
         }
 
+        // 🧠 최근 대화 맥락 포함
+        string historyBlock = "";
+        if (chatHistory.Count > 0)
+        {
+            historyBlock = "\n\n[최근 대화 맥락]\n";
+            foreach (var h in chatHistory)
+                historyBlock += "- " + h + "\n";
+        }
+
+        string usedPrompt = (string.IsNullOrEmpty(_cachedSystemPrompt) ? defaultSystemPrompt : _cachedSystemPrompt) + historyBlock;
+        Debug.Log($"[GPT 요청] 사용된 systemPrompt:\n{usedPrompt}");
+
         var payload = new ResponsesPayload
         {
             model = model,
             input = userText,
-            instructions = string.IsNullOrEmpty(_cachedSystemPrompt) ? defaultSystemPrompt : _cachedSystemPrompt,
+            instructions = usedPrompt,
             temperature = 0.8f
         };
 
         string json = JsonUtility.ToJson(payload);
+
         using (var req = new UnityWebRequest("https://api.openai.com/v1/responses", "POST"))
         {
             currentRequest = req;
@@ -368,14 +407,7 @@ public class DialogueManager : MonoBehaviour
         Input.compositionCursorPos = screenPoint;
     }
 
-    // ========= UI 유효성 검사 =========
-    public bool ValidateUI()
-    {
-        return dialogueCanvas != null &&
-               panel != null &&
-               speakerText != null &&
-               bodyText != null &&
-               inputField != null &&
-               sendButton != null;
-    }
+    // ✅ 대화창 열림 여부 확인 프로퍼티
+    public bool IsOpen => isOpen;
+    public static bool IsDialogueActive => Instance != null && Instance.isOpen;
 }
