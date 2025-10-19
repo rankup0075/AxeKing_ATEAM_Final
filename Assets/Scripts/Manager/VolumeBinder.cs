@@ -57,6 +57,14 @@ public class VolumeBinder : MonoBehaviour
         }
 
         // ValueText 갱신용 리스너 추가
+        string key = kind == Kind.Master ? "vol_master" :
+                 kind == Kind.BGM ? "vol_bgm" : "vol_sfx";
+
+        slider.onValueChanged.AddListener(v => {
+            PlayerPrefs.SetFloat(key, v);
+            PlayerPrefs.Save();
+        });
+
         slider.onValueChanged.AddListener(UpdateValueText);
         ready = true;
     }

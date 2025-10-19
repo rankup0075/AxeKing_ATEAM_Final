@@ -70,5 +70,23 @@ public class QuestBoardUI : MonoBehaviour
             currentGoldText.text = $"현재 골드: {gm.gold:N0}G"; // 필드명에 맞춤
     }
 
-    public void Close() { gameObject.SetActive(false); }
+    public void Close()
+    {
+        gameObject.SetActive(false);
+        Time.timeScale = 1f; // 게임 재개
+
+        var player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var controller = player.GetComponent<PlayerController>();
+            if (controller != null)
+            {
+                controller.canMove = true;
+                controller.canControl = true; // ★ 입력 복귀
+            }
+        }
+
+        var cam = Camera.main ? Camera.main.GetComponent<CameraFollow>() : null;
+        if (cam != null) cam.ResetTarget();
+    }
 }

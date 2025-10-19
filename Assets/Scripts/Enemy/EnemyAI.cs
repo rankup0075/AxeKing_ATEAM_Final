@@ -36,6 +36,8 @@ public class EnemyAI : MonoBehaviour
     Collider playerCol;
     bool dead;
 
+    public bool canMove = true;
+
     void Reset()
     {
         animator = GetComponentInChildren<Animator>();
@@ -60,20 +62,30 @@ public class EnemyAI : MonoBehaviour
         if (!attackOrigin) attackOrigin = transform;
     }
 
+    // EnemyAI.Update()
     void Update()
     {
         if (dead) return;
 
         DetectPlayer();
 
+        // 공격 중엔 회전/트리거 갱신 필요 → 항상 실행
+        if (state == State.Attack) { UpdateAttack(); return; }
+
+        // 히트 중엔 완전 정지
+        if (state == State.Hit) return;
+
+        // 이동은 canMove가 true일 때만
+        if (!canMove) return;
+
         switch (state)
         {
             case State.Idle: break;
             case State.Chase: UpdateChase(); break;
-            case State.Attack: UpdateAttack(); break;
-            case State.Hit: break;
+                // (수정) Attack 분기는 위에서 처리하므로 여기선 제거
         }
     }
+
 
     // ===== 유틸 =====
     Vector3 SelfPos() => attackOrigin ? attackOrigin.position : transform.position;
@@ -123,24 +135,27 @@ public class EnemyAI : MonoBehaviour
             case State.Idle:
                 animator?.SetBool(moveBool, false);
                 rb.linearVelocity = Vector3.zero;
+                canMove = true;
                 break;
             case State.Chase:
                 animator?.SetBool(moveBool, true);   // 걷기 ON
+                canMove = true;
                 break;
             case State.Attack:
-                animator?.SetBool(moveBool, false);  // 걷기 OFF
-                rb.linearVelocity = Vector3.zero;
+                animator?.SetBool(moveBool, false);
+                canMove = false;
                 break;
             case State.Hit:
                 animator?.SetBool(moveBool, false);
                 animator?.SetTrigger(hitTrigger);
-                rb.linearVelocity = Vector3.zero;
+                canMove = false;
                 break;
             case State.Dead:
                 animator?.SetBool(moveBool, false);
                 animator?.SetTrigger(deathTrigger);
                 rb.linearVelocity = Vector3.zero;
                 dead = true;
+                canMove = false;
                 break;
         }
     }
@@ -149,7 +164,9 @@ public class EnemyAI : MonoBehaviour
     // ===== 갱신 =====
     void UpdateChase()
     {
-        if (!player) { ChangeState(State.Idle); return; }
+        if (!player || !canMove) return;
+
+        //if (!player) { ChangeState(State.Idle); return; }
 
         Vector3 target = PlayerClosestPoint();
         Vector3 dir = (target - SelfPos());
@@ -182,9 +199,9 @@ public class EnemyAI : MonoBehaviour
         if (Time.time >= lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time;
-            animator?.ResetTrigger(attackTrigger); // 중복 방지
-            animator?.SetTrigger(attackTrigger);   // 공격 애니메이션 시작
+            animator?.SetTrigger(attackTrigger); // 단일 호출
         }
+
 
         // 사거리 이탈 시 추격 복귀
         if (DistanceToPlayer() > attackRange * 1.2f) ChangeState(State.Chase);
@@ -203,6 +220,7 @@ public class EnemyAI : MonoBehaviour
     {
         ChangeState(State.Hit);
         yield return new WaitForSeconds(stun);
+        canMove = true;
         ChangeState(hasTarget ? State.Chase : State.Idle);
     }
 
@@ -214,6 +232,7 @@ public class EnemyAI : MonoBehaviour
     public void OnAttackAnimationEnd()   // 필요시 애니메이션 이벤트에서 호출
     {
         if (!player) { ChangeState(State.Idle); return; }
+        canMove = true;
         ChangeState(DistanceToPlayer() <= attackRange ? State.Attack : State.Chase);
     }
 

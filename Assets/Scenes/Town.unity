@@ -25068,7 +25068,7 @@ MonoBehaviour:
   portalParticles: {fileID: 0}
   portalLight: {fileID: 0}
   spawnPoint: {fileID: 0}
-  targetSpawnName: 
+  targetSpawnName: PlayerSpawnPoint
   townExitPointName: 
 --- !u!4 &1669263695 stripped
 Transform:
@@ -26431,6 +26431,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 04dd4da17f4924a48abf1823ec2b482b, type: 3}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[0].stages.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[1].stages.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[2].stages.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[3].stages.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[4].stages.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[0].stages.Array.data[0].stageId
       value: 1-1
       objectReference: {fileID: 0}
@@ -26484,7 +26504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[2].stages.Array.data[3].stageId
-      value: 3-4
+      value: 3-5
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[2].stages.Array.data[4].stageId
@@ -26504,11 +26524,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[3].stages.Array.data[3].stageId
-      value: 4-4
+      value: 5-4
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[3].stages.Array.data[4].stageId
-      value: 4-5
+      value: 5-5
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[4].stages.Array.data[0].stageId
@@ -26531,12 +26551,24 @@ PrefabInstance:
       value: 5-5
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[5].stages.Array.data[0].stageId
+      value: 6-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[0].stages.Array.data[0].sceneName
       value: Stage101_R1
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[0].stages.Array.data[1].sceneName
       value: Stage102_R1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[2].stages.Array.data[3].stageName
+      value: "\uD654\uC5FC \uC815\uB839\uB4E4\uC758 \uB180\uC774\uD130 5"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
+      propertyPath: regions.Array.data[5].stages.Array.data[0].sceneName
+      value: Stage_BeforeBoss
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[0].stages.Array.data[0].isCompleted

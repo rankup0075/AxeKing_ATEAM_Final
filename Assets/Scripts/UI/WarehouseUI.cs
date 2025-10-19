@@ -107,7 +107,11 @@ public class WarehouseUI : MonoBehaviour
         if (player != null)
         {
             var controller = player.GetComponent<PlayerController>();
-            if (controller != null) controller.canMove = true;
+            if (controller != null)
+            {
+                controller.canMove = true;
+                controller.canControl = true;
+            }
         }
     }
 

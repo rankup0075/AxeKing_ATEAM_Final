@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (this != Instance) return;
-        if (isResolving) return;
+        //if (isResolving) return;
         isResolving = true;
         StartCoroutine(SpawnFlow(scene));
     }
@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
     {
         // 씬의 루트 오브젝트가 모두 살아날 때까지 1프레임 대기
         yield return null;
+        yield return null; // ← 추가
 
         // 스폰 좌표 계산(한 번만)
         Vector3 spawnPos = ResolveSpawn(scene.name, ctx);

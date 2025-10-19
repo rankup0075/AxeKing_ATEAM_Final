@@ -88,7 +88,15 @@ public class StageManager : MonoBehaviour
         }
 
         // StageSelect → Stage 진입은 항상 PlayerSpawnPoint 기준
-        GameManager.Instance.BeginTransition(TransitionKind.FromStageSelect, stage.sceneName, null, "PlayerSpawnPoint");
+        GameManager.Instance.BeginTransition(
+            TransitionKind.FromStageSelect,
+            stage.sceneName,
+            null,
+            "PlayerSpawnPoint"
+        );
+
+        if (string.IsNullOrEmpty(stage.sceneName))
+            Debug.LogError($"[StageManager] Stage '{stage.stageName}' has invalid scene name!");
 
         pendingSpawnPos = stage.spawnPosition;
 

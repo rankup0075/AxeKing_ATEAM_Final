@@ -40,8 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4636768902883930789}
-  - component: {fileID: 3885053900697042114}
-  - component: {fileID: 6700605930687129847}
   m_Layer: 7
   m_Name: EnemyRoot
   m_TagString: Enemy
@@ -65,56 +63,6 @@ Transform:
   - {fileID: 3273206278743071392}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!54 &3885053900697042114
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3770650196925954255}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 120
-  m_CollisionDetection: 0
---- !u!136 &6700605930687129847
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3770650196925954255}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.69
-  m_Direction: 1
-  m_Center: {x: 0, y: 1.51, z: 0}
 --- !u!1001 &3091293132708543819
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -420,6 +368,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 48394872ddde9cf4e82d55155586bd63, type: 2}
     - target: {fileID: 5866666021909216657, guid: cbddb49314e253b42aa4090aaf6614f4, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: cbddb49314e253b42aa4090aaf6614f4, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
@@ -470,6 +422,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cbddb49314e253b42aa4090aaf6614f4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4900874861011949912}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cbddb49314e253b42aa4090aaf6614f4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2456882380726548676}
   m_SourcePrefab: {fileID: 100100000, guid: cbddb49314e253b42aa4090aaf6614f4, type: 3}
 --- !u!1 &2749187435664457754 stripped
 GameObject:
@@ -499,9 +454,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &222183148121163231
 MonoBehaviour:
@@ -571,10 +526,33 @@ MonoBehaviour:
   goldPickupPrefab: {fileID: 1950871307682000, guid: 01348926c7cbb3347a006c37204131c3, type: 3}
   uniquePickupPrefab: {fileID: 1978654030973750, guid: c7215f01068703b4a9dd5eb3305fd261, type: 3}
   deathAnimHold: 1
-  fadeOutDuration: 1
+  fadeOutDuration: 1.5
   ai: {fileID: 222183148121163231}
   health: {fileID: 2263420871399131701}
   animator: {fileID: 8902753416283078874}
+--- !u!136 &2456882380726548676
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2749187435664457754}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.89
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.86, z: 0}
 --- !u!4 &3273206278743071392 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cbddb49314e253b42aa4090aaf6614f4, type: 3}

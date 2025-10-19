@@ -180,10 +180,13 @@ public class EquipmentShopUI : MonoBehaviour
         if (player != null)
         {
             var controller = player.GetComponent<PlayerController>();
-            if (controller != null) controller.canMove = true;
+            if (controller != null)
+            {
+                controller.canMove = true;
+                controller.canControl = true;
+            }
         }
-
-        selectedItem = null;
+            selectedItem = null;
         selectedItemObject = null;
         messagePanel.SetActive(false);
     }

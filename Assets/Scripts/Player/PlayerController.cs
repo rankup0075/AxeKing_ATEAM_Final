@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
     public bool canMove = true;
 
     private float horizontalInput;
+    [SerializeField] float stepHeight = 0.4f;     // 오를 수 있는 최대 계단 높이
+    [SerializeField] float stepSmooth = 6f;       // 보간 속도
+    [SerializeField] float stepCheckDistance = 0.5f;
+    [SerializeField] LayerMask groundLayer;
 
     // Animator hashes
     private int speedHash = Animator.StringToHash("Speed");
@@ -118,6 +122,31 @@ public class PlayerController : MonoBehaviour
             IsJumping = false;
         }
 
+    }
+
+    void FixedUpdate()
+    {
+        CheckStepClimb();
+        //MaintainGroundedState(); // 기존 보조 Ground 체크 (있다면 그대로)
+    }
+
+    void CheckStepClimb()
+    {
+        Vector3 dir = transform.forward;
+        Vector3 originLower = transform.position + Vector3.up * 0.1f;
+        Vector3 originUpper = transform.position + Vector3.up * (stepHeight + 0.1f);
+
+        // 캐릭터 앞쪽으로 두 개의 레이
+        if (Physics.Raycast(originLower, dir, out RaycastHit lowerHit, stepCheckDistance, groundLayer))
+        {
+            if (!Physics.Raycast(originUpper, dir, stepCheckDistance, groundLayer))
+            {
+                // 아래는 맞고 위는 빗나감 → 계단
+                rb.position = Vector3.Lerp(rb.position,
+                                           rb.position + Vector3.up * stepHeight,
+                                           Time.fixedDeltaTime * stepSmooth);
+            }
+        }
     }
 
     // ================= Movement =================

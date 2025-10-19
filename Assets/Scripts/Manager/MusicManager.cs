@@ -37,6 +37,21 @@ public class MusicManager : MonoBehaviour
     private AudioClip currentClip;
     private bool xfade;
 
+    IEnumerator Start()
+    {
+        // 1프레임 기다렸다가 볼륨값을 다시 적용
+        yield return null;
+        ApplySavedVolumes();
+
+        // 혹시 재생된 사운드가 있다면 즉시 반영되도록
+        if (current != null && current.isPlaying)
+        {
+            float b = PlayerPrefs.GetFloat("vol_bgm", 1f);
+            SetBGMVolume(b);
+        }
+    }
+
+
     void Awake()
     {
         if (Instance != null)
@@ -55,16 +70,24 @@ public class MusicManager : MonoBehaviour
         current = a;
         nextAS = b;
 
-        // 항상 100%로 초기화
-        SetMasterVolume(1f);
-        SetBGMVolume(1f);
-        SetSFXVolume(1f);
-
-        PlayerPrefs.SetFloat("vol_master", 1f);
-        PlayerPrefs.SetFloat("vol_bgm", 1f);
-        PlayerPrefs.SetFloat("vol_sfx", 1f);
+        ApplySavedVolumes();  // 저장값 즉시 반영
+        if (bgmGroup == null || bgmGroup.audioMixer != masterMixer)
+        {
+            var groups = masterMixer ? masterMixer.FindMatchingGroups("BGM") : null;
+            if (groups != null && groups.Length > 0) bgmGroup = groups[0];
+            SetupAudioSource(a); SetupAudioSource(b);
+        }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    void OnEnable() { ApplySavedVolumes(); }  // 안전망
+
+    public void ApplySavedVolumes()
+    {
+        float m = PlayerPrefs.GetFloat("vol_master", 1f);
+        float b = PlayerPrefs.GetFloat("vol_bgm", 1f);
+        float s = PlayerPrefs.GetFloat("vol_sfx", 1f);
+        SetMasterVolume(m); SetBGMVolume(b); SetSFXVolume(s);   // 믹서만 반영
     }
 
     void OnDestroy() => SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -72,14 +95,19 @@ public class MusicManager : MonoBehaviour
     void SetupAudioSource(AudioSource s)
     {
         s.loop = true;
-        s.volume = defaultVolume;
+        s.volume = 1f; // 항상 1
         s.playOnAwake = false;
         s.spatialBlend = 0f;
-        if (bgmGroup != null)
-            s.outputAudioMixerGroup = bgmGroup;
+        s.outputAudioMixerGroup = bgmGroup;
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode) => ApplySceneRule(scene.name);
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ApplySavedVolumes();     // 저장된 볼륨 먼저 반영
+        ApplySceneRule(scene.name); // 그 다음 음악 재생
+    }
+
 
     // ================================================================
     // Scene 음악 관리
@@ -159,32 +187,27 @@ public class MusicManager : MonoBehaviour
     {
         xfade = true;
         nextAS.clip = clip;
-        nextAS.volume = 0f;
+        nextAS.volume = 1f;
         nextAS.Play();
 
-        float startVol = current.volume;
         float t = 0f;
-
         while (t < crossfadeDuration)
         {
             t += Time.unscaledDeltaTime;
             float k = t / crossfadeDuration;
-            current.volume = Mathf.Lerp(startVol, 0f, k);
-            nextAS.volume = Mathf.Lerp(0f, defaultVolume, k);
+            current.volume = Mathf.Lerp(1f, 0f, k);
+            nextAS.volume = Mathf.Lerp(0f, 1f, k);
             yield return null;
         }
 
         current.Stop();
-        current.volume = defaultVolume;
-        nextAS.volume = defaultVolume;
+        current.volume = 1f;   // 소스 볼륨 복구
+        nextAS.volume = 1f;
 
-        var tmp = current;
-        current = nextAS;
-        nextAS = tmp;
-
-        currentClip = clip;
-        xfade = false;
+        var tmp = current; current = nextAS; nextAS = tmp;
+        currentClip = clip; xfade = false;
     }
+
 
     public void StopMusic()
     {
@@ -218,10 +241,9 @@ public class MusicManager : MonoBehaviour
 
     void SetDb(string exposedName, float linear01)
     {
-        if (masterMixer == null) return;
-        float db;
-        if (linear01 <= 0.0001f) db = -80f;
-        else db = Mathf.Log10(linear01) * 20f * 0.5f;
+        if (!masterMixer) return;
+        float db = linear01 <= 0.0001f ? -80f : Mathf.Log10(linear01) * 20f;
         masterMixer.SetFloat(exposedName, db);
     }
+
 }

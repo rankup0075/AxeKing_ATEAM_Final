@@ -2921,7 +2921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 838670127670205521, guid: 388d9b17ab21db24abe453cf6da856ae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.128
+      value: -9.965
       objectReference: {fileID: 0}
     - target: {fileID: 838670127670205521, guid: 388d9b17ab21db24abe453cf6da856ae, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10676,7 +10676,7 @@ MonoBehaviour:
   portalParticles: {fileID: 0}
   portalLight: {fileID: 0}
   spawnPoint: {fileID: 0}
-  targetSpawnName: RetunrPoint
+  targetSpawnName: 
   townExitPointName: 
 --- !u!136 &942758322
 CapsuleCollider:
@@ -12626,7 +12626,7 @@ Transform:
   m_GameObject: {fileID: 1437045072}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.89, y: 0, z: 0}
+  m_LocalPosition: {x: -12.89, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15902,6 +15902,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 207223645}
+  - {fileID: 1860605428}
   - {fileID: 910741846}
   - {fileID: 1872224022}
   - {fileID: 1743371918}
@@ -15910,4 +15911,3 @@ SceneRoots:
   - {fileID: 178069548}
   - {fileID: 1452390285}
   - {fileID: 1144461304}
-  - {fileID: 1860605428}
