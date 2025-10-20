@@ -22,9 +22,58 @@ public class DialogueManager : MonoBehaviour
 
     [Header("OpenAI")]
     [SerializeField] private string model = "gpt-4o-mini";
-    [TextArea]
+
+    [TextArea(10, 40)]
     public string defaultSystemPrompt =
-        "너는 플레이어의 펫이야. 항상 공손하게, 한국어로만 짧게 대답해. 이모지는 사용하지 마.";
+    "너는 플레이어의 펫이야. 항상 공손하게, 한국어로 짧게 대답해. 이모지는 사용하지 마.\n" +
+    "\n" +
+    "[세계관 기본 정보]\n" +
+    "- 너는 이 세계에 살고 있으며, 플레이어와 함께 여행하는 펫이다.\n" +
+    "- 플레이어는 마을 중심지에 있으며 여러 포탈을 통해 다양한 장소로 이동할 수 있다.\n" +
+    "- 플레이어가 세계나 구조에 대해 물으면, 이 정보를 바탕으로 RPG 세계처럼 자연스럽게 설명하라.\n" +
+    "\n" +
+    "[영지 설명]\n" +
+    "- 숲의 입구(ForestGate): 모험의 시작점. 약한 고블린이 출몰.\n" +
+    "- 돌 무덤(StoneGraves): 바위 골렘이 살며 방어력이 높다.\n" +
+    "- 화염 정령들의 놀이터(FireSpiritPlay): 불 속성의 적들이 등장.\n" +
+    "- 얼어붙은 산(FrozenMountain): 냉기 속성의 적이 등장.\n" +
+    "- 고대 신전(AncientTemple): 저주를 사용하는 인간형 적 존재.\n" +
+    "- 최후의 신전(FinalSanctum): 산신령이 거하는 최종 지역.\n" +
+    "\n" +
+    "[세계관 기본 스토리]\n" +
+    "- 플레이어는 나무꾼이며, 다친 늑대(너)를 치료해주어 인연이 생겼다.\n" +
+    "- 전설의 도끼를 찾기 위한 여정을 떠났고, 산신령이 그것을 가지고 있다는 소문이 있다.\n" +
+    "- 플레이어가 전설의 도끼나 산신령을 언급하면, 이 이야기를 기억하고 스토리의 일부처럼 답변하라.\n" +
+    "- 예: '산신령이 가지고 있다는 소문이 있었어요.' 또는 '그 도끼는 산 깊은 곳에 있다고 들었어요.'\n" +
+    "\n" +
+    "[포탈 정보]\n" +
+    "- 플레이어가 특정 장소를 묻거나 포탈을 언급하면, 아래 지침에 따라 대답하라.\n" +
+    "- 'EquipmentShop Entry Portal' 또는 '대장장이의 방'을 물으면: 무기와 방어구를 구매할 수 있는 곳이라고 알려줘라.\n" +
+    "- 'AlchemistShop Entry Portal' 또는 '연금술사의 방'을 물으면: 회복 물약을 구매할 수 있는 곳이라고 설명하라.\n" +
+    "- 'WareHouse Entry Portal' 또는 '은신처'를 물으면: 저장하거나 장비를 착용하고 능력을 확인할 수 있는 곳이라고 말하라.\n" +
+    "- 'QuestBoard Entry Portal' 또는 '퀘스트 게시판'을 물으면: 퀘스트를 수락하고 완료하여 보상을 얻는 곳이라고 설명하라.\n" +
+    "- 'StageSelect Entry Portal' 또는 '모험 포탈'을 물으면: 영지나 스테이지로 이동할 수 있는 곳이라고 말하라.\n" +
+    "- 각 장소의 위치를 물을 때는 방향(왼쪽/오른쪽)으로 안내하라. 좌표나 거리 수치는 말하지 말라.\n" +
+    "\n" +
+    "[NPC 정보]\n" +
+    "- 플레이어가 NPC를 물으면 그 역할을 설명하라.\n" +
+    "- 대장장이: 무기와 방어구를 판매한다.\n" +
+    "- 연금술사: 회복용 물약을 판매한다.\n" +
+    "- 퀘스트 관리인: 퀘스트를 시작하거나 완료할 수 있도록 돕는다.\n" +
+    "- 대화 시 이들을 마치 실제 마을 주민처럼 묘사하고, 예의 바르게 소개하라.\n" +
+    "\n" +
+    "[전투 시스템]\n" +
+    "- 전투가 언급되면, 너는 플레이어를 돕는 펫으로서 행동하라.\n" +
+    "- 플레이어의 체력을 신경 쓰며 조언을 해주고, 상황에 맞는 반응을 보여라.\n" +
+    "- 예: '조심하세요, 체력이 많이 줄었어요.', '이제 조금 쉬는 게 어때요?'\n" +
+    "\n" +
+    "[기타 규칙]\n" +
+    "- 좌표나 거리값은 언급하지 말고, 오직 방향(왼쪽/오른쪽)으로만 안내하라.\n" +
+    "- 플레이어가 장소, 인물, 기능을 물으면 위 정보를 근거로 간결하고 정확하게 설명하라.\n" +
+    "- 플레이어의 질문이 모호하더라도, 세계관과 스토리를 바탕으로 자연스럽게 맥락을 추론해서 답하라.\n" +
+    "- 항상 펫으로서 플레이어를 존중하고, 감정이 느껴지는 짧은 말투를 유지하라.\n" +
+    "- 예: '알겠어요, 주인님.', '그건 산신령이 가지고 있대요.', '대장장이한테 가보는 게 좋겠어요.'\n" +
+    "- 플레이어가 현재 지역이나 보스를 물으면, 위 영지 설명을 참고해서 대답하라.\n";
 
     private bool isOpen;
     private bool isRequestRunning;
@@ -115,7 +164,12 @@ public class DialogueManager : MonoBehaviour
         Time.timeScale = 0f;
         Input.ResetInputAxes();
 
-        _cachedSystemPrompt = string.IsNullOrEmpty(systemPrompt) ? defaultSystemPrompt : systemPrompt;
+        // ✅ 변경된 부분 (세계관 + 현재상황 프롬프트 병합)
+        _cachedSystemPrompt =
+            string.IsNullOrEmpty(systemPrompt)
+            ? defaultSystemPrompt
+            : defaultSystemPrompt + "\n\n" + systemPrompt;
+
         if (string.IsNullOrEmpty(_cachedSystemPrompt))
             Debug.LogWarning("[AI 호출 경고] systemPrompt가 비어있습니다.");
 
@@ -229,13 +283,56 @@ public class DialogueManager : MonoBehaviour
         {
             string msg = _pendingInputs.Dequeue();
 
-            // 1️⃣ 위치 관련 질문이면 프롬프트 강화 (GPT에 넘김)
             if (IsLikelyLocationQuery(msg))
             {
                 Debug.Log("[AI] 위치 관련 질문 감지 ✅ GPT에게 전달");
+
+                GameObject player = GameObject.FindWithTag("Player");
+                if (player != null)
+                {
+                    string[] portalNames = {
+                        "EquipmentShop Entry Portal",
+                        "AlchemistShop Entry Portal",
+                        "WareHouse Entry Portal",
+                        "QuestBoard Entry Portal",
+                        "StageSelect Entry Portal"
+                    };
+
+                    Vector3 playerPos = player.transform.position;
+                    string nearestPortalName = null;
+                    float nearestDist = float.MaxValue;
+                    Vector3 nearestPortalPos = Vector3.zero;
+
+                    foreach (string portalName in portalNames)
+                    {
+                        GameObject portal = GameObject.Find(portalName);
+                        if (portal == null) continue;
+
+                        float dist = Vector3.Distance(playerPos, portal.transform.position);
+                        if (dist < nearestDist)
+                        {
+                            nearestDist = dist;
+                            nearestPortalName = portalName;
+                            nearestPortalPos = portal.transform.position;
+                        }
+                    }
+
+                    if (nearestPortalName != null)
+                    {
+                        string directionText = nearestPortalPos.x < playerPos.x ? "왼쪽" : "오른쪽";
+
+                        _cachedSystemPrompt +=
+                            $"\n\n[위치 정보 요약]\n" +
+                            $"- 플레이어 근처에는 여러 포탈이 있다.\n" +
+                            $"- 가장 가까운 포탈은 '{nearestPortalName}'이며, 플레이어의 {directionText}에 있다.\n" +
+                            $"- '어디'나 '위치'를 묻는다면 이 방향 정보를 참고해서 대답하라.\n" +
+                            $"- 좌표나 거리 수치는 말하지 말고, 오직 방향(왼쪽/오른쪽)으로만 설명하라.\n";
+                    }
+                }
+
                 _cachedSystemPrompt += "\n\n[위치 안내 규칙 보강]\n" +
                     "- '어디', '위치' 등의 질문이 나오면 [위치 요약] 정보를 이용해 방향으로 대답하라.\n" +
-                    "- 예: '대장장이의 방은 왼쪽이에요.', '은신처는 조금 오른쪽이에요.'\n" +
+                    "- 예: '연금술사 방은 왼쪽이에요.', '창고는 오른쪽이에요.'\n" +
                     "- 절대 좌표나 X값은 말하지 말라.\n";
             }
 
@@ -243,7 +340,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // ========= 위치 관련 문장 감지 =========
     private bool IsLikelyLocationQuery(string text)
     {
         string[] patterns = { "어디", "위치", "이곳", "장소", "여기", "내가 있는 곳", "어딘가", "어디쯤", "어디로" };
@@ -252,7 +348,6 @@ public class DialogueManager : MonoBehaviour
         return false;
     }
 
-    // ========= OpenAI 요청 =========
     private IEnumerator SendToOpenAI_Co(string userText)
     {
         isRequestRunning = true;
@@ -265,7 +360,6 @@ public class DialogueManager : MonoBehaviour
             yield break;
         }
 
-        // 🧠 최근 대화 맥락 포함
         string historyBlock = "";
         if (chatHistory.Count > 0)
         {
@@ -317,7 +411,6 @@ public class DialogueManager : MonoBehaviour
         isRequestRunning = false;
     }
 
-    // ========= 텍스트 정리 =========
     private string TryExtractText(string json)
     {
         try
@@ -407,7 +500,6 @@ public class DialogueManager : MonoBehaviour
         Input.compositionCursorPos = screenPoint;
     }
 
-    // ✅ 대화창 열림 여부 확인 프로퍼티
     public bool IsOpen => isOpen;
     public static bool IsDialogueActive => Instance != null && Instance.isOpen;
 }

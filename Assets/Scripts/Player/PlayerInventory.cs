@@ -201,4 +201,23 @@ public class PlayerInventory : MonoBehaviour
     //    if (Input.GetKeyDown(KeyCode.Q))
     //        Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
     //}
+
+
+    // ==============================
+    // 펫 AI 연동용: 현재 장비 이름 반환
+    // ==============================
+    public string GetEquippedWeaponName()
+    {
+        if (currentWeapon != null && !string.IsNullOrEmpty(currentWeapon.EquipmentitemName))
+            return currentWeapon.EquipmentitemName;
+        return "무기 없음";
+    }
+
+    public string GetEquippedArmorName()
+    {
+        if (currentArmor != null && !string.IsNullOrEmpty(currentArmor.EquipmentitemName))
+            return currentArmor.EquipmentitemName;
+        return "방어구 없음";
+    }
+
 }

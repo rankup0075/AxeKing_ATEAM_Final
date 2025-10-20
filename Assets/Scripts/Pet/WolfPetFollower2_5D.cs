@@ -22,7 +22,7 @@ public class WolfPetFollower2_5D : MonoBehaviour
     [Range(1, 3)] public int currentRoundIndex = 1;
 
     [Header("Player Equipment")]
-    public string playerCurrentWeapon = "초급 도끼";
+    public string playerCurrentWeapon = "부러진 도끼";
     public string playerCurrentArmor = "천 갑옷";
 
     [Serializable]
@@ -76,8 +76,8 @@ public class WolfPetFollower2_5D : MonoBehaviour
         new DomainGearRule{
             domain = DomainTerritory.FinalSanctum,
             bossName = "산신령(최종보스)",
-            recommendedWeapon = "최후의 도끼",
-            recommendedArmor = "최후의 갑옷",
+            recommendedWeapon = "신성한 도끼",
+            recommendedArmor = "신성한 갑옷",
             reason = "전천후 대응이 필요한 최종 패턴에 최종급 장비가 필요."
         }
     };
@@ -209,6 +209,13 @@ public class WolfPetFollower2_5D : MonoBehaviour
         if (player == null) TryResolvePlayer();
         if (player == null) return;
 
+        var inv = player.GetComponent<PlayerInventory>();
+        if (inv != null)
+        {
+            playerCurrentWeapon = inv.GetEquippedWeaponName();
+            playerCurrentArmor = inv.GetEquippedArmorName();
+        }
+
         var dm = DialogueManager.Instance;
 
         // Esc 누르면 대화 닫기
@@ -246,6 +253,14 @@ public class WolfPetFollower2_5D : MonoBehaviour
             if (sqrDist <= talkDistance * talkDistance)
             {
                 string prompt = BuildWolfSystemPrompt();
+
+                if (string.IsNullOrEmpty(prompt))
+                {
+                    Debug.LogWarning("[WolfPetFollower2_5D] BuildWolfSystemPrompt()가 비어있습니다. 기본 프롬프트만 사용합니다.");
+                    prompt = "(현재 상황 정보를 불러올 수 없습니다.)";
+                }
+
+                // ✅ DialogueManager로 '현재 상황 프롬프트' 전달 (세계관은 내부에서 자동 병합됨)
                 dm.StartAIDialogue(petName, prompt, null);
             }
         }
@@ -304,6 +319,68 @@ public class WolfPetFollower2_5D : MonoBehaviour
         var want = Quaternion.Euler(0, yaw, 0);
         rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, want, 720f * Time.fixedDeltaTime));
     }
+    private void AutoDetectDomainFromScene()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        // StageXXX_RY 형식 검사
+        if (sceneName.StartsWith("Stage_Before"))
+        {
+            currentDomain = DomainTerritory.FinalSanctum;
+            currentStageIndex = 0;
+            currentRoundIndex = 0;
+            Debug.Log("[AutoDetect] ⚔️ 최후의 신전 (보스 직전 스테이지)");
+            return;
+        }
+        if (sceneName.StartsWith("Stage_Boss"))
+        {
+            currentDomain = DomainTerritory.FinalSanctum;
+            currentStageIndex = 999;
+            currentRoundIndex = 0;
+            Debug.Log("[AutoDetect] 👑 최후의 신전 (보스전)");
+            return;
+        }
+
+        if (!sceneName.StartsWith("Stage")) return;
+
+        try
+        {
+            // Stage101_R1 → main=101, round=1
+            string[] parts = sceneName.Split('_');
+            string mainPart = parts[0].Replace("Stage", "");
+            string roundPart = parts.Length > 1 ? parts[1].Replace("R", "") : "1";
+
+            int mainValue = int.Parse(mainPart);
+            int roundValue = int.Parse(roundPart);
+
+            int domainId = mainValue / 100; // 1, 2, 3, 4, 5
+            int stageIndex = mainValue % 100; // 01~03
+
+            // 유효성 보정
+            if (stageIndex < 1 || stageIndex > 3) stageIndex = 1;
+            if (roundValue < 1 || roundValue > 3) roundValue = 1;
+
+            currentRoundIndex = roundValue;
+            currentStageIndex = stageIndex;
+
+            switch (domainId)
+            {
+                case 1: currentDomain = DomainTerritory.ForestGate; break;
+                case 2: currentDomain = DomainTerritory.StoneGraves; break;
+                case 3: currentDomain = DomainTerritory.FireSpiritPlay; break;
+                case 4: currentDomain = DomainTerritory.FrozenMountain; break;
+                case 5: currentDomain = DomainTerritory.AncientTemple; break;
+                default: currentDomain = DomainTerritory.ForestGate; break;
+            }
+
+            Debug.Log($"[AutoDetect] Scene={sceneName} → Domain={currentDomain}, Stage={currentStageIndex}, Round={currentRoundIndex}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AutoDetectDomainFromScene] 파싱 실패: {sceneName}, 예외={e.Message}");
+        }
+    }
+
 
     // =============================
     // 🧠 GPT 시스템 프롬프트 생성
@@ -313,12 +390,12 @@ public class WolfPetFollower2_5D : MonoBehaviour
         var rule = FindGearRule(currentDomain);
         var sb = new StringBuilder();
 
-        // 펫의 기본 성격
+        // 🐺 펫 기본 성격
         sb.AppendLine($"너는 \"{petName}\"라는 이름의 늑대 펫이다. 주인의 곁을 지키는 다정하고 충직한 동료다.");
         sb.AppendLine("항상 한국어로 1~2문장만 대답하고, 늑대다운 간결한 말투를 유지하되 부드럽고 자연스럽게 말한다.");
         sb.AppendLine("이모지, 메타발언, 농담은 절대 하지 않는다. 필요할 때는 짧게 '킁' 같은 의성어를 써라.");
 
-        // 게임 진행 정보
+        // 진행 정보
         sb.AppendLine();
         sb.AppendLine("[현재 진행]");
         sb.AppendLine($"- 현재 영지: {DomainToKorean(currentDomain)}");
@@ -331,8 +408,32 @@ public class WolfPetFollower2_5D : MonoBehaviour
         sb.AppendLine($"- 권장 장비 → 무기: {rule.recommendedWeapon}, 방어구: {rule.recommendedArmor}");
         sb.AppendLine($"- 이유: {rule.reason}");
 
-        // 현재 씬 / 위치 전달
-        string scene = SceneManager.GetActiveScene().name;
+        // ⚙️ 단계 기반 비교
+        int weaponLevel = GetEquipmentLevel(playerCurrentWeapon);
+        int armorLevel = GetEquipmentLevel(playerCurrentArmor);
+        int recommendedWeaponLevel = GetEquipmentLevel(rule.recommendedWeapon);
+        int recommendedArmorLevel = GetEquipmentLevel(rule.recommendedArmor);
+
+        bool weaponTooWeak = weaponLevel < recommendedWeaponLevel;
+        bool armorTooWeak = armorLevel < recommendedArmorLevel;
+
+        if (weaponTooWeak || armorTooWeak)
+        {
+            sb.AppendLine();
+            sb.AppendLine("[장비 비교 분석]");
+            if (weaponTooWeak)
+                sb.AppendLine("- 현재 무기는 권장 무기보다 한 단계 이상 약합니다. 전투 시 효율이 크게 떨어집니다.");
+            if (armorTooWeak)
+                sb.AppendLine("- 현재 방어구는 권장 방어구보다 약합니다. 방어력이 부족할 수 있습니다.");
+
+            sb.AppendLine("- 플레이어가 대화 중이면, 대장장이에게 가서 장비를 교체하거나 강화하도록 권유하라.");
+            sb.AppendLine("- 예: '이 장비로는 버티기 힘들어요. 대장장이한테 가보세요.'");
+            sb.AppendLine("- 단, 명령조가 아니라 걱정스럽지만 공손하게 조언하라.");
+        }
+    
+
+    // 씬 / 위치
+    string scene = SceneManager.GetActiveScene().name;
         float posX = player != null ? player.transform.position.x : 0f;
 
         sb.AppendLine();
@@ -347,7 +448,6 @@ public class WolfPetFollower2_5D : MonoBehaviour
         float questX = 14f;
         float worldMapX = 22f;
 
-        // 📍 방향 계산 함수
         string Dir(float target)
         {
             if (Mathf.Abs(target - posX) < 1f)
@@ -358,7 +458,6 @@ public class WolfPetFollower2_5D : MonoBehaviour
                 return "왼쪽";
         }
 
-        // 📍 플레이어 기준 방향 요약
         sb.AppendLine();
         sb.AppendLine("[위치 요약]");
         sb.AppendLine($"- 대장장이의 방은 플레이어 기준으로 {Dir(blacksmithX)}에 있어요.");
@@ -367,17 +466,18 @@ public class WolfPetFollower2_5D : MonoBehaviour
         sb.AppendLine($"- 퀘스트 게시판은 플레이어 기준으로 {Dir(questX)}에 있어요.");
         sb.AppendLine($"- 월드 이동 지도는 플레이어 기준으로 {Dir(worldMapX)}에 있어요.");
 
-        // 🎯 GPT 대화 스타일
+        // 대화 스타일
         sb.AppendLine();
         sb.AppendLine("[대화 스타일]");
-        sb.AppendLine("- X좌표 숫자를 말하지 말고, ‘왼쪽’, ‘오른쪽’, ‘가까이’, ‘조금 더 가면’ 같은 말로 방향을 표현하라.");
+        sb.AppendLine("- 좌표나 거리값은 말하지 말고, ‘왼쪽’, ‘오른쪽’, ‘가까이’, ‘조금 더 가면’ 같은 말로 방향을 표현하라.");
         sb.AppendLine("- 예: ‘조금 왼쪽이에요.’, ‘바로 오른쪽이에요.’, ‘조금만 더 가면 보여요.’");
         sb.AppendLine("- 감정이나 모험 관련 질문에는 따뜻하고 자연스럽게 반응하라.");
         sb.AppendLine("- 항상 짧고 현실감 있는 톤으로, 1~2문장만 답한다.");
 
-        Debug.Log($"[Prompt] Player 위치 감지 성공 ✅ X={posX:F1}");
+        Debug.Log($"[Prompt] 위치 감지 ✅ X={posX:F1}, 무기Lv={weaponLevel}, 권장Lv={recommendedWeaponLevel}");
         return sb.ToString();
     }
+
 
     private DomainGearRule FindGearRule(DomainTerritory d)
     {
@@ -398,5 +498,21 @@ public class WolfPetFollower2_5D : MonoBehaviour
             case DomainTerritory.FinalSanctum: return "최후의 신전";
             default: return d.ToString();
         }
+    }
+    private int GetEquipmentLevel(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return 0;
+
+        name = name.Replace(" ", ""); // 공백 제거
+
+        if (name.Contains("초급")) return 1;
+        if (name.Contains("돌")) return 2;
+        if (name.Contains("철")) return 3;
+        if (name.Contains("화염")) return 4;
+        if (name.Contains("얼음")) return 5;
+        if (name.Contains("신성")) return 6;
+        if (name.Contains("최후")) return 7;
+
+        return 0; // 알 수 없는 무기 이름
     }
 }
