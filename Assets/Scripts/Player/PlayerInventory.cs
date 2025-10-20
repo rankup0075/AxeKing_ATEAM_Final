@@ -69,6 +69,8 @@ public class PlayerInventory : MonoBehaviour
 
         UIManager.Instance?.UpdateHUDPotions(smallPotions, mediumPotions, largePotions);
 
+        UpdateUI();
+
         GameManager.Instance?.SavePlayerData();
     }
 
@@ -82,6 +84,8 @@ public class PlayerInventory : MonoBehaviour
 
             if (QuestManager.Instance != null)
                 QuestManager.Instance.UpdateQuestProgress();
+
+            UpdateUI();
 
             return true;
         }
@@ -172,20 +176,29 @@ public class PlayerInventory : MonoBehaviour
 
         // [NEW] HUD 포션 UI도 갱신
         UIManager.Instance.UpdateHUDPotions(smallPotions, mediumPotions, largePotions);
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.goblinLeatherText.text = GetItemCount("고블린의 가죽").ToString();
+            UIManager.Instance.golemStoneText.text = GetItemCount("골렘의 파편").ToString();
+            UIManager.Instance.flameBeadsText.text = GetItemCount("화염 구슬").ToString();
+            UIManager.Instance.pieceofTearsText.text = GetItemCount("눈물 조각").ToString();
+            UIManager.Instance.tornOldBookText.text = GetItemCount("찢어진 고서").ToString();
+        }
     }
 
     // ==============================
     // 테스트용: 키 입력으로 아이템 수 조정
     // ==============================
-    void Update()
-    {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem("고블린의 가죽", 10);
-            if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem("골렘의 파편", 10);
-            if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem("화염 구슬", 10);
-            if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem("눈물 조각", 10);
-            if (Input.GetKeyDown(KeyCode.Alpha5)) AddItem("찢어진 고서", 10);
+    //void Update()
+    //{
+    //        if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem("고블린의 가죽", 10);
+    //        if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem("골렘의 파편", 10);
+    //        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem("화염 구슬", 10);
+    //        if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem("눈물 조각", 10);
+    //        if (Input.GetKeyDown(KeyCode.Alpha5)) AddItem("찢어진 고서", 10);
 
-        if (Input.GetKeyDown(KeyCode.Q))
-            Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
-    }
+    //    if (Input.GetKeyDown(KeyCode.Q))
+    //        Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
+    //}
 }

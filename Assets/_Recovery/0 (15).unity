@@ -14026,7 +14026,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907100509}
   m_HandleRect: {fileID: 907100508}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -16535,17 +16535,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1545835991179247440, guid: d4d4233518792c248a57e8108c0f95d9, type: 3}
-      propertyPath: gameOverPanel
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545835991179247440, guid: d4d4233518792c248a57e8108c0f95d9, type: 3}
       propertyPath: enemyHUDPrefab
       value: 
       objectReference: {fileID: 4658770527681688310, guid: 82bff564b077ef3429afe71dd50973e0, type: 3}
-    - target: {fileID: 1545835991179247440, guid: d4d4233518792c248a57e8108c0f95d9, type: 3}
-      propertyPath: gameOverPrefab
-      value: 
-      objectReference: {fileID: 6344788093295138340, guid: d1a48a28d6c91624fb6823f4b1b82ec2, type: 3}
     - target: {fileID: 1545835991179247440, guid: d4d4233518792c248a57e8108c0f95d9, type: 3}
       propertyPath: currentEnemyHUD
       value: 

@@ -8,10 +8,15 @@ public class EnemyHealth : MonoBehaviour
     public int maxHPInspector = 5;   // 컨트롤러 연결 없을 때 사용
     int currentHP;
 
-    EnemyController controller;
-    EnemyAI ai;
-    Animator animator;
-    bool dead;
+    public string displayName = "적";
+    public float Ratio => controller ? (float)currentHP / controller.maxHP : (float)currentHP / maxHPInspector;
+    public event System.Action<EnemyHealth, float, float> OnHealthChanged;
+    public event System.Action<EnemyHealth> OnDied;
+
+    public EnemyController controller;
+    public EnemyAI ai;
+    public Animator animator;
+    public bool dead;
 
     public void Init(int maxHP, EnemyController ctrl)
     {
@@ -30,19 +35,23 @@ public class EnemyHealth : MonoBehaviour
     public void TakeDamage(int dmg)
     {
         if (dead) return;
-
         currentHP -= Mathf.Max(0, dmg);
+
+        UIManager.Instance?.ShowEnemyHUD(this);
+        UIManager.Instance?.UpdateEnemyHUD(this);
 
         if (currentHP <= 0)
         {
             dead = true;
             ai?.ForceDead();
-            if (controller) controller.OnDeath();
-            else Destroy(gameObject);
+            controller?.OnDeath();
+            UIManager.Instance?.HideEnemyHUD();
             return;
         }
 
-        if (ai) ai.OnHit();
+        ai?.OnHit();
         animator?.SetTrigger("Hit");
     }
+
+
 }

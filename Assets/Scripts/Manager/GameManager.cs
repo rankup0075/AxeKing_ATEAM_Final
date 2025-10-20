@@ -278,7 +278,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         UIManager.Instance?.ShowGameOverUI();
     }
 
@@ -308,6 +308,86 @@ public class GameManager : MonoBehaviour
         UIManager.Instance?.UpdateGoldDisplay(gold);
         UIManager.Instance?.UpdateHUDGold(gold);
     }
+
+    public void RestartFromGameOver()
+    {
+        Time.timeScale = 1f;
+
+        // ===== 플레이어 회복 =====
+        var player = PlayerController.Instance;
+        if (player != null)
+        {
+            var hp = player.GetComponent<PlayerHealth>();
+            if (hp != null)
+            {
+                hp.currentHealth = hp.maxHealth;
+                UIManager.Instance.UpdateHealthBar(hp.currentHealth, hp.maxHealth);
+                UIManager.Instance.UpdateHUDHealth(hp.currentHealth, hp.maxHealth);
+            }
+
+            var anim = player.GetComponent<Animator>();
+            if (anim != null)
+            {
+                anim.speed = 1f;
+                anim.Play("Idle", 0, 0f); // Idle로 초기화
+            }
+
+            player.canMove = true;
+            player.canControl = true;
+        }
+
+        // ===== UI 닫기 =====
+        UIManager.Instance.HideGameOverUI();
+
+        // ===== 체력 저장(0으로 로드 방지) =====
+        SaveLoadManager.Instance?.AutoSave();
+
+        // ===== 마을 씬으로 전환 =====
+        BeginTransition(TransitionKind.ReturnToTown, "Town", namedPoint: "TownStartSpawnPoint");
+        SceneManager.LoadScene("Town");
+    }
+
+
+    public void ReturnToMainMenuFromGameOver()
+    {
+        var player = PlayerController.Instance;
+        if (player != null)
+        {
+            var hp = player.GetComponent<PlayerHealth>();
+            if (hp != null)
+            {
+                hp.currentHealth = hp.maxHealth;
+            }
+        }
+
+        SaveLoadManager.Instance?.AutoSave();
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void QuitGameFromGameOver()
+    {
+        var player = PlayerController.Instance;
+        if (player != null)
+        {
+            var hp = player.GetComponent<PlayerHealth>();
+            if (hp != null)
+            {
+                hp.currentHealth = hp.maxHealth;
+            }
+        }
+
+        SaveLoadManager.Instance?.AutoSave();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
+    }
+
+
+
 
     public void SetRoundCleared(string roundId) => clearedRounds.Add(roundId);
     public bool IsRoundCleared(string roundId) => clearedRounds.Contains(roundId);

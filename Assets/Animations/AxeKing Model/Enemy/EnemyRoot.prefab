@@ -483,6 +483,7 @@ MonoBehaviour:
   player: {fileID: 0}
   animator: {fileID: 8902753416283078874}
   controller: {fileID: 4900874861011949912}
+  canMove: 1
 --- !u!114 &2263420871399131701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,6 +497,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHPInspector: 5
+  displayName: "\uC801"
+  controller: {fileID: 0}
+  ai: {fileID: 0}
+  animator: {fileID: 0}
+  dead: 0
 --- !u!114 &4900874861011949912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -512,7 +518,7 @@ MonoBehaviour:
   region: 1
   stage: 1
   round: 1
-  attackDamage: 5
+  attackDamage: 90
   maxHP: 5
   minGoldDrop: 5
   maxGoldDrop: 10

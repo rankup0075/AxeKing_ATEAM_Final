@@ -275,10 +275,10 @@ public class PlayerController : MonoBehaviour
         if (isStunned) return;
 
         playerHealth.TakeDamage(damage);
+        if (playerHealth.CurrentHealth <= 0) { Die(); return; }
+
         animator.SetTrigger(hitHash);
         StartCoroutine(HitStun());
-
-        if (playerHealth.CurrentHealth <= 0) Die();
     }
 
     IEnumerator HitStun()
@@ -294,6 +294,15 @@ public class PlayerController : MonoBehaviour
     {
         canMove = false;
         animator.SetTrigger(dieHash);
+        StartCoroutine(DeathSequence());
+    }
+
+    IEnumerator DeathSequence()
+    {
+        // 1) 애니메이션 길이에 맞춰 대기 (예: 2초)
+        yield return new WaitForSeconds(2f);
+
+        // 2) 게임 오버 UI 표시
         GameManager.Instance.GameOver();
     }
 

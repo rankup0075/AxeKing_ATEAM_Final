@@ -90,17 +90,21 @@ public class EnemyController : MonoBehaviour
     // 애니메이션 이벤트로부터 호출됨(EnemyAI.OnAttackAnimationEvent)
     public void AttackPlayer()
     {
-        // 간단한 전방 원형 판정
         Vector3 center = transform.position + transform.forward * 1.2f + Vector3.up * 0.8f;
         float radius = 1.2f;
         int playerLayerMask = LayerMask.GetMask("Player");
         var cols = Physics.OverlapSphere(center, radius, playerLayerMask);
+
         foreach (var c in cols)
         {
-            var ph = c.GetComponent<PlayerHealth>();
-            if (ph != null) ph.TakeDamage(attackDamage);
+            var pc = c.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.TakeHit(attackDamage); // PlayerController를 통해 데미지 및 애니메이션 처리
+            }
         }
     }
+
 
     public void OnDeath()
     {

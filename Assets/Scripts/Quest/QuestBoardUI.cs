@@ -82,7 +82,7 @@ public class QuestBoardUI : MonoBehaviour
             if (controller != null)
             {
                 controller.canMove = true;
-                controller.canControl = true; // ¡Ú ÀÔ·Â º¹±Í
+                controller.canControl = true; // ÀÔ·Â º¹±Í
             }
         }
 

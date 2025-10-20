@@ -6360,7 +6360,7 @@ MonoBehaviour:
   region: 1
   stage: 1
   round: 1
-  attackDamage: 5
+  attackDamage: 90
   maxHP: 5
   minGoldDrop: 5
   maxGoldDrop: 10
@@ -6391,6 +6391,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHPInspector: 5
+  displayName: Goblin
+  controller: {fileID: 0}
+  ai: {fileID: 0}
+  animator: {fileID: 0}
+  dead: 0
 --- !u!114 &1283993706
 MonoBehaviour:
   m_ObjectHideFlags: 0

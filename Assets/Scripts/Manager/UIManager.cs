@@ -33,6 +33,11 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI hudSmallPotionText;
     public TextMeshProUGUI hudMediumPotionText;
     public TextMeshProUGUI hudLargePotionText;
+    public TextMeshProUGUI goblinLeatherText;
+    public TextMeshProUGUI golemStoneText;
+    public TextMeshProUGUI flameBeadsText;
+    public TextMeshProUGUI pieceofTearsText;
+    public TextMeshProUGUI tornOldBookText;
 
     [Header("Save/Load")]
     public SaveSelectUI saveSelectUI;
@@ -47,7 +52,6 @@ public class UIManager : MonoBehaviour
     public GameObject questBoardPanel;
     public GameObject inventoryPanel;
     public GameObject stageSelectPanel;
-    public GameObject gameOverPanel;
     public GameObject stageCompletePanel;
 
     [SerializeField] private GameObject stageAnnouncementPrefab; //스테이지 보여주는 화면
@@ -59,6 +63,14 @@ public class UIManager : MonoBehaviour
     public Button closeButton;
     public Button mainMenuButton;
     public Button quitButton;
+
+    [Header("Enemy HUD")]
+    [SerializeField] private GameObject enemyHUDPrefab;
+    private EnemyHUDController currentEnemyHUD;
+
+    [Header("GameOverPanel")]
+    public GameObject gameOverPanel;               // 인스턴스 저장용
+    [SerializeField] private GameObject gameOverPrefab; // ← 프리팹 연결용 추가
 
     void Awake()
     {
@@ -487,6 +499,11 @@ public class UIManager : MonoBehaviour
     // ======================
     // [NEW] PlayerHUD 전용 UI
     // ======================
+    //public TextMeshProUGUI goblinLeatherText;
+    //public TextMeshProUGUI golemStoneText;
+    //public TextMeshProUGUI flameBeadsText;
+    //public TextMeshProUGUI pieceofTearsText;
+    //public TextMeshProUGUI tornOldBookText;
     public void InitPlayerHUD()
     {
         var hud = GameObject.Find("PlayerHUDCanvas(Clone)");
@@ -507,6 +524,11 @@ public class UIManager : MonoBehaviour
                 case "SmallPotionCountText": hudSmallPotionText = t; break;
                 case "MiddlePotionCountText": hudMediumPotionText = t; break;
                 case "LargePotionCountText": hudLargePotionText = t; break;
+                case "GoblinLeatherText": goblinLeatherText = t; break;
+                case "GolemStoneText": golemStoneText = t; break;
+                case "FlameBeadsText": flameBeadsText = t; break;
+                case "PieceofTearsText": pieceofTearsText = t; break;
+                case "TornOldBookText": tornOldBookText = t; break;
             }
         }
 
@@ -540,12 +562,49 @@ public class UIManager : MonoBehaviour
     public void UpdateHUDPotions(int small, int medium, int large)
     {
         if (hudSmallPotionText != null)
-            hudSmallPotionText.text = $"{small:N0}개";
+            hudSmallPotionText.text = $"{small:N0}";
         if (hudMediumPotionText != null)
-            hudMediumPotionText.text = $"{medium:N0}개";
+            hudMediumPotionText.text = $"{medium:N0}";
         if (hudLargePotionText != null)
-            hudLargePotionText.text = $"{large:N0}개";
+            hudLargePotionText.text = $"{large:N0}";
     }
+
+    // EnemyHealthHUD
+    public void ShowEnemyHUD(EnemyHealth enemy)
+    {
+        if (enemy == null) return;
+
+        // 최상위 Canvas 찾기
+        var canvas = FindFirstObjectByType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogWarning("[UIManager] Canvas not found in scene.");
+            return;
+        }
+
+        if (currentEnemyHUD == null)
+        {
+            var go = Instantiate(enemyHUDPrefab, canvas.transform);
+            currentEnemyHUD = go.GetComponent<EnemyHUDController>();
+        }
+
+        currentEnemyHUD.Setup(enemy.displayName, enemy.Ratio);
+    }
+
+    public void UpdateEnemyHUD(EnemyHealth enemy)
+    {
+        if (currentEnemyHUD == null) return;
+        currentEnemyHUD.UpdateHP(enemy.Ratio);
+    }
+
+    public void HideEnemyHUD()
+    {
+        if (currentEnemyHUD != null)
+            currentEnemyHUD.Hide();
+    }
+
+
+
 
 
 
@@ -583,8 +642,31 @@ public class UIManager : MonoBehaviour
     // ======================
     public void ShowGameOverUI()
     {
+        if (gameOverPanel == null)
+        {
+            if (gameOverPrefab == null)
+            {
+                Debug.LogError("[UIManager] GameOverPrefab이 연결되지 않았습니다.");
+                return;
+            }
+
+            // Canvas를 포함한 프리팹이므로 부모 없이 생성
+            gameOverPanel = Instantiate(gameOverPrefab);
+            gameOverPanel.name = "GameOverPanel(Clone)";
+        }
+
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0f;
+        Debug.Log("[UIManager] GameOverCanvas(Clone) 생성 및 활성화됨");
+    }
+
+
+    public void HideGameOverUI()
+    {
         if (gameOverPanel != null)
-            gameOverPanel.SetActive(true);
+            gameOverPanel.SetActive(false);
+
+        Time.timeScale = 1f;
     }
 
     public void ShowStageCompleteUI()
@@ -650,11 +732,6 @@ public class UIManager : MonoBehaviour
                     }
                 }
             }
-
-            //if (stageSelectPanel != null)
-            //    Debug.Log("[UIManager] StageSelectPanel 자동 연결 성공");
-            //else
-            //    Debug.LogError("[UIManager] StageSelectPanel 여전히 못 찾음");
         }
         if (gameOverPanel == null) gameOverPanel = GameObject.Find("GameOverPanel");
         if (stageCompletePanel == null) stageCompletePanel = GameObject.Find("StageCompletePanel");
