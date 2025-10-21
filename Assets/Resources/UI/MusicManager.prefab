@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1978855688089015651
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1013212879106331160}
+  - component: {fileID: 7301070649228654934}
+  m_Layer: 0
+  m_Name: MusicManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1013212879106331160
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978855688089015651}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.13943, y: 5.94338, z: 0.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7301070649228654934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978855688089015651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6436ceb15569674cb669590f0947c37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MusicManager
+  masterMixer: {fileID: 0}
+  musicSource1: {fileID: 0}
+  musicSource2: {fileID: 0}
+  mainMenuMusic: {fileID: 0}
+  townMusic: {fileID: 0}
+  equipmentShopMusic: {fileID: 0}
+  alchemistShopMusic: {fileID: 0}
+  hideoutMusic: {fileID: 0}
+  stageSelectMusic: {fileID: 0}
+  territory1Music: {fileID: 0}
+  territory2Music: {fileID: 0}
+  territory3Music: {fileID: 0}
+  territory4Music: {fileID: 0}
+  territory5Music: {fileID: 0}
+  territory6Music: {fileID: 0}
+  bossBattleMusic: {fileID: 0}
+  finalBossMusic: {fileID: 0}
+  crossfadeDuration: 2
+  defaultVolume: 0.7
