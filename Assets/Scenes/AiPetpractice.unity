@@ -2647,6 +2647,11 @@ MonoBehaviour:
   hudSmallPotionText: {fileID: 0}
   hudMediumPotionText: {fileID: 0}
   hudLargePotionText: {fileID: 0}
+  goblinLeatherText: {fileID: 0}
+  golemStoneText: {fileID: 0}
+  flameBeadsText: {fileID: 0}
+  pieceofTearsText: {fileID: 0}
+  tornOldBookText: {fileID: 0}
   saveSelectUI: {fileID: 0}
   interactionPrompt: {fileID: 0}
   interactionText: {fileID: 0}
@@ -2655,13 +2660,15 @@ MonoBehaviour:
   questBoardPanel: {fileID: 0}
   inventoryPanel: {fileID: 0}
   stageSelectPanel: {fileID: 0}
-  gameOverPanel: {fileID: 0}
   stageCompletePanel: {fileID: 0}
   stageAnnouncementPrefab: {fileID: 0}
   settingsPanel_InGame: {fileID: 0}
   closeButton: {fileID: 0}
   mainMenuButton: {fileID: 0}
   quitButton: {fileID: 0}
+  enemyHUDPrefab: {fileID: 0}
+  gameOverPanel: {fileID: 0}
+  gameOverPrefab: {fileID: 0}
 --- !u!4 &1534018533
 Transform:
   m_ObjectHideFlags: 0

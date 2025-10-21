@@ -5568,7 +5568,7 @@ Transform:
   m_GameObject: {fileID: 345475616}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.31992424, z: -0, w: 0.9474432}
-  m_LocalPosition: {x: -30.5, y: -49.7, z: 1.7}
+  m_LocalPosition: {x: -33.9, y: -49.7, z: 1.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7225,6 +7225,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHPInspector: 5
+  displayName: "\uC801"
+  controller: {fileID: 0}
+  ai: {fileID: 0}
+  animator: {fileID: 0}
+  dead: 0
 --- !u!1 &1882058580
 GameObject:
   m_ObjectHideFlags: 0

@@ -5009,7 +5009,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2091664483276039924, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_Name
-      value: Stage101_R2EntryPortal
+      value: Stage101_R1EntryPortal
       objectReference: {fileID: 0}
     - target: {fileID: 6476749962615641606, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_Enabled

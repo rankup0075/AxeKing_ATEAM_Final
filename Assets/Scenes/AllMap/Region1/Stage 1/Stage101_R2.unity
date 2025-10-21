@@ -307,7 +307,7 @@ Transform:
   m_GameObject: {fileID: 79179508}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.31992424, z: -0, w: 0.9474432}
-  m_LocalPosition: {x: -30.5, y: -49.7, z: 1.7}
+  m_LocalPosition: {x: -32.4, y: -49.7, z: 1.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1096,7 +1096,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2091664483276039924, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_Name
-      value: Stage101_R3EntryPortal
+      value: Stage101_R2EntryPortal
       objectReference: {fileID: 0}
     - target: {fileID: 6476749962615641606, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_Enabled
@@ -6627,6 +6627,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHPInspector: 5
+  displayName: "\uC801"
+  controller: {fileID: 0}
+  ai: {fileID: 0}
+  animator: {fileID: 0}
+  dead: 0
 --- !u!114 &1534169261
 MonoBehaviour:
   m_ObjectHideFlags: 0
