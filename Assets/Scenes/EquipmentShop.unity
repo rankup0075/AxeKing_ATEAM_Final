@@ -8564,6 +8564,10 @@ PrefabInstance:
       propertyPath: m_LightmapTilingOffset.z
       value: .123046875
       objectReference: {fileID: 0}
+    - target: {fileID: 6500000, guid: 326daaeb272b9704b8180abc3f99db1f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
