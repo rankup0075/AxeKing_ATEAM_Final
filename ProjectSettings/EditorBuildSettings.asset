@@ -53,6 +53,24 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AllMap/Region1/Stage 3/Stage103_R3.unity
     guid: e638aa8410c10b845b48af744769c87c
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region2/stage 1/Stage201_R1.unity
+    guid: bf173dc335b511a4c9110b766a836541
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region2/stage 1/Stage201_R2.unity
+    guid: a4422a4deec2ae34d8c4d20f76e1a4e4
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region2/stage 1/Stage201_R3.unity
+    guid: a39a0982f15828c43ba54448f32195ec
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region2/stage 2/Stage202_R1.unity
+    guid: b6fa8148dd2d9364e88ed603f902d637
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region2/stage 2/Stage202_R2.unity
+    guid: 3419a0ed095abf5429dbbfc143180428
+  - enabled: 1
+    path: Assets/Scenes/AllMap/Region2/stage 2/Stage202_R3.unity
+    guid: 07e977ae1f1b5f340a6a7578f4ba1d2d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
