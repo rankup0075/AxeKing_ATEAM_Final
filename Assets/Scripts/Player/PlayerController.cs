@@ -163,6 +163,16 @@ public class PlayerController : MonoBehaviour
         else if (horizontal < 0) transform.rotation = Quaternion.Euler(0, 180, 0);
     }
 
+    float _stepCooldown;
+    void OnFootstep()
+    {
+        if (!IsGrounded) return;
+        if (Time.time < _stepCooldown) return;
+        bool running = Input.GetKey(KeyCode.LeftShift);
+        SFXManager.Instance?.Play(running ? SfxId.FootstepRun : SfxId.FootstepWalk);
+        _stepCooldown = Time.time + 0.1f; // 중복 방지
+    }
+
     void HandleJump()
     {
         if (isGrounded && !isAttacking)
@@ -172,6 +182,8 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
             IsJumping = true;
         }
+
+        SFXManager.Instance?.Play(SfxId.Jump);
     }
 
     // ================= Attack =================
@@ -185,6 +197,8 @@ public class PlayerController : MonoBehaviour
 
     void StartGroundAttack()
     {
+        SFXManager.Instance?.Play(SfxId.AxeSwing);
+
         isAttacking = true;
         rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, rb.linearVelocity.z);
 
@@ -194,6 +208,8 @@ public class PlayerController : MonoBehaviour
 
     void StartAirAttack()
     {
+        SFXManager.Instance?.Play(SfxId.AxeSwing);
+
         if (Time.time - lastAirAttackTime < airAttackCooldown) return;
         lastAirAttackTime = Time.time;
 
@@ -251,20 +267,26 @@ public class PlayerController : MonoBehaviour
 
     public void ProcessAttackHit()
     {
+        bool hitAny = false;
         if (attackPoint == null) return;
 
         Collider[] enemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
         foreach (Collider enemy in enemies)
         {
             EnemyHealth e = enemy.GetComponent<EnemyHealth>();
-            if (e != null)
-                e.TakeDamage(attackDamage);
+            if (e != null) 
+            {
+                e.TakeDamage(attackDamage); 
+                hitAny = true; 
+            }
 
             if (enemy.TryGetComponent<BossHealth>(out var b))
             {
                 b.TakeDamage(attackDamage);
                 continue;
             }
+
+            if (hitAny) SFXManager.Instance?.PlayAt(SfxId.HitEnemy, attackPoint.position);
         }
 
     }
@@ -272,6 +294,8 @@ public class PlayerController : MonoBehaviour
     // ================= Damage & Death =================
     public void TakeHit(int damage)
     {
+        SFXManager.Instance?.Play(SfxId.PlayerHit);
+
         if (isStunned) return;
 
         playerHealth.TakeDamage(damage);
@@ -292,6 +316,7 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        SFXManager.Instance?.Play(SfxId.PlayerDeath);
         canMove = false;
         animator.SetTrigger(dieHash);
         StartCoroutine(DeathSequence());
@@ -314,6 +339,7 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
             IsJumping = false;
             canAirAttack = true;
+            SFXManager.Instance?.Play(SfxId.Land);
 
             if (isAttacking)  // 착지 시 공격 상태 고정 방지
             {

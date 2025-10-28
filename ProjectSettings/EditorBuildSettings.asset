@@ -21,10 +21,10 @@ EditorBuildSettings:
     path: Assets/Scenes/WareHouse.unity
     guid: c4f73bbe94786d644b882df7e63733ec
   - enabled: 1
-    path: Assets/Scenes/AllMap/Region6/Stage_BeforeBoss.unity
+    path: Assets/Scenes/AllMap/Region6/Stage601_R1.unity
     guid: f912e0e2167222d40a30d61f40d31758
   - enabled: 1
-    path: Assets/Scenes/AllMap/Region6/Boss.unity
+    path: Assets/Scenes/AllMap/Region6/Stage601_R2.unity
     guid: 9ba12c39b53787a42bd8a700d65cb8fe
   - enabled: 1
     path: Assets/Scenes/AllMap/Region1/Stage 1/Stage101_R2.unity
