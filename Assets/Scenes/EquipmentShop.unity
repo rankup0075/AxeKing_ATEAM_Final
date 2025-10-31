@@ -1093,6 +1093,33 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: c57a52cd057e2f648a07690cd561f5cb, type: 3}
   m_PrefabInstance: {fileID: 153524759}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &165015630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+  m_PrefabInstance: {fileID: 498693317}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &165015631
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165015630}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2ba24107b492f7542ae74da8e546d5b5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &165384755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9149,6 +9176,78 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1001 &498693317
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -12.16
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.78
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.38268548
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.92387867
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 135
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      propertyPath: m_Name
+      value: Pumpkinhulk L Shaw@Male Sitting Pose
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 165015631}
+  m_SourcePrefab: {fileID: 100100000, guid: 5454b7b124eeca94c90276cc70184b0d, type: 3}
 --- !u!1001 &504028975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25759,3 +25858,4 @@ SceneRoots:
   - {fileID: 877906481}
   - {fileID: 559406112}
   - {fileID: 569159543}
+  - {fileID: 498693317}

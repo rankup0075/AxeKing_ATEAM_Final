@@ -2334,37 +2334,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 708223633709997659, guid: db87fb6ec8ef7b14890507d1f3dfaadf, type: 3}
   m_PrefabInstance: {fileID: 1082816647}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1167946318
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1167946319}
-  m_Layer: 0
-  m_Name: tree
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1167946319
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167946318}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.32041, y: 1.01284, z: 4.69933}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1212475004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8037,7 +8006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8724536069571000621, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.17
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 8724536069571000621, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9387,7 +9356,6 @@ SceneRoots:
   - {fileID: 439504933}
   - {fileID: 1656661113}
   - {fileID: 465753238}
-  - {fileID: 1167946319}
   - {fileID: 1725357928}
   - {fileID: 858750017}
   - {fileID: 1684287872}

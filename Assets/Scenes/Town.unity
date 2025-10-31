@@ -17696,6 +17696,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Peasant Girl@Talking
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: d6aeff17df9739a4b81f5f249d663e74, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: a07fc33f0d210be488237a86b842a342, type: 2}
+    - target: {fileID: 5866666021909216657, guid: d6aeff17df9739a4b81f5f249d663e74, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18922,6 +18930,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Peasant Man@Smoking
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 80e016e58f3f30c4e8e7d098c620df20, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 804950f4cd26b6e4986803d5e23149c2, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26206,6 +26218,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Arissa@Sitting Idle
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: cee14e6a6a14ae74f86d7cbec311765d, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 2873f22351acb494c90845b7a86712f0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26275,6 +26291,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Erika Archer With Bow Arrow@Talking
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 500192a622e46874399abcf632c2b04e, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4e25b25ee615f3046b9e4d99e2648d6e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
