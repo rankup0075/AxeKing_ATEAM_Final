@@ -254,17 +254,26 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator ScrollToBottomNextFrame()
     {
+        // 텍스트와 레이아웃이 반영될 때까지 최소 두 프레임 기다림
         yield return null;
-        Canvas.ForceUpdateCanvases();
+        yield return null;
 
         var scrollRect = bodyText?.GetComponentInParent<ScrollRect>();
-        if (scrollRect != null)
-        {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
-            scrollRect.verticalNormalizedPosition = 0f;
-            Canvas.ForceUpdateCanvases();
-        }
+        if (scrollRect == null)
+            yield break;
+
+        // TMP 텍스트 강제 업데이트 (줄바꿈 계산)
+        bodyText.ForceMeshUpdate();
+
+        // 레이아웃 즉시 갱신
+        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
+        Canvas.ForceUpdateCanvases();
+
+        // 마지막으로 맨 아래로 스크롤
+        scrollRect.verticalNormalizedPosition = 0f;
+        Canvas.ForceUpdateCanvases();
     }
+
 
     // ========= 입력 처리 =========
     private void SubmitCurrentInput()

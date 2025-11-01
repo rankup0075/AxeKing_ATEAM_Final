@@ -82,6 +82,20 @@ public class PlayerController : MonoBehaviour
         //if (!canControl || !canMove || isStunned || isAttacking)
         //    Debug.Log($"Input lock -> canControl:{canControl}, canMove:{canMove}, isStunned:{isStunned}, isAttacking:{isAttacking}");
 
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsOpen)
+        {
+            // TMP_InputField가 포커스된 상태면 게임 입력 완전히 무시
+            if (UnityEngine.EventSystems.EventSystem.current != null &&
+                UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null &&
+                UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<TMPro.TMP_InputField>() != null)
+            {
+                // 움직임 멈추고 Idle 애니메이션 고정
+                StopHorizontalMotion();
+                animator.SetFloat("Speed", 0f);
+                return; // 👈 이게 중요 — 아래 입력 코드 전부 건너뜀
+            }
+        }
+
         if (!canControl)
         {
             StopHorizontalMotion();
