@@ -27320,7 +27320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[1].stages.Array.data[0].isUnlocked
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8902430930851671449, guid: cb449d7462e164e49a49862b58819aef, type: 3}
       propertyPath: regions.Array.data[0].stages.Array.data[0].isCompleted

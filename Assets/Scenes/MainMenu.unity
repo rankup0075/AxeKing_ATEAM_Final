@@ -14026,8 +14026,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907100509}
   m_HandleRect: {fileID: 907100508}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.99787825
+  m_Value: 0
+  m_Size: 0.9999896
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -16911,13 +16911,45 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: jump
+      value: 
+      objectReference: {fileID: 8300000, guid: f793cb02544e3064abf201e4f5faf761, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: land
+      value: 
+      objectReference: {fileID: 8300000, guid: 9debef67e93dd574abe707e4f14f49b5, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: axeSwing
+      value: 
+      objectReference: {fileID: 8300000, guid: bd7f2e23cc81ba04f8c4a03dfd5dcf60, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: hitEnemy
+      value: 
+      objectReference: {fileID: 8300000, guid: 47d5751cb3990ed49a83cb471d02e11e, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
       propertyPath: sfxGroup
       value: 
       objectReference: {fileID: 5667338044778291071, guid: 4e234157be6a7234294f15b637219236, type: 2}
     - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: shopBuyOk
+      value: 
+      objectReference: {fileID: 8300000, guid: 66fdd6d9a7407604cb8891b2d01cd5ef, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: footstepRun
+      value: 
+      objectReference: {fileID: 8300000, guid: 60d40d5ff6df2f845acffe05805ebec5, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
       propertyPath: masterMixer
       value: 
       objectReference: {fileID: 24100000, guid: 4e234157be6a7234294f15b637219236, type: 2}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: shopBuyFail
+      value: 
+      objectReference: {fileID: 8300000, guid: a4cd48ece30cf8a458fd6004a4590067, type: 3}
+    - target: {fileID: 5492374395466745686, guid: ee6d4747a37d22d4daef80b0458d9645, type: 3}
+      propertyPath: footstepWalk
+      value: 
+      objectReference: {fileID: 8300000, guid: 60d40d5ff6df2f845acffe05805ebec5, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

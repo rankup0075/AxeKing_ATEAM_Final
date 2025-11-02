@@ -43,7 +43,7 @@ public class PlayerInventory : MonoBehaviour
         UpdateUI();
     }
 
-    void InitializeItems()
+    public void InitializeItems()
     {
         // 기본 자원 초기화
         items["고블린의 가죽"] = 0;

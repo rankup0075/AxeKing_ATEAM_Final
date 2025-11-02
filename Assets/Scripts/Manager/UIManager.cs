@@ -626,15 +626,41 @@ public class UIManager : MonoBehaviour
     // ======================
     public void UpdateBossHealthBar(int current, int max)
     {
-        if (bossHealthBar != null)
+        // bossHealthPanel이 연결되지 않았다면 즉시 재탐색 시도
+        if (bossHealthPanel == null)
         {
-            bossHealthBar.value = (float)current / max;
+            ReassignPanels();
+            if (bossHealthPanel == null)
+            {
+                Debug.LogWarning("[UIManager] bossHealthPanel이 여전히 null임. 인스펙터 연결 필요.");
+                return; // null 상태면 더 진행 안 함
+            }
         }
+
+        if (bossHealthBar != null)
+            bossHealthBar.value = (float)current / max;
 
         if (current <= 0)
         {
-            bossHealthPanel.SetActive(false);
+            bossHealthPanel.SetActive(false);      // 상단 보스 체력 바 숨김
+            HideEnemyHUD();                        // 하단 HUD도 즉시 숨김
+            return;
         }
+
+
+        if (bossHealthPanel != null)
+            bossHealthPanel.SetActive(current > 0);
+    }
+
+    public void ShowEnemyHUDLikeBoss(string name, float ratio)
+    {
+        if (currentEnemyHUD == null)
+        {
+            var canvas = FindFirstObjectByType<Canvas>();
+            var go = Instantiate(enemyHUDPrefab, canvas.transform);
+            currentEnemyHUD = go.GetComponent<EnemyHUDController>();
+        }
+        currentEnemyHUD.Setup(name, ratio);
     }
 
     // ======================
@@ -707,7 +733,7 @@ public class UIManager : MonoBehaviour
         ReassignPlayerHUD(scene);
     }
 
-    void ReassignPanels()
+    public void ReassignPanels()
     {
         // 이미 연결되어 있으면 유지, 없을 때만 Find
         if (potionShopPanel == null) potionShopPanel = GameObject.Find("PotionShopPanel");
@@ -763,6 +789,17 @@ public class UIManager : MonoBehaviour
         if (questBoardPanel != null && questBoardPanel.activeSelf)
         {
             questBoardPanel.SetActive(false);
+        }
+
+        if (bossHealthPanel == null)
+        {
+            var panel = GameObject.Find("EnemyHUD");
+            if (panel != null)
+            {
+                bossHealthPanel = panel;
+                bossHealthBar = panel.GetComponentInChildren<Slider>(true);
+                bossNameText = panel.GetComponentInChildren<TextMeshProUGUI>(true);
+            }
         }
     }
 

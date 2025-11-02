@@ -85,7 +85,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.92333335
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -434,7 +434,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACE0\uBE14\uB9B0"
+  m_text: God Root Phase1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1b356b5daebda32499487417d7f51bac, type: 2}
   m_sharedMaterial: {fileID: 2655526217342710958, guid: 1b356b5daebda32499487417d7f51bac, type: 2}

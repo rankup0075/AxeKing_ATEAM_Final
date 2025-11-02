@@ -1245,8 +1245,8 @@ MonoBehaviour:
   smoothSpeed: 0.125
   offset: {x: 0, y: 5, z: -10}
   useBounds: 1
-  minX: -17
-  maxX: 17
+  minX: -10
+  maxX: 14
   minY: 0
   maxY: 3
 --- !u!1001 &214148707

@@ -14,16 +14,12 @@ public class PlayerController : MonoBehaviour
     public float attackRange = 2f;
     public LayerMask enemyLayers;
 
+
+    [SerializeField] float attackInterval = 0.4f;
+    float nextAttackTime = 0f;
+
     [Header("Attack Point")]
     public Transform attackPoint;
-
-    [Header("Air Attack Settings")]
-    public bool allowAirAttackLoop = true;   // 공중 연속 공격 허용
-    private bool canAirAttack = true;
-    private int airAttackHash = Animator.StringToHash("AirAttack");
-
-    [SerializeField] private float airAttackCooldown = 0.14f;
-    private float lastAirAttackTime = 0f;
 
     // Components
     private Rigidbody rb;
@@ -38,8 +34,8 @@ public class PlayerController : MonoBehaviour
     public bool canMove = true;
 
     private float horizontalInput;
-    [SerializeField] float stepHeight = 0.4f;     // 오를 수 있는 최대 계단 높이
-    [SerializeField] float stepSmooth = 6f;       // 보간 속도
+    [SerializeField] float stepHeight = 0.4f;
+    [SerializeField] float stepSmooth = 6f;
     [SerializeField] float stepCheckDistance = 0.5f;
     [SerializeField] LayerMask groundLayer;
 
@@ -47,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private int speedHash = Animator.StringToHash("Speed");
     private int groundedHash = Animator.StringToHash("IsGrounded");
     private int attackHash = Animator.StringToHash("Attack");
+    private int airAttackHash = Animator.StringToHash("AirAttack");
     private int hitHash = Animator.StringToHash("Hit");
     private int dieHash = Animator.StringToHash("Die");
 
@@ -79,20 +76,15 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        //if (!canControl || !canMove || isStunned || isAttacking)
-        //    Debug.Log($"Input lock -> canControl:{canControl}, canMove:{canMove}, isStunned:{isStunned}, isAttacking:{isAttacking}");
-
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsOpen)
         {
-            // TMP_InputField가 포커스된 상태면 게임 입력 완전히 무시
             if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null &&
                 UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<TMPro.TMP_InputField>() != null)
             {
-                // 움직임 멈추고 Idle 애니메이션 고정
                 StopHorizontalMotion();
                 animator.SetFloat("Speed", 0f);
-                return; // 👈 이게 중요 — 아래 입력 코드 전부 건너뜀
+                return;
             }
         }
 
@@ -107,14 +99,11 @@ public class PlayerController : MonoBehaviour
 
         horizontalInput = Input.GetAxisRaw("Horizontal");
         bool jumpPressed = Input.GetKeyDown(KeyCode.C);
-        bool attackPressed = Input.GetKeyDown(KeyCode.Z);
         bool attackHeld = Input.GetKey(KeyCode.Z);
-        bool attackReleased = Input.GetKeyUp(KeyCode.Z);
 
         HandleMovement(horizontalInput);
         if (jumpPressed) HandleJump();
-        if (attackPressed || attackHeld) HandleAttack();
-        if (attackReleased) HandleAirAttackRelease();
+        if (attackHeld) HandleAttack();
 
         HandlePotions();
         HandleInteraction();
@@ -122,10 +111,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool(groundedHash, isGrounded);
         UpdateAnimatorMoveBlend();
 
-        if (Input.GetKeyDown(KeyCode.F1))
-            Debug.Log($"Move:{canMove},Atk:{isAttacking},Ground:{isGrounded},Jump:{IsJumping},Stun:{isStunned},Vel:{rb.linearVelocity}");
-
-        // failsafe: 공중 공격 중 착지했을 때만 해제
         if (isGrounded && isAttacking && IsJumping)
         {
             isAttacking = false;
@@ -135,13 +120,11 @@ public class PlayerController : MonoBehaviour
             animator.Play("Idle");
             IsJumping = false;
         }
-
     }
 
     void FixedUpdate()
     {
         CheckStepClimb();
-        //MaintainGroundedState(); // 기존 보조 Ground 체크 (있다면 그대로)
     }
 
     void CheckStepClimb()
@@ -150,12 +133,10 @@ public class PlayerController : MonoBehaviour
         Vector3 originLower = transform.position + Vector3.up * 0.1f;
         Vector3 originUpper = transform.position + Vector3.up * (stepHeight + 0.1f);
 
-        // 캐릭터 앞쪽으로 두 개의 레이
         if (Physics.Raycast(originLower, dir, out RaycastHit lowerHit, stepCheckDistance, groundLayer))
         {
             if (!Physics.Raycast(originUpper, dir, stepCheckDistance, groundLayer))
             {
-                // 아래는 맞고 위는 빗나감 → 계단
                 rb.position = Vector3.Lerp(rb.position,
                                            rb.position + Vector3.up * stepHeight,
                                            Time.fixedDeltaTime * stepSmooth);
@@ -166,7 +147,8 @@ public class PlayerController : MonoBehaviour
     // ================= Movement =================
     void HandleMovement(float horizontal)
     {
-        if (isAttacking) return; // 공격 중 이동 금지
+        // 지상 공격 중에는 이동 금지, 공중은 허용
+        if (isAttacking && isGrounded) return;
 
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
         Vector3 vel = rb.linearVelocity;
@@ -177,6 +159,7 @@ public class PlayerController : MonoBehaviour
         else if (horizontal < 0) transform.rotation = Quaternion.Euler(0, 180, 0);
     }
 
+
     float _stepCooldown;
     void OnFootstep()
     {
@@ -184,7 +167,7 @@ public class PlayerController : MonoBehaviour
         if (Time.time < _stepCooldown) return;
         bool running = Input.GetKey(KeyCode.LeftShift);
         SFXManager.Instance?.Play(running ? SfxId.FootstepRun : SfxId.FootstepWalk);
-        _stepCooldown = Time.time + 0.1f; // 중복 방지
+        _stepCooldown = Time.time + 0.1f;
     }
 
     void HandleJump()
@@ -200,16 +183,17 @@ public class PlayerController : MonoBehaviour
         SFXManager.Instance?.Play(SfxId.Jump);
     }
 
-    // ================= Attack =================
+    // ================= Attack (B형식) =================
     void HandleAttack()
     {
-        if (isStunned || !canMove || isAttacking) return;
+        if (isStunned || !canMove) return;
+        if (Time.time < nextAttackTime) return;   // 쿨타임 미도래 시 무시
 
-        if (isGrounded) StartGroundAttack();
-        else if (allowAirAttackLoop || canAirAttack) StartAirAttack();
+        StartAttack();
+        nextAttackTime = Time.time + attackInterval;
     }
 
-    void StartGroundAttack()
+    void StartAttack()
     {
         SFXManager.Instance?.Play(SfxId.AxeSwing);
 
@@ -217,66 +201,24 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, rb.linearVelocity.z);
 
         animator.ResetTrigger(attackHash);
-        animator.SetTrigger(attackHash);
-    }
-
-    void StartAirAttack()
-    {
-        SFXManager.Instance?.Play(SfxId.AxeSwing);
-
-        if (Time.time - lastAirAttackTime < airAttackCooldown) return;
-        lastAirAttackTime = Time.time;
-
-        isAttacking = true;
-        // 공중은 중력과 속도 유지
         animator.ResetTrigger(airAttackHash);
-        animator.SetTrigger(airAttackHash);
 
-        if (!allowAirAttackLoop)
-            canAirAttack = false;
+        if (isGrounded)
+            animator.SetTrigger(attackHash);
+        else
+            animator.SetTrigger(airAttackHash);
     }
 
-    void HandleAirAttackRelease()
+    public void EndAttack() // 애니메이션 이벤트
     {
-        if (!isGrounded && isAttacking)
+        isAttacking = false;
+
+        if (!isGrounded)
         {
-            // 공격 중인데 Z를 떼면 0.2초 뒤 자동 복귀 (보조용)
-            StartCoroutine(WaitThenReturnToJump());
-        }
-    }
-    IEnumerator WaitThenReturnToJump()
-    {
-        yield return new WaitForSeconds(0.2f);
-        if (!isGrounded && isAttacking)
-        {
-            isAttacking = false;
             animator.ResetTrigger(airAttackHash);
             animator.SetBool("IsGrounded", false);
             animator.Play("Jump");
         }
-    }
-
-
-    public void EndAttack() // 애니메이션 이벤트
-    {
-        if (!isGrounded)            // 공중이라면 공격 끝나자마자 점프로 전환
-        {
-            isAttacking = false;
-            animator.ResetTrigger(airAttackHash);
-            animator.SetBool("IsGrounded", false);
-            animator.Play("Jump");  // 점프 상태명 확인
-        }
-        else                        // 지상은 기존 로직 유지
-        {
-            StartCoroutine(DelayEndAttack());
-        }
-    }
-
-
-    IEnumerator DelayEndAttack()
-    {
-        yield return new WaitForSeconds(0.1f); // 모션 끝까지 이동 잠금 유지
-        isAttacking = false;
     }
 
     public void ProcessAttackHit()
@@ -287,22 +229,20 @@ public class PlayerController : MonoBehaviour
         Collider[] enemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
         foreach (Collider enemy in enemies)
         {
-            EnemyHealth e = enemy.GetComponent<EnemyHealth>();
-            if (e != null) 
+            if (enemy.TryGetComponent(out EnemyHealth e))
             {
-                e.TakeDamage(attackDamage); 
-                hitAny = true; 
+                e.TakeDamage(attackDamage);
+                hitAny = true;
             }
-
-            if (enemy.TryGetComponent<BossHealth>(out var b))
+            else if (enemy.TryGetComponent(out BossHealth b))
             {
                 b.TakeDamage(attackDamage);
-                continue;
+                hitAny = true;
             }
-
-            if (hitAny) SFXManager.Instance?.PlayAt(SfxId.HitEnemy, attackPoint.position);
         }
 
+        if (hitAny)
+            SFXManager.Instance?.PlayAt(SfxId.HitEnemy, attackPoint.position);
     }
 
     // ================= Damage & Death =================
@@ -338,10 +278,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator DeathSequence()
     {
-        // 1) 애니메이션 길이에 맞춰 대기 (예: 2초)
         yield return new WaitForSeconds(2f);
-
-        // 2) 게임 오버 UI 표시
         GameManager.Instance.GameOver();
     }
 
@@ -352,10 +289,9 @@ public class PlayerController : MonoBehaviour
         {
             isGrounded = true;
             IsJumping = false;
-            canAirAttack = true;
             SFXManager.Instance?.Play(SfxId.Land);
 
-            if (isAttacking)  // 착지 시 공격 상태 고정 방지
+            if (isAttacking)
             {
                 isAttacking = false;
                 animator.ResetTrigger(attackHash);
@@ -399,7 +335,6 @@ public class PlayerController : MonoBehaviour
     // ================= StopImmediately =================
     public void StopImmediately()
     {
-        // 이동 완전 정지
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;

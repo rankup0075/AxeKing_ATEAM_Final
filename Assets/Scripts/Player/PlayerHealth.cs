@@ -28,6 +28,12 @@ public class PlayerHealth : MonoBehaviour
 
         // [NEW] HUDµµ °»½Å
         UIManager.Instance.UpdateHUDHealth(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
+        {
+            var pc = GetComponent<PlayerController>();
+            if (pc) pc.SendMessage("Die", SendMessageOptions.DontRequireReceiver);
+        }
     }
 
     public void Heal(int amount)

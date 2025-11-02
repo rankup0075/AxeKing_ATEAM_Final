@@ -55,11 +55,11 @@ public class StageManager : MonoBehaviour
                 if (nextRegion.stages.Count > 0)
                 {
                     nextRegion.stages[0].isUnlocked = true;
+                    nextRegion.isUnlocked = true;
                     Debug.Log($"[StageManager] 다음 영지 해금: {nextRegion.regionName} - {nextRegion.stages[0].stageName}");
                 }
             }
         }
-
         RefreshStageList();
     }
 

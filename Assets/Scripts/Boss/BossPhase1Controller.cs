@@ -352,6 +352,7 @@ public class BossPhase1Controller : MonoBehaviour
 
     void HandlePhaseChange()
     {
+        Debug.Log("[BossPhase1] HandlePhaseChange called");
         DestroyAllSkillObjects();
 
         // 1페이즈 외형 종료

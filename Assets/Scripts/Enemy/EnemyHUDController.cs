@@ -27,12 +27,23 @@ public class EnemyHUDController : MonoBehaviour
 
     public void Show()
     {
-        gameObject.SetActive(true);
-        if (canvasGroup) canvasGroup.alpha = 1f;
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
 
-        // 이전 타이머 멈추고 새로 시작
+        if (canvasGroup)
+            canvasGroup.alpha = 1f;
+
+        // 이전 타이머 중단
         if (hideRoutine != null)
             StopCoroutine(hideRoutine);
+
+        //  프레임 끝까지 대기 후 코루틴 시작 
+        StartCoroutine(DelayedAutoHide());
+    }
+
+    private IEnumerator DelayedAutoHide()
+    {
+        yield return null; // 1 프레임 대기 → GameObject 활성화 완료 보장
         hideRoutine = StartCoroutine(AutoHideRoutine());
     }
 

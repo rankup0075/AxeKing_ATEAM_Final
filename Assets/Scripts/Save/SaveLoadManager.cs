@@ -35,6 +35,39 @@ public class SaveLoadManager : MonoBehaviour
         var qm = QuestManager.Instance;
         var sm = StageManager.Instance;
 
+        if (qm != null)
+        {
+            data.quests.Clear();
+            foreach (var quest in qm.allQuests)
+            {
+                data.quests.Add(new QuestSaveData
+                {
+                    questId = quest.questId,
+                    isAccepted = quest.isAccepted,
+                    isCompleted = quest.isCompleted,
+                    currentProgress = quest.currentProgress
+                });
+            }
+        }
+
+        if (sm != null)
+        {
+            data.regions.Clear();
+            foreach (var region in sm.regions)
+            {
+                var r = new RegionSaveData { regionId = region.regionId };
+                foreach (var stage in region.stages)
+                    r.stages.Add(new StageSaveData
+                    {
+                        stageId = stage.stageId,
+                        isUnlocked = stage.isUnlocked
+                    });
+                data.regions.Add(r);
+            }
+        }
+
+
+
         if (hp != null)
             data.player.currentHealth = hp.currentHealth;
 
@@ -167,6 +200,43 @@ public class SaveLoadManager : MonoBehaviour
         var gm = GameManager.Instance;
         var inv = FindFirstObjectByType<PlayerInventory>();
         var hp = FindFirstObjectByType<PlayerHealth>();
+
+        // 퀘스트 복원
+if (QuestManager.Instance != null && data.quests != null)
+{
+    var qm = QuestManager.Instance;
+    foreach (var saved in data.quests)
+    {
+        var quest = qm.allQuests.FirstOrDefault(q => q.questId == saved.questId);
+        if (quest != null)
+        {
+            quest.isAccepted = saved.isAccepted;
+            quest.isCompleted = saved.isCompleted;
+            quest.currentProgress = saved.currentProgress;
+        }
+    }
+}
+
+// 스테이지 복원
+if (StageManager.Instance != null && data.regions != null)
+{
+    var sm = StageManager.Instance;
+    foreach (var regionData in data.regions)
+    {
+        var region = sm.regions.FirstOrDefault(r => r.regionId == regionData.regionId);
+        if (region != null)
+        {
+            foreach (var stageData in regionData.stages)
+            {
+                var stage = region.stages.FirstOrDefault(s => s.stageId == stageData.stageId);
+                if (stage != null)
+                    stage.isUnlocked = stageData.isUnlocked;
+            }
+        }
+    }
+}
+
+
 
         if (gm != null)
         {
