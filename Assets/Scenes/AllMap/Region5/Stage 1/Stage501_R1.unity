@@ -315,7 +315,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 879583673320216022, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: portalID
-      value: Stage202_R1
+      value: Stage501_R1
       objectReference: {fileID: 0}
     - target: {fileID: 879583673320216022, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: isUnlocked
@@ -335,7 +335,7 @@ PrefabInstance:
       objectReference: {fileID: 410142043}
     - target: {fileID: 879583673320216022, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: targetScene
-      value: Stage202_R2
+      value: Stage501_R2
       objectReference: {fileID: 0}
     - target: {fileID: 879583673320216022, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: portalParticles
@@ -347,7 +347,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2091664483276039924, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_Name
-      value: Stage202_R2EntryPortal
+      value: Stage501_R2EntryPortal
       objectReference: {fileID: 0}
     - target: {fileID: 6476749962615641606, guid: ecf3904b73d18814282dfd84425b61e4, type: 3}
       propertyPath: m_Enabled
@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5156ae649e7ca234e92db377eaadb09b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoundController
-  roundId: Stage202_R1
+  roundId: Stage501_R1
   enemies:
   - {fileID: 2042026160}
   exitPortal: {fileID: 410142042}
