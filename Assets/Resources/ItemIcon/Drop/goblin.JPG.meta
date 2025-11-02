@@ -1,13 +1,5 @@
 fileFormatVersion: 2
-guid: cf08aeb1da73b6142be2a02582dcf194
-AssetOrigin:
-  serializedVersion: 1
-  productId: 1810
-  packageName: Gold Coins
-  packageVersion: 1.0
-  assetPath: Assets/LiquidFire Package 4 - BSH games/Devtoid - Gold Coins/3D Assets/Gold
-    Coins/Textures/GoldCoins_AlbedoTransparency.png
-  uploadId: 344696
+guid: 46ce21a344fb5ec469f7f3332827da8b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -71,9 +63,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
