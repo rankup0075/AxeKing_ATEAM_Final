@@ -16,7 +16,7 @@ public class RoundController : MonoBehaviour
 
     void Start()
     {
-        // 1 씬 내 모든 EnemyController / SlimeController / GoblinController / TurtleShellController 자동 탐색
+        // 1. 씬 내에서 적 탐색
         if (enemies == null || enemies.Length == 0)
         {
             var foundEnemies = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
@@ -24,13 +24,14 @@ public class RoundController : MonoBehaviour
 
             foreach (var comp in foundEnemies)
             {
-                if (comp is EnemyController || comp is SlimeController || comp is GoblinController || comp is TurtleShellController)
+                if (comp is EnemyController || comp is SlimeController || comp is GoblinController ||
+                    comp is TurtleShellController || comp is IceSpiritController) // ✅ 추가
                     list.Add(comp.gameObject);
             }
             enemies = list.ToArray();
         }
 
-        // 2 이미 클리어된 라운드라면 포탈 즉시 열기
+        // 2. 클리어 여부 확인
         if (exitPortal != null)
         {
             bool cleared = GameManager.Instance.IsRoundCleared(roundId);
@@ -39,43 +40,39 @@ public class RoundController : MonoBehaviour
 
         aliveCount = enemies.Length;
 
-        //  3 적마다 onDeath 이벤트 연결
+        // 3. 사망 이벤트 등록
         foreach (var enemy in enemies)
         {
             if (enemy == null) continue;
 
-            // EnemyController
-            var ec = enemy.GetComponent<EnemyController>();
-            if (ec != null)
+            if (enemy.TryGetComponent(out EnemyController ec))
             {
-                if (ec.isBoss)
-                    ec.onDeath += OnBossDeath;
-                else
-                    ec.onDeath += OnEnemyDeath;
+                if (ec.isBoss) ec.onDeath += OnBossDeath;
+                else ec.onDeath += OnEnemyDeath;
                 continue;
             }
 
-            // SlimeController
-            var sc = enemy.GetComponent<SlimeController>();
-            if (sc != null)
+            if (enemy.TryGetComponent(out SlimeController sc))
             {
                 sc.onDeath += OnEnemyDeath;
                 continue;
             }
 
-            // GoblinController
-            var gc = enemy.GetComponent<GoblinController>();
-            if (gc != null)
+            if (enemy.TryGetComponent(out GoblinController gc))
             {
                 gc.onDeath += OnEnemyDeath;
                 continue;
             }
 
-            // TurtleShellController
-            var tc = enemy.GetComponent<TurtleShellController>();
-            if (tc != null)
+            if (enemy.TryGetComponent(out TurtleShellController tc))
             {
                 tc.onDeath += OnEnemyDeath;
+                continue;
+            }
+
+            if (enemy.TryGetComponent(out IceSpiritController ic)) // ✅ 추가
+            {
+                ic.onDeath += OnEnemyDeath;
                 continue;
             }
         }
@@ -83,7 +80,9 @@ public class RoundController : MonoBehaviour
         Debug.Log($"[RoundController] 라운드 시작: {roundId}, 적 {aliveCount}명 등록 완료");
     }
 
-    // 일반 적 사망 시
+    // ===================
+    // 이벤트 콜백
+    // ===================
     void OnEnemyDeath()
     {
         aliveCount--;
@@ -93,7 +92,6 @@ public class RoundController : MonoBehaviour
             ClearRound();
     }
 
-    // 보스 사망 시
     void OnBossDeath()
     {
         GameManager.Instance.SetBossDefeated(roundId);
@@ -104,7 +102,9 @@ public class RoundController : MonoBehaviour
             ClearRound();
     }
 
-    // 포탈 활성화
+    // ===================
+    // 클리어 처리
+    // ===================
     void ClearRound()
     {
         if (exitPortal != null)

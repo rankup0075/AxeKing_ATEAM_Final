@@ -250,6 +250,11 @@ public class PlayerController : MonoBehaviour
                 t.TakeDamage(attackDamage);
                 hitAny = true;
             }
+            else if (enemy.TryGetComponent(out IceSpiritController ice))
+            {
+                ice.TakeDamage(attackDamage);
+                hitAny = true;
+            }
         }
 
         if (hitAny)
