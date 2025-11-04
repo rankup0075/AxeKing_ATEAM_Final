@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4221723361770575999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2128609061796780428}
+  - component: {fileID: 8940668227962754047}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2128609061796780428
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4221723361770575999}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.6168, y: 3.28941, z: 39.73761}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8940668227962754047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4221723361770575999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac12422e70630041bc002753496880e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestManager
+  allQuests:
+  - questId: Quest001
+    questName: "\uACE0\uBE14\uB9B0 \uD1A0\uBC8C1"
+    description: "\uACE0\uBE14\uB9B0\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uACE0\uBE14\uB9B0 \uAC00\uC8FD\uC744 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 30
+    currentProgress: 0
+    rewardGold: 400
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: 
+    requiredItemName: "\uACE0\uBE14\uB9B0\uC758 \uAC00\uC8FD"
+  - questId: Quest002
+    questName: "\uACE0\uBE14\uB9B0 \uD1A0\uBC8C2"
+    description: "\uACE0\uBE14\uB9B0\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uACE0\uBE14\uB9B0 \uAC00\uC8FD\uC744 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 70
+    currentProgress: 0
+    rewardGold: 700
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest001
+    requiredItemName: "\uACE0\uBE14\uB9B0\uC758 \uAC00\uC8FD"
+  - questId: Quest003
+    questName: "\uACE8\uB818 \uD1A0\uBC8C1"
+    description: "\uACE8\uB818\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294 \uACE8\uB818\uD30C\uD3B8\uC744
+      30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 30
+    currentProgress: 0
+    rewardGold: 1400
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest002
+    requiredItemName: "\uACE8\uB818\uC758 \uD30C\uD3B8"
+  - questId: Quest004
+    questName: "\uACE8\uB818 \uD1A0\uBC8C2"
+    description: "\uACE8\uB818\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294 \uACE8\uB818\uD30C\uD3B8\uC744
+      70\uAC1C\uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 70
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest003
+    requiredItemName: "\uACE8\uB818\uC758 \uD30C\uD3B8"
+  - questId: Quest005
+    questName: "\uD654\uC5FC \uC815\uB839 \uD1A0\uBC8C1"
+    description: "\uD654\uC5FC \uC815\uB839\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uD654\uC5FC \uAD6C\uC2AC\uC744 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 30
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest004
+    requiredItemName: "\uD654\uC5FC \uAD6C\uC2AC"
+  - questId: Quest006
+    questName: "\uD654\uC5FC \uC815\uB839 \uD1A0\uBC8C2"
+    description: "\uD654\uC5FC \uC815\uB839\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uD654\uC5FC \uAD6C\uC2AC\uC744 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 70
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest005
+    requiredItemName: "\uD654\uC5FC \uAD6C\uC2AC"
+  - questId: Quest007
+    questName: "\uC5BC\uC74C \uD1A0\uD15C \uD1A0\uBC8C1"
+    description: "\uC5BC\uC74C \uD1A0\uD15C\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uB208\uBB3C \uC870\uAC01\uC744 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 30
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest006
+    requiredItemName: "\uB208\uBB3C \uC870\uAC01"
+  - questId: Quest008
+    questName: "\uC5BC\uC74C \uD1A0\uD15C \uD1A0\uBC8C2"
+    description: "\uC5BC\uC74C \uD1A0\uD15C\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uB208\uBB3C \uC870\uAC01\uC744 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 70
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest007
+    requiredItemName: "\uB208\uBB3C \uC870\uAC01"
+  - questId: Quest009
+    questName: "\uC2E0\uBD09\uC790 \uD1A0\uBC8C1"
+    description: "\uC2E0\uBD09\uC790\uB97C \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uCC22\uC5B4\uC9C4 \uACE0\uC11C\uB97C 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 30
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest008
+    requiredItemName: "\uCC22\uC5B4\uC9C4 \uACE0\uC11C"
+  - questId: Quest010
+    questName: "\uC2E0\uBD09\uC790 \uD1A0\uBC8C2"
+    description: "\uC2E0\uBD09\uC790\uB97C \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
+      \uCC22\uC5B4\uC9C4 \uACE0\uC11C\uB97C 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
+    targetProgress: 70
+    currentProgress: 0
+    rewardGold: 200
+    isAccepted: 0
+    isCompleted: 0
+    prerequisiteQuestId: Quest009
+    requiredItemName: "\uCC22\uC5B4\uC9C4 \uACE0"

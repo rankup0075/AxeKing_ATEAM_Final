@@ -38,6 +38,8 @@ public class StageManager : MonoBehaviour
         if (region == null || stageIndex < 0) return;
 
         var stage = region.stages[stageIndex];
+        stage.isCompleted = true;
+
         Debug.Log($"[StageManager] 스테이지 클리어: {stage.stageName}");
 
         if (stageIndex + 1 < region.stages.Count)

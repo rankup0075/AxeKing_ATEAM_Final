@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -47,13 +48,41 @@ public class PlayerHealth : MonoBehaviour
         UIManager.Instance.UpdateHUDHealth(currentHealth, maxHealth);
     }
 
-    public void IncreaseMaxHealth(int amount)
+    public void IncreaseMaxHealth(int amount, bool keepCurrent = false)
     {
-        maxHealth += amount;
-        currentHealth += amount; // 장비 착용시 현재 체력도 증가
-        UIManager.Instance.UpdateHealthBar(currentHealth, maxHealth);
+        int prevMax = maxHealth;
+        int prevCurrent = currentHealth;
 
-        // [NEW] HUD도 갱신
-        UIManager.Instance.UpdateHUDHealth(currentHealth, maxHealth);
+        maxHealth += amount;
+
+        if (!keepCurrent)
+        {
+            // 기존 동작 (체력 함께 변화)
+            currentHealth += amount;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        }
+        else
+        {
+            // [추가] 체력 유지 모드
+            currentHealth = Mathf.Clamp(prevCurrent, 0, maxHealth);
+        }
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateHealthBar(currentHealth, maxHealth);
+            UIManager.Instance.UpdateHUDHealth(currentHealth, maxHealth);
+        }
+
+        // [추가] 한 프레임 뒤에 다시 HUD 갱신
+        StartCoroutine(DelayedHUDUpdate());
+    }
+    IEnumerator DelayedHUDUpdate()
+    {
+        yield return null; // 한 프레임 대기
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateHealthBar(currentHealth, maxHealth);
+            UIManager.Instance.UpdateHUDHealth(currentHealth, maxHealth);
+        }
     }
 }

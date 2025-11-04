@@ -18417,7 +18417,6 @@ GameObject:
   - component: {fileID: 1088412733}
   - component: {fileID: 1088412732}
   - component: {fileID: 1088412734}
-  - component: {fileID: 1088412735}
   m_Layer: 5
   m_Name: QuestBoardPanel
   m_TagString: Untagged
@@ -18504,129 +18503,6 @@ MonoBehaviour:
   emptyText: {fileID: 1146815968}
   scrollRect: {fileID: 788150935}
   currentGoldText: {fileID: 585981300}
---- !u!114 &1088412735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1088412730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bac12422e70630041bc002753496880e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::QuestManager
-  allQuests:
-  - questId: Quest001
-    questName: "\uACE0\uBE14\uB9B0 \uD1A0\uBC8C1"
-    description: "\uACE0\uBE14\uB9B0\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uACE0\uBE14\uB9B0 \uAC00\uC8FD\uC744 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 30
-    currentProgress: 0
-    rewardGold: 400
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: 
-    requiredItemName: "\uACE0\uBE14\uB9B0\uC758 \uAC00\uC8FD"
-  - questId: Quest002
-    questName: "\uACE0\uBE14\uB9B0 \uD1A0\uBC8C2"
-    description: "\uACE0\uBE14\uB9B0\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uACE0\uBE14\uB9B0 \uAC00\uC8FD\uC744 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 70
-    currentProgress: 0
-    rewardGold: 700
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest001
-    requiredItemName: "\uACE0\uBE14\uB9B0\uC758 \uAC00\uC8FD"
-  - questId: Quest003
-    questName: "\uACE8\uB818 \uD1A0\uBC8C1"
-    description: "\uACE8\uB818\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294 \uACE8\uB818\uD30C\uD3B8\uC744
-      30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 30
-    currentProgress: 0
-    rewardGold: 1400
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest002
-    requiredItemName: "\uACE8\uB818\uC758 \uD30C\uD3B8"
-  - questId: Quest004
-    questName: "\uACE8\uB818 \uD1A0\uBC8C2"
-    description: "\uACE8\uB818\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294 \uACE8\uB818\uD30C\uD3B8\uC744
-      70\uAC1C\uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 70
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest003
-    requiredItemName: "\uACE8\uB818\uC758 \uD30C\uD3B8"
-  - questId: Quest005
-    questName: "\uD654\uC5FC \uC815\uB839 \uD1A0\uBC8C1"
-    description: "\uD654\uC5FC \uC815\uB839\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uD654\uC5FC \uAD6C\uC2AC\uC744 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 30
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest004
-    requiredItemName: "\uD654\uC5FC \uAD6C\uC2AC"
-  - questId: Quest006
-    questName: "\uD654\uC5FC \uC815\uB839 \uD1A0\uBC8C2"
-    description: "\uD654\uC5FC \uC815\uB839\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uD654\uC5FC \uAD6C\uC2AC\uC744 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 70
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest005
-    requiredItemName: "\uD654\uC5FC \uAD6C\uC2AC"
-  - questId: Quest007
-    questName: "\uC5BC\uC74C \uD1A0\uD15C \uD1A0\uBC8C1"
-    description: "\uC5BC\uC74C \uD1A0\uD15C\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uB208\uBB3C \uC870\uAC01\uC744 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 30
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest006
-    requiredItemName: "\uB208\uBB3C \uC870\uAC01"
-  - questId: Quest008
-    questName: "\uC5BC\uC74C \uD1A0\uD15C \uD1A0\uBC8C2"
-    description: "\uC5BC\uC74C \uD1A0\uD15C\uC744 \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uB208\uBB3C \uC870\uAC01\uC744 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 70
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest007
-    requiredItemName: "\uB208\uBB3C \uC870\uAC01"
-  - questId: Quest009
-    questName: "\uC2E0\uBD09\uC790 \uD1A0\uBC8C1"
-    description: "\uC2E0\uBD09\uC790\uB97C \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uCC22\uC5B4\uC9C4 \uACE0\uC11C\uB97C 30\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 30
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest008
-    requiredItemName: "\uCC22\uC5B4\uC9C4 \uACE0\uC11C"
-  - questId: Quest010
-    questName: "\uC2E0\uBD09\uC790 \uD1A0\uBC8C2"
-    description: "\uC2E0\uBD09\uC790\uB97C \uC7A1\uC73C\uBA74 \uB098\uC624\uB294
-      \uCC22\uC5B4\uC9C4 \uACE0\uC11C\uB97C 70\uAC1C \uC218\uC9D1\uD558\uC138\uC694."
-    targetProgress: 70
-    currentProgress: 0
-    rewardGold: 200
-    isAccepted: 0
-    isCompleted: 0
-    prerequisiteQuestId: Quest009
-    requiredItemName: "\uCC22\uC5B4\uC9C4 \uACE0"
 --- !u!1 &1112932484
 GameObject:
   m_ObjectHideFlags: 0
@@ -32865,6 +32741,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: ceae2dc210e1e7e459a3eb0a6de39b4d, type: 3}
   m_PrefabInstance: {fileID: 2145558051}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8073105551999060654
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.6168
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.28941
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 39.73761
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2128609061796780428, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4221723361770575999, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
+      propertyPath: m_Name
+      value: QuestManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 555bdb3bf32409347ac6073a80131bc5, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -32894,3 +32827,4 @@ SceneRoots:
   - {fileID: 1820928776}
   - {fileID: 1807839011}
   - {fileID: 1159008571}
+  - {fileID: 8073105551999060654}

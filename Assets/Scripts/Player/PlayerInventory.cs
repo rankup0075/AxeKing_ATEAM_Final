@@ -190,17 +190,17 @@ public class PlayerInventory : MonoBehaviour
     // ==============================
     // 테스트용: 키 입력으로 아이템 수 조정
     // ==============================
-    //void Update()
-    //{
-    //        if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem("고블린의 가죽", 10);
-    //        if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem("골렘의 파편", 10);
-    //        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem("화염 구슬", 10);
-    //        if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem("눈물 조각", 10);
-    //        if (Input.GetKeyDown(KeyCode.Alpha5)) AddItem("찢어진 고서", 10);
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.J)) AddItem("고블린의 가죽", 10);
+        if (Input.GetKeyDown(KeyCode.K)) AddItem("골렘의 파편", 10);
+        if (Input.GetKeyDown(KeyCode.L)) AddItem("화염 구슬", 10);
+        //if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem("눈물 조각", 10);
+        //if (Input.GetKeyDown(KeyCode.Alpha5)) AddItem("찢어진 고서", 10);
 
-    //    if (Input.GetKeyDown(KeyCode.Q))
-    //        Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
-    //}
+        if (Input.GetKeyDown(KeyCode.Q))
+            Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
+    }
 
 
     // ==============================

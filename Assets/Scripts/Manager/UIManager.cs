@@ -476,12 +476,10 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHealthBar(int current, int max)
     {
-        if (healthBar != null)
-        {
-            healthBar.value = (float)current / max;
-            if (healthText != null)
-                healthText.text = $"{current} / {max}";
-        }
+        if (healthBar == null) return;
+
+        float ratio = (float)current / Mathf.Max(1, max);
+        healthBar.value = ratio;  // [수정] 비율로 지정
     }
 
     public void UpdateGoldDisplay(long gold)
@@ -552,11 +550,10 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHUDHealth(int current, int max)
     {
-        if (hudHealthBar != null)
-            hudHealthBar.value = max > 0 ? (float)current / max : 0f;
+        if (hudHealthBar == null) return;
 
-        if (hudHealthText != null)
-            hudHealthText.text = $"{current}/{max}";
+        float ratio = (float)current / Mathf.Max(1, max);
+        hudHealthBar.value = ratio;  // [수정] 비율로 지정
     }
 
     public void UpdateHUDPotions(int small, int medium, int large)

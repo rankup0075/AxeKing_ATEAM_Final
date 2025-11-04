@@ -1,8 +1,9 @@
+using System.Collections;
+using System.IO;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.IO;
-using System.Collections;
 
 [System.Serializable]
 public class SlotInfoUI
@@ -91,17 +92,16 @@ public class SaveSelectUI : MonoBehaviour
         if (!saveMode)
         {
             // 로드 모드
-            SaveLoadManager.Instance.currentSlot = slot;
+            SaveLoadManager.Instance.currentSlot = slot == 0 ? -1 : slot; // [수정] 0=자동저장
             gameObject.SetActive(false);
 
+            // 씬 로딩은 기존 흐름 유지
             MenuManager mm = FindFirstObjectByType<MenuManager>();
             if (mm != null)
             {
-                // 자동저장 처리
                 if (slot == 0)
                 {
-                    SaveLoadManager.Instance.currentSlot = -1; // 자동저장 구분용
-                    mm.StartCoroutine(mm.LoadSceneAndLoadGame(mm.firstSceneName, true, true)); // 자동저장 전용 호출
+                    mm.StartCoroutine(mm.LoadSceneAndLoadGame(mm.firstSceneName, true, true));
                 }
                 else
                 {
@@ -113,7 +113,10 @@ public class SaveSelectUI : MonoBehaviour
 
         // 저장 모드
         pendingSlot = slot;
-        string path = Path.Combine(Application.persistentDataPath, $"save_slot{slot}.json");
+        string path = slot == 0
+            ? Path.Combine(Application.persistentDataPath, "save_auto.json")     // [수정]
+            : Path.Combine(Application.persistentDataPath, $"save_slot{slot}.json");
+
         bool exists = File.Exists(path);
 
         confirmText.text = exists
@@ -138,7 +141,7 @@ public class SaveSelectUI : MonoBehaviour
             return;
         }
 
-        SaveLoadManager.Instance.currentSlot = pendingSlot;
+        SaveLoadManager.Instance.currentSlot = (pendingSlot == 0) ? -1 : pendingSlot; // [수정]
         SaveLoadManager.Instance.SaveGame();
 
         confirmText.text = "저장 완료!";
@@ -167,13 +170,10 @@ public class SaveSelectUI : MonoBehaviour
     {
         for (int i = 0; i < slotUIs.Length; i++)
         {
-            string path;
             bool isAuto = (i == 0);
-
-            if (isAuto)
-                path = Path.Combine(Application.persistentDataPath, "save_auto.json");
-            else
-                path = Path.Combine(Application.persistentDataPath, $"save_slot{i}.json"); // 슬롯1~3
+            string path = isAuto
+                ? Path.Combine(Application.persistentDataPath, "save_auto.json")   // [수정]
+                : Path.Combine(Application.persistentDataPath, $"save_slot{i}.json");
 
             var ui = slotUIs[i];
 
@@ -190,17 +190,22 @@ public class SaveSelectUI : MonoBehaviour
             string json = File.ReadAllText(path);
             var data = JsonUtility.FromJson<SaveData>(json);
 
-            int totalWeapons = data.player.weapons.Count;
-            int totalArmors = data.player.armors.Count;
+            // [수정] 우리 스키마에 맞게 요약 계산
+            int totalWeapons = data.player.weapons != null ? data.player.weapons.Count : 0;
+            int totalArmors = data.player.armors != null ? data.player.armors.Count : 0;
             int totalEquipments = totalWeapons + totalArmors;
-            int totalQuests = data.quests.Count;
-            int completedQuests = data.quests.FindAll(q => q.isCompleted).Count;
+
+            int totalQuests = data.quests != null ? data.quests.Count : 0;
+            int completedQuests = (data.quests != null) ? data.quests.Count(q => q.isCompleted) : 0;
+
             int unlockedStages = 0;
-            foreach (var r in data.regions)
-                unlockedStages += r.stages.FindAll(s => s.isUnlocked).Count;
+            if (data.regions != null)
+                foreach (var r in data.regions)
+                    if (r?.stages != null)
+                        unlockedStages += r.stages.Count(s => s.isUnlocked);
 
             ui.titleText.text = isAuto ? "자동저장" : $"슬롯 {i}";
-            ui.goldText.text = $"골드: {data.player.gold}";
+            ui.goldText.text = $"골드: {data.player.gold:N0}";
             ui.itemText.text = $"장비: {totalEquipments}개 (무기 {totalWeapons}, 방어구 {totalArmors})";
             ui.questText.text = $"퀘스트: {completedQuests}/{totalQuests}";
             ui.stageText.text = $"스테이지: {unlockedStages}개 해금";
@@ -231,7 +236,7 @@ public class SaveSelectUI : MonoBehaviour
             return;
         }
 
-        SaveLoadManager.Instance.ResetSlot(pendingSlot);
+        SaveLoadManager.Instance.ResetSlot(pendingSlot); // [수정]
         confirmText.text = $"파일 {pendingSlot}을 초기화했습니다.";
 
         yesButton.gameObject.SetActive(false);

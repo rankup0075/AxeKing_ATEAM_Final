@@ -12,15 +12,25 @@ public class ItemEquipment
 
     public void ApplyStats(PlayerController player, PlayerHealth health)
     {
-        if (Equipmenttype == ShopUI.ItemType.Weapon)
+        if (player == null || health == null)
         {
-            player.attackDamage += EquipmentstatBonus;
+            Debug.LogWarning("[ItemEquipment] ApplyStats called too early (player or health null)");
+            return;
         }
-        else if (Equipmenttype == ShopUI.ItemType.Armor)
+
+        switch (Equipmenttype)
         {
-            health.IncreaseMaxHealth(EquipmentstatBonus);
+            case ShopUI.ItemType.Weapon:
+                player.attackDamage += EquipmentstatBonus;
+                break;
+
+            case ShopUI.ItemType.Armor:
+                // [수정] 직접 더하지 말고 PlayerHealth API 사용
+                health.IncreaseMaxHealth(EquipmentstatBonus, keepCurrent: true);
+                break;
         }
     }
+
 
     public void RemoveStats(PlayerController player, PlayerHealth health)
     {
@@ -30,7 +40,7 @@ public class ItemEquipment
         }
         else if (Equipmenttype == ShopUI.ItemType.Armor)
         {
-            health.IncreaseMaxHealth(-EquipmentstatBonus);
+            health.IncreaseMaxHealth(-EquipmentstatBonus, keepCurrent: true);
         }
     }
 }

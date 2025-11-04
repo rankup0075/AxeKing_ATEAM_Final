@@ -14026,8 +14026,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907100509}
   m_HandleRect: {fileID: 907100508}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.9999896
+  m_Value: 1
+  m_Size: 0.93842363
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -16356,6 +16356,10 @@ PrefabInstance:
     - target: {fileID: 3588072284655382943, guid: ad0f22b4a0c98a04da2be5c538b888c4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4218924633039734355, guid: ad0f22b4a0c98a04da2be5c538b888c4, type: 3}
+      propertyPath: gold
+      value: 100000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,7 +1,8 @@
+using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class QuestBoardUI : MonoBehaviour
 {
@@ -54,6 +55,12 @@ public class QuestBoardUI : MonoBehaviour
 
         if (quests != null)
         {
+            var ordered = quests
+            .OrderByDescending(q => q.isAccepted && !q.isCompleted)
+            .ThenByDescending(q => q.isCompleted)
+            .ThenBy(q => !q.isAccepted && !q.isCompleted)
+            .ToList();
+
             foreach (var q in quests)
             {
                 var slot = Instantiate(questSlotPrefab, questListContainer);
@@ -63,7 +70,8 @@ public class QuestBoardUI : MonoBehaviour
             }
         }
 
-        if (emptyText != null) emptyText.gameObject.SetActive(!hasQuests);
+        if (emptyText != null) 
+            emptyText.gameObject.SetActive(!hasQuests);
 
         var gm = GameManager.Instance;
         if (currentGoldText != null && gm != null)

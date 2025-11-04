@@ -2,32 +2,29 @@ using UnityEngine;
 
 public class PlayerGold : MonoBehaviour
 {
-    public int currentGold = 0;
+    // [삭제] int currentGold = 0;  // GameManager와 중복
 
     void Start()
     {
-        UIManager.Instance.UpdateGoldDisplay(currentGold);
+        // [수정] GameManager의 실제 골드 표시
+        UIManager.Instance.UpdateGoldDisplay(GameManager.Instance.Gold);
     }
 
     public bool SpendGold(int amount)
     {
-        if (currentGold >= amount)
-        {
-            currentGold -= amount;
-            UIManager.Instance.UpdateGoldDisplay(currentGold);
-            return true;
-        }
-        return false;
+        // [수정] GameManager에 위임
+        return GameManager.Instance.SpendGold(amount);
     }
 
     public void EarnGold(int amount)
     {
-        currentGold += amount;
-        UIManager.Instance.UpdateGoldDisplay(currentGold);
+        // [수정] GameManager에 위임
+        GameManager.Instance.AddGold(amount);
     }
 
     public int GetGold()
     {
-        return currentGold;
+        // [수정] GameManager에서 읽음
+        return (int)GameManager.Instance.Gold;
     }
 }

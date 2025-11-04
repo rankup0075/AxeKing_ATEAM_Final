@@ -1,375 +1,350 @@
+// SaveLoadManager.cs
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class SaveLoadManager : MonoBehaviour
 {
     public static SaveLoadManager Instance;
-    public int currentSlot = 1; // 1~3
-    string SlotPath => Path.Combine(Application.persistentDataPath, $"save_slot{currentSlot}.json");
-    string AutoPath => Path.Combine(Application.persistentDataPath, "save_auto.json");
+
+    // [추가] 슬롯 관리
+    public int currentSlot = -1;  // -1 = 자동저장
+    string AutoPath => Path.Combine(Application.persistentDataPath, "save_auto.json");      // [추가]
+    string SlotPath(int slot) => Path.Combine(Application.persistentDataPath, $"save_slot{slot}.json"); // [추가]
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else { Destroy(gameObject); return; }
-
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
         DontDestroyOnLoad(gameObject);
-        InvokeRepeating(nameof(AutoSave), 60f, 60f);
     }
 
-    // ===========================
-    // 저장
-    // ===========================
+    // ========================
+    // 저장 계열
+    // ========================
+    public void AutoSave()
+    {
+        var data = CollectCurrentGameData(); // [수정] 공통 함수 재사용
+        File.WriteAllText(AutoPath, JsonUtility.ToJson(data, true));
+        Debug.Log($"[SaveLoad] 자동저장 완료 → {AutoPath}");
+    }
+
+    public void SaveGame()  // [추가] 슬롯 저장
+    {
+        if (currentSlot < 0) { AutoSave(); return; }
+        var data = CollectCurrentGameData();
+        var path = SlotPath(currentSlot);
+        File.WriteAllText(path, JsonUtility.ToJson(data, true));
+        Debug.Log($"[SaveLoad] 슬롯 {currentSlot} 저장 완료 → {path}");
+    }
+
+    public void ResetSlot(int slot) // [추가] 슬롯 리셋
+    {
+        var p = slot < 0 ? AutoPath : SlotPath(slot);
+        if (File.Exists(p)) File.Delete(p);
+        Debug.Log($"[SaveLoad] {(slot < 0 ? "자동" : $"슬롯 {slot}")} 파일 삭제");
+    }
+
     SaveData CollectCurrentGameData()
     {
-        Debug.Log("[Save] CollectCurrentGameData 시작");
-
         var data = new SaveData();
         var gm = GameManager.Instance;
-        var inv = FindFirstObjectByType<PlayerInventory>();
-        var hp = FindFirstObjectByType<PlayerHealth>();
-        var qm = QuestManager.Instance;
-        var sm = StageManager.Instance;
+        data.player.gold = gm.Gold;
 
-        if (qm != null)
+        // === HP 저장 ===
+        var pc = PlayerController.Instance ?? FindFirstObjectByType<PlayerController>();
+        var hp = pc ? pc.GetComponent<PlayerHealth>() : FindFirstObjectByType<PlayerHealth>();
+        if (hp != null)
         {
-            data.quests.Clear();
-            foreach (var quest in qm.allQuests)
-            {
-                data.quests.Add(new QuestSaveData
-                {
-                    questId = quest.questId,
-                    isAccepted = quest.isAccepted,
-                    isCompleted = quest.isCompleted,
-                    currentProgress = quest.currentProgress
-                });
-            }
+            data.player.currentHP = hp.currentHealth;
+            data.player.maxHP = hp.maxHealth;
         }
 
+        // === 인벤토리 / 장비 ===
+        var inv = FindFirstObjectByType<PlayerInventory>();
+        if (inv != null)
+        {
+            data.player.smallPotions = inv.smallPotions;
+            data.player.mediumPotions = inv.mediumPotions;
+            data.player.largePotions = inv.largePotions;
+
+            data.player.weapons.Clear();
+            foreach (var w in inv.weaponStorage)
+                data.player.weapons.Add(new EquipmentSaveData
+                {
+                    itemName = w.EquipmentitemName,
+                    type = ShopUI.ItemType.Weapon,
+                    statBonus = w.EquipmentstatBonus,
+                    iconName = w.icon ? w.icon.name : null
+                });
+
+            data.player.armors.Clear();
+            foreach (var a in inv.armorStorage)
+                data.player.armors.Add(new EquipmentSaveData
+                {
+                    itemName = a.EquipmentitemName,
+                    type = ShopUI.ItemType.Armor,
+                    statBonus = a.EquipmentstatBonus,
+                    iconName = a.icon ? a.icon.name : null
+                });
+
+            data.player.items.Clear();
+            foreach (var kvp in inv.items)
+            {
+                data.player.items.Add(new ItemEntry
+                {
+                    itemName = kvp.Key,
+                    amount = kvp.Value
+                });
+            }
+
+            if (inv.currentWeapon != null)
+                data.player.equippedWeapon = new EquipmentSaveData
+                {
+                    itemName = inv.currentWeapon.EquipmentitemName,
+                    type = ShopUI.ItemType.Weapon,
+                    statBonus = inv.currentWeapon.EquipmentstatBonus,
+                    iconName = inv.currentWeapon.icon ? inv.currentWeapon.icon.name : null
+                };
+            if (inv.currentArmor != null)
+                data.player.equippedArmor = new EquipmentSaveData
+                {
+                    itemName = inv.currentArmor.EquipmentitemName,
+                    type = ShopUI.ItemType.Armor,
+                    statBonus = inv.currentArmor.EquipmentstatBonus,
+                    iconName = inv.currentArmor.icon ? inv.currentArmor.icon.name : null
+                };
+        }
+
+        // === 스테이지 / 영지 ===
+        var sm = StageManager.Instance ?? FindFirstObjectByType<StageManager>();
         if (sm != null)
         {
             data.regions.Clear();
             foreach (var region in sm.regions)
             {
-                var r = new RegionSaveData { regionId = region.regionId };
-                foreach (var stage in region.stages)
+                var r = new RegionSaveData { regionId = region.regionId, isUnlocked = region.isUnlocked };
+                foreach (var s in region.stages)
                     r.stages.Add(new StageSaveData
                     {
-                        stageId = stage.stageId,
-                        isUnlocked = stage.isUnlocked
+                        stageId = s.stageId,
+                        isUnlocked = s.isUnlocked,
+                        isCompleted = s.isCompleted
                     });
                 data.regions.Add(r);
             }
         }
 
-
-
-        if (hp != null)
-            data.player.currentHealth = hp.currentHealth;
-
-        if (gm != null)
+        // === 퀘스트 ===
+        var qm = QuestManager.Instance ?? FindFirstObjectByType<QuestManager>();
+        data.quests.Clear();
+        if (qm != null)
         {
-            data.player.gold = gm.gold;
-            Debug.Log($"[Save] gold={gm.gold}");
+            foreach (var id in qm.ExportCompletedQuestIds())
+                data.quests.Add(new QuestEntry { questId = id, isCompleted = true });
+            foreach (var id in qm.ExportActiveQuestIds())
+                if (!data.quests.Any(e => e.questId == id))
+                    data.quests.Add(new QuestEntry { questId = id, isCompleted = false });
         }
-
-        if (inv != null)
-        {
-            Debug.Log($"[Save] 인벤토리 존재 확인됨, 무기={inv.weaponStorage.Count}, 방어구={inv.armorStorage.Count}");
-
-            data.player.smallPotions = inv.smallPotions;
-            data.player.mediumPotions = inv.mediumPotions;
-            data.player.largePotions = inv.largePotions;
-
-            foreach (var kv in inv.items)
-                data.player.items.Add(new ItemEntry { name = kv.Key, count = kv.Value });
-
-            foreach (var w in inv.weaponStorage)
-                data.player.weapons.Add(new EquipmentEntry
-                {
-                    itemName = w.EquipmentitemName,
-                    type = (int)w.Equipmenttype,
-                    statBonus = w.EquipmentstatBonus,
-                    iconName = w.icon ? w.icon.name : null
-                });
-
-            foreach (var a in inv.armorStorage)
-                data.player.armors.Add(new EquipmentEntry
-                {
-                    itemName = a.EquipmentitemName,
-                    type = (int)a.Equipmenttype,
-                    statBonus = a.EquipmentstatBonus,
-                    iconName = a.icon ? a.icon.name : null
-                });
-        }
-        if (inv.currentWeapon != null)
-            data.player.equippedWeapon = new EquipmentEntry
-            {
-                itemName = inv.currentWeapon.EquipmentitemName,
-                type = (int)inv.currentWeapon.Equipmenttype,
-                statBonus = inv.currentWeapon.EquipmentstatBonus,
-                iconName = inv.currentWeapon.icon ? inv.currentWeapon.icon.name : null
-            };
-        if (inv.currentArmor != null)
-            data.player.equippedArmor = new EquipmentEntry
-            {
-                itemName = inv.currentArmor.EquipmentitemName,
-                type = (int)inv.currentArmor.Equipmenttype,
-                statBonus = inv.currentArmor.EquipmentstatBonus,
-                iconName = inv.currentArmor.icon ? inv.currentArmor.icon.name : null
-            };
-        else Debug.LogWarning("[Save] PlayerInventory를 찾지 못함");
 
         return data;
     }
 
-    public void SaveGame()
+    // ========================
+    // 로드 계열
+    // ========================
+    public void LoadFromFile(string path) // [추가] 진입점 통합
     {
-        var data = CollectCurrentGameData();
-        var json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(SlotPath, json);
-        Debug.Log($"[Save] Slot{currentSlot} 저장 완료 -> {SlotPath}");
-    }
-
-    public void AutoSave()
-    {
-        var data = CollectCurrentGameData();
-        var json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(AutoPath, json);
-        Debug.Log($"[AutoSave] 완료 -> {AutoPath}");
-    }
-
-    // ===========================
-    // 로드
-    // ===========================
-    public void LoadGame()
-    {
-        StartCoroutine(LoadWhenReady());
-    }
-
-    private IEnumerator LoadWhenReady()
-    {
-        Debug.Log($"[Load] LoadWhenReady() 시작. slot={currentSlot}");
-
-        yield return new WaitUntil(() =>
-            GameManager.Instance != null &&
-            FindFirstObjectByType<PlayerInventory>() != null);
-
-        Debug.Log("[Load] GameManager & PlayerInventory 준비 완료");
-
-        if (!File.Exists(SlotPath))
-        {
-            Debug.LogWarning($"[Load] 세이브 파일이 없음: {SlotPath}");
-            yield break;
-        }
-
-        var json = File.ReadAllText(SlotPath);
+        if (!File.Exists(path)) { Debug.LogWarning($"[SaveLoad] 파일 없음: {path}"); return; }
+        var json = File.ReadAllText(path);
         var data = JsonUtility.FromJson<SaveData>(json);
-        Debug.Log($"[Load] JSON 읽기 완료 ({json.Length} bytes)");
-
-        ApplySaveData(data);
-
-        var inv = FindFirstObjectByType<PlayerInventory>();
-        Debug.Log($"[Load] 적용 후: gold={GameManager.Instance?.gold}, " +
-                  $"potions=({inv?.smallPotions},{inv?.mediumPotions},{inv?.largePotions}), " +
-                  $"무기={inv?.weaponStorage.Count}, 방어구={inv?.armorStorage.Count}");
-
-        // UI 새로고침
-        UIManager.Instance?.UpdatePotionCount(inv.smallPotions, inv.mediumPotions, inv.largePotions);
-        UIManager.Instance?.UpdateHUDPotions(inv.smallPotions, inv.mediumPotions, inv.largePotions);
-        UIManager.Instance?.UpdateGoldDisplay(GameManager.Instance.gold);
-        UIManager.Instance?.UpdateHUDGold(GameManager.Instance.gold);
-
-        // 창고 갱신
-        var warehouse = FindFirstObjectByType<WarehouseUI>();
-        if (warehouse != null)
-        {
-            warehouse.SendMessage("RefreshAll", SendMessageOptions.DontRequireReceiver);
-        }
-        Debug.Log("[Load] LoadGame() 완료");
-    }
-
-    void ApplySaveData(SaveData data)
-    {
-        Debug.Log("[Apply] 데이터 적용 시작");
-
-        var gm = GameManager.Instance;
-        var inv = FindFirstObjectByType<PlayerInventory>();
-        var hp = FindFirstObjectByType<PlayerHealth>();
-
-        // 퀘스트 복원
-if (QuestManager.Instance != null && data.quests != null)
-{
-    var qm = QuestManager.Instance;
-    foreach (var saved in data.quests)
-    {
-        var quest = qm.allQuests.FirstOrDefault(q => q.questId == saved.questId);
-        if (quest != null)
-        {
-            quest.isAccepted = saved.isAccepted;
-            quest.isCompleted = saved.isCompleted;
-            quest.currentProgress = saved.currentProgress;
-        }
-    }
-}
-
-// 스테이지 복원
-if (StageManager.Instance != null && data.regions != null)
-{
-    var sm = StageManager.Instance;
-    foreach (var regionData in data.regions)
-    {
-        var region = sm.regions.FirstOrDefault(r => r.regionId == regionData.regionId);
-        if (region != null)
-        {
-            foreach (var stageData in regionData.stages)
-            {
-                var stage = region.stages.FirstOrDefault(s => s.stageId == stageData.stageId);
-                if (stage != null)
-                    stage.isUnlocked = stageData.isUnlocked;
-            }
-        }
-    }
-}
-
-
-
-        if (gm != null)
-        {
-            gm.gold = data.player.gold;
-            Debug.Log($"[Apply] 골드 적용: {gm.gold}");
-        }
-        else Debug.LogWarning("[Apply] GameManager 없음");
-
-        if (inv != null)
-        {
-            Debug.Log("[Apply] 인벤토리 적용 중...");
-
-            inv.smallPotions = data.player.smallPotions;
-            inv.mediumPotions = data.player.mediumPotions;
-            inv.largePotions = data.player.largePotions;
-
-            inv.items = new Dictionary<string, int>();
-            foreach (var e in data.player.items)
-                inv.items[e.name] = e.count;
-
-            inv.weaponStorage = new List<ItemEquipment>();
-            foreach (var e in data.player.weapons)
-                inv.weaponStorage.Add(new ItemEquipment
-                {
-                    EquipmentitemName = e.itemName,
-                    Equipmenttype = (ShopUI.ItemType)e.type,
-                    EquipmentstatBonus = e.statBonus,
-                    icon = string.IsNullOrEmpty(e.iconName) ? null : Resources.Load<Sprite>($"ItemIcon/Weapon/{e.iconName}") // 경로 맞게
-                });
-
-            inv.armorStorage = new List<ItemEquipment>();
-            foreach (var e in data.player.armors)
-                inv.armorStorage.Add(new ItemEquipment
-                {
-                    EquipmentitemName = e.itemName,
-                    Equipmenttype = (ShopUI.ItemType)e.type,
-                    EquipmentstatBonus = e.statBonus,
-                    icon = string.IsNullOrEmpty(e.iconName) ? null : Resources.Load<Sprite>($"ItemIcon/Armor/{e.iconName}") // 경로 맞게
-                });
-
-            Debug.Log($"[Apply] 무기={inv.weaponStorage.Count}, 방어구={inv.armorStorage.Count}");
-        }
-        else Debug.LogWarning("[Apply] PlayerInventory 없음");
-
-        if (hp != null)
-        {
-            hp.currentHealth = Mathf.Clamp(data.player.currentHealth, 0, hp.maxHealth);
-            Debug.Log($"[Apply] 체력 적용: {hp.currentHealth}/{hp.maxHealth}");
-        }
-        else Debug.LogWarning("[Apply] PlayerHealth 없음");
-
-        if (data.player.equippedWeapon != null && !string.IsNullOrEmpty(data.player.equippedWeapon.itemName))
-        {
-            var e = data.player.equippedWeapon;
-            var weapon = new ItemEquipment
-            {
-                EquipmentitemName = e.itemName,
-                Equipmenttype = (ShopUI.ItemType)e.type,
-                EquipmentstatBonus = e.statBonus,
-                icon = string.IsNullOrEmpty(e.iconName)
-                    ? null
-                    : Resources.Load<Sprite>($"ItemIcon/Weapon/{e.iconName}")
-            };
-            inv.EquipItem(weapon, ShopUI.ItemType.Weapon);
-            FindFirstObjectByType<PlayerVisual>()?.ApplyWeapon(weapon.EquipmentitemName);
-        }
-
-        if (data.player.equippedArmor != null && !string.IsNullOrEmpty(data.player.equippedArmor.itemName))
-        {
-            var e = data.player.equippedArmor;
-            var armor = new ItemEquipment
-            {
-                EquipmentitemName = e.itemName,
-                Equipmenttype = (ShopUI.ItemType)e.type,
-                EquipmentstatBonus = e.statBonus,
-                icon = string.IsNullOrEmpty(e.iconName)
-                    ? null
-                    : Resources.Load<Sprite>($"ItemIcon/Armor/{e.iconName}")
-            };
-            inv.EquipItem(armor, ShopUI.ItemType.Armor);
-            FindFirstObjectByType<PlayerVisual>()?.ApplyArmor(armor.EquipmentitemName);
-        }
-
-
-        Debug.Log("[Apply] 데이터 적용 완료");
+        StartCoroutine(LoadWhenReady_Co(data));
     }
 
     public void LoadAutoSave()
     {
-        string autoPath = Path.Combine(Application.persistentDataPath, "save_auto.json");
-        if (!File.Exists(autoPath))
-        {
-            Debug.LogWarning("[AutoLoad] 자동저장 파일이 없습니다.");
-            return;
-        }
-
-        string json = File.ReadAllText(autoPath);
-        var data = JsonUtility.FromJson<SaveData>(json);
-        StartCoroutine(LoadWhenReadyCustom(data));
+        // 자동저장 파일을 강제로 로드
+        currentSlot = -1;
+        LoadGame();
     }
 
-    private IEnumerator LoadWhenReadyCustom(SaveData data)
+    public void LoadGame() // [수정] currentSlot 기준 자동/슬롯 로드
     {
+        var path = currentSlot < 0 ? AutoPath : SlotPath(currentSlot);
+        LoadFromFile(path);
+    }
+
+    IEnumerator LoadWhenReady_Co(SaveData data)
+    {
+        // [수정] 필요한 싱글톤 모두 대기
         yield return new WaitUntil(() =>
             GameManager.Instance != null &&
-            FindFirstObjectByType<PlayerInventory>() != null);
+            PlayerController.Instance != null &&
+            FindFirstObjectByType<PlayerInventory>() != null &&
+            StageManager.Instance != null &&
+            QuestManager.Instance != null &&
+            UIManager.Instance != null &&
+            FindFirstObjectByType<PlayerVisual>() != null      // [추가]
+        );
 
         ApplySaveData(data);
-
-        var inv = FindFirstObjectByType<PlayerInventory>();
-        UIManager.Instance?.UpdatePotionCount(inv.smallPotions, inv.mediumPotions, inv.largePotions);
-        UIManager.Instance?.UpdateHUDPotions(inv.smallPotions, inv.mediumPotions, inv.largePotions);
-        UIManager.Instance?.UpdateGoldDisplay(GameManager.Instance.gold);
-        UIManager.Instance?.UpdateHUDGold(GameManager.Instance.gold);
-
-        var warehouse = FindFirstObjectByType<WarehouseUI>();
-        if (warehouse != null)
-            warehouse.SendMessage("RefreshAll", SendMessageOptions.DontRequireReceiver);
-
-        Debug.Log("[AutoLoad] 자동저장 데이터 적용 및 HUD 갱신 완료");
+        Debug.Log("[SaveLoad] 로드 완료");
     }
 
-
-
-    //세이브 파일 초기화 용도
-    public void ResetSlot(int slot)
+    void ApplySaveData(SaveData data)
     {
-        string path = Path.Combine(Application.persistentDataPath, $"save_slot{slot}.json");
-        if (File.Exists(path))
+        var gm = GameManager.Instance;
+        var inv = FindFirstObjectByType<PlayerInventory>();
+        var ui = UIManager.Instance;
+        var pc = PlayerController.Instance ?? FindFirstObjectByType<PlayerController>();
+        var hp = pc ? pc.GetComponent<PlayerHealth>() : FindFirstObjectByType<PlayerHealth>();
+        var visual = FindFirstObjectByType<PlayerVisual>();
+
+        // --- 골드 ---
+        gm.SetGold(data.player.gold);
+        ui.UpdateHUDGold(data.player.gold);
+
+        // --- HP ---
+        if (hp != null)
         {
-            File.Delete(path);
-            Debug.Log($"[Reset] 세이브 슬롯 {slot} 초기화 완료");
+            hp.maxHealth = data.player.maxHP;
+            hp.currentHealth = Mathf.Clamp(data.player.currentHP, 0, hp.maxHealth);
+            ui.UpdateHealthBar(hp.currentHealth, hp.maxHealth);
+            ui.UpdateHUDHealth(hp.currentHealth, hp.maxHealth);
         }
+
+        // --- 포션, 창고 ---
+        if (inv != null)
+        {
+            inv.smallPotions = data.player.smallPotions;
+            inv.mediumPotions = data.player.mediumPotions;
+            inv.largePotions = data.player.largePotions;
+            ui.UpdateHUDPotions(inv.smallPotions, inv.mediumPotions, inv.largePotions);
+
+            inv.weaponStorage.Clear();
+            foreach (var w in data.player.weapons)
+                inv.weaponStorage.Add(new ItemEquipment
+                {
+                    EquipmentitemName = w.itemName,
+                    Equipmenttype = ShopUI.ItemType.Weapon,
+                    EquipmentstatBonus = w.statBonus,
+                    icon = string.IsNullOrEmpty(w.iconName) ? null : Resources.Load<Sprite>($"ItemIcon/Weapon/{w.iconName}")
+                });
+
+            inv.armorStorage.Clear();
+            foreach (var a in data.player.armors)
+                inv.armorStorage.Add(new ItemEquipment
+                {
+                    EquipmentitemName = a.itemName,
+                    Equipmenttype = ShopUI.ItemType.Armor,
+                    EquipmentstatBonus = a.statBonus,
+                    icon = string.IsNullOrEmpty(a.iconName) ? null : Resources.Load<Sprite>($"ItemIcon/Armor/{a.iconName}")
+                });
+
+            inv.items.Clear();
+            foreach (var item in data.player.items)
+                {
+                    inv.items[item.itemName] = item.amount;
+                }
+
+            QuestManager.Instance?.UpdateQuestProgress();
+        }
+
+        // --- 장착 복구 및 비주얼 반영 ---
+        if (inv != null)
+        {
+            if (data.player.equippedWeapon != null && !string.IsNullOrEmpty(data.player.equippedWeapon.itemName))
+            {
+                var w = data.player.equippedWeapon;
+                var eq = new ItemEquipment
+                {
+                    EquipmentitemName = w.itemName,
+                    Equipmenttype = ShopUI.ItemType.Weapon,
+                    EquipmentstatBonus = w.statBonus,
+                    icon = string.IsNullOrEmpty(w.iconName) ? null : Resources.Load<Sprite>($"ItemIcon/Weapon/{w.iconName}")
+                };
+                inv.EquipItem(eq, ShopUI.ItemType.Weapon);
+                visual?.ApplyWeapon(eq.EquipmentitemName);
+
+                var player = PlayerController.Instance ?? FindFirstObjectByType<PlayerController>();
+                var health = player ? player.GetComponent<PlayerHealth>() : FindFirstObjectByType<PlayerHealth>();
+                eq.ApplyStats(player, health);
+            }
+
+            if (data.player.equippedArmor != null && !string.IsNullOrEmpty(data.player.equippedArmor.itemName))
+            {
+                var a = data.player.equippedArmor;
+                var eq = new ItemEquipment
+                {
+                    EquipmentitemName = a.itemName,
+                    Equipmenttype = ShopUI.ItemType.Armor,
+                    EquipmentstatBonus = a.statBonus,
+                    icon = string.IsNullOrEmpty(a.iconName) ? null : Resources.Load<Sprite>($"ItemIcon/Armor/{a.iconName}")
+                };
+                inv.EquipItem(eq, ShopUI.ItemType.Armor);
+                visual?.ApplyArmor(eq.EquipmentitemName);
+            }
+
+            // [추가] 비주얼 재적용
+            StartCoroutine(ReapplyVisualsNextFrame(data));
+        }
+
+        // --- 스테이지 / 영지 ---
+        var sm = StageManager.Instance;
+        if (sm != null && data.regions != null)
+        {
+            foreach (var rr in data.regions)
+            {
+                var region = sm.regions.FirstOrDefault(x => x.regionId == rr.regionId);
+                if (region == null) continue;
+                region.isUnlocked = rr.isUnlocked;
+                foreach (var ss in rr.stages)
+                {
+                    var stage = region.stages.FirstOrDefault(x => x.stageId == ss.stageId);
+                    if (stage == null) continue;
+                    stage.isUnlocked = ss.isUnlocked;
+                    stage.isCompleted = ss.isCompleted;
+                }
+
+                // [추가] 스테이지 해금 보정
+                for (int i = 0; i < region.stages.Count - 1; i++)
+                {
+                    if (region.stages[i].isCompleted)
+                        region.stages[i + 1].isUnlocked = true;
+                }
+                if (region.stages.Any(s => s.isCompleted))
+                    region.isUnlocked = true;
+            }
+            sm.RefreshStageList();
+        }
+
+        // --- 퀘스트 ---
+        var qm = QuestManager.Instance;
+        if (qm != null)
+        {
+            var active = data.quests.Where(q => !q.isCompleted).Select(q => q.questId).ToList();
+            var completed = data.quests.Where(q => q.isCompleted).Select(q => q.questId).ToList();
+            qm.ImportQuests(active, completed);
+            qm.UpdateQuestProgress();
+            QuestBoardUI.Instance?.RefreshUI();
+        }
+
+        inv?.SendMessage("RefreshUI", SendMessageOptions.DontRequireReceiver);
     }
 
+    // --- 비주얼 재적용 ---
+    IEnumerator ReapplyVisualsNextFrame(SaveData data)
+    {
+        yield return null;
+        var visual = FindFirstObjectByType<PlayerVisual>();
+        if (visual == null) yield break;
+
+        if (data.player.equippedWeapon != null && !string.IsNullOrEmpty(data.player.equippedWeapon.itemName))
+            visual.ApplyWeapon(data.player.equippedWeapon.itemName);
+        if (data.player.equippedArmor != null && !string.IsNullOrEmpty(data.player.equippedArmor.itemName))
+            visual.ApplyArmor(data.player.equippedArmor.itemName);
+    }
 }

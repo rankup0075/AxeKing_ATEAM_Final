@@ -237,6 +237,12 @@ public class GameManager : MonoBehaviour
             petRb.Sleep();
         }
     }
+    public void SetGold(long value)
+    {
+        gold = value;
+        UIManager.Instance?.UpdateGoldDisplay(gold);
+        UIManager.Instance?.UpdateHUDGold(gold);
+    }
 
     public long Gold => gold;
 
@@ -288,25 +294,38 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Town");
     }
 
+    //public void SavePlayerData()
+    //{
+    //    PlayerPrefs.SetString("Gold", gold.ToString("N0"));
+    //    PlayerPrefs.SetInt("CurrentTerritory", currentTerritory);
+    //    PlayerPrefs.SetInt("CurrentStage", currentStage);
+    //    PlayerPrefs.SetInt("CurrentRound", currentRound);
+    //    PlayerPrefs.Save();
+    //}
+
+    //public void LoadPlayerData()
+    //{
+    //    string savedGold = PlayerPrefs.GetString("Gold", "0");
+    //    if (!long.TryParse(savedGold, out gold)) gold = 0;
+    //    currentTerritory = PlayerPrefs.GetInt("CurrentTerritory", 1);
+    //    currentStage = PlayerPrefs.GetInt("CurrentStage", 1);
+    //    currentRound = PlayerPrefs.GetInt("CurrentRound", 1);
+
+    //    UIManager.Instance?.UpdateGoldDisplay(gold);
+    //    UIManager.Instance?.UpdateHUDGold(gold);
+    //}
+
     public void SavePlayerData()
     {
-        PlayerPrefs.SetString("Gold", gold.ToString("N0"));
-        PlayerPrefs.SetInt("CurrentTerritory", currentTerritory);
-        PlayerPrefs.SetInt("CurrentStage", currentStage);
-        PlayerPrefs.SetInt("CurrentRound", currentRound);
-        PlayerPrefs.Save();
+        // [삭제] PlayerPrefs로 골드 저장하던 코드
+        // PlayerPrefs.SetString("Gold", gold.ToString("N0"));
+        PlayerPrefs.Save(); // [유지] 다른 값은 쓰고 있으면 저장
     }
 
     public void LoadPlayerData()
     {
-        string savedGold = PlayerPrefs.GetString("Gold", "0");
-        if (!long.TryParse(savedGold, out gold)) gold = 0;
-        currentTerritory = PlayerPrefs.GetInt("CurrentTerritory", 1);
-        currentStage = PlayerPrefs.GetInt("CurrentStage", 1);
-        currentRound = PlayerPrefs.GetInt("CurrentRound", 1);
-
-        UIManager.Instance?.UpdateGoldDisplay(gold);
-        UIManager.Instance?.UpdateHUDGold(gold);
+        // [삭제] PlayerPrefs로 골드 로드하던 코드
+        UIManager.Instance?.UpdateHUDGold(Gold); // [추가] HUD만 현재값으로 갱신
     }
 
     public void RestartFromGameOver()
