@@ -220,6 +220,8 @@ public class IceSpiritController : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
 
+        DropManager.Instance?.SpawnDrops(transform.position, 4);
+
         UIManager.Instance?.HideEnemyHUD();
 
         onDeath?.Invoke();

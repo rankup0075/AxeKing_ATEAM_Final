@@ -213,6 +213,8 @@ public class SlimeController : MonoBehaviour
     {
         yield return new WaitForSeconds(1.2f);
 
+        DropManager.Instance?.SpawnDrops(transform.position, 3);
+
         UIManager.Instance?.HideEnemyHUD();
 
         onDeath?.Invoke();

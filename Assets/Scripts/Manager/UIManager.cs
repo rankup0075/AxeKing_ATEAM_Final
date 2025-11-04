@@ -956,4 +956,23 @@ public class UIManager : MonoBehaviour
             Debug.LogWarning("[UIManager] PlayerHUD를 찾을 수 없음");
         }
     }
+    // ======================
+    // [NEW] Floating Text 표시 (아이템 획득 등)
+    // ======================
+    public void ShowFloatingText(string message, Vector3 worldPosition)
+    {
+        // 이건 임시 구현 (나중에 TextMeshPro WorldSpace UI로 교체 가능)
+        Debug.Log($"[UI] {message} at {worldPosition}");
+
+        // 실제 UI 효과로 확장하려면 아래 주석처럼 구현 가능:
+        /*
+        GameObject floatingText = new GameObject("FloatingText");
+        var tmp = floatingText.AddComponent<TextMeshPro>();
+        tmp.text = message;
+        tmp.fontSize = 2;
+        tmp.color = Color.yellow;
+        floatingText.transform.position = worldPosition + Vector3.up * 1.5f;
+        Destroy(floatingText, 1.5f);
+        */
+    }
 }

@@ -206,6 +206,8 @@ public class GoblinController : MonoBehaviour
         Debug.Log("[Goblin] DieRoutine 시작");
         yield return new WaitForSeconds(1.3f);
 
+        DropManager.Instance?.SpawnDrops(transform.position, 1);
+
         // ✅ HUD 끄기 (예외 방지)
         try
         {

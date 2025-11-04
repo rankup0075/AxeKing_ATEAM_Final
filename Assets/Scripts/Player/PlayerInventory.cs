@@ -74,6 +74,30 @@ public class PlayerInventory : MonoBehaviour
         GameManager.Instance?.SavePlayerData();
     }
 
+    // ==============================
+    // [NEW] 재료 전용 추가 함수 (드랍 아이템 획득용)
+    // ==============================
+    public void AddMaterial(string itemName, int amount)
+    {
+        if (!items.ContainsKey(itemName))
+            items[itemName] = 0;
+
+        items[itemName] += amount;
+        Debug.Log($"[Inventory] 재료 '{itemName}' {amount}개 획득 (총 {items[itemName]}개)");
+
+        UpdateUI();
+
+        // 퀘스트 업데이트
+        if (QuestManager.Instance != null)
+            QuestManager.Instance.UpdateQuestProgress();
+
+        // UI에 알림 (플로팅 텍스트)
+        UIManager.Instance?.ShowFloatingText($"+{amount} {itemName}", transform.position + Vector3.up * 2f);
+
+        GameManager.Instance?.SavePlayerData();
+    }
+
+
     // 아이템 제거
     public bool RemoveItem(string itemName, int amount)
     {

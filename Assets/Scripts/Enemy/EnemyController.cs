@@ -1,4 +1,4 @@
-// ½ºÅÈ/µå¶ø/»ç¸Á ÆäÀÌµå ´ã´ç. Áß°£º¸½º ÀÎ½ºÆåÅÍ Á¶Àı °¡´É.
+ï»¿// ìŠ¤íƒ¯/ë“œë/ì‚¬ë§ í˜ì´ë“œ ë‹´ë‹¹. ì¤‘ê°„ë³´ìŠ¤ ì¸ìŠ¤í™í„° ì¡°ì ˆ ê°€ëŠ¥.
 using System;
 using System.Collections;
 using UnityEngine;
@@ -6,46 +6,42 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class EnemyController : MonoBehaviour
 {
-    [Header("Áß°£º¸½º ¿©ºÎ")]
-    public bool isBoss = false; // ¼öµ¿ ÁöÁ¤ °¡´É
+    [Header("ì¤‘ê°„ë³´ìŠ¤ ì—¬ë¶€")]
+    public bool isBoss = false; // ìˆ˜ë™ ì§€ì • ê°€ëŠ¥
 
     [Header("Stage (Region-Stage-Round)")]
-    [Range(1, 5)] public int region = 1;   // ¿µÁö
-    [Range(1, 3)] public int stage = 1;    // ½ºÅ×ÀÌÁö
-    [Range(1, 3)] public int round = 1;    // ¶ó¿îµå
+    [Range(1, 5)] public int region = 1;   // ì˜ì§€
+    [Range(1, 3)] public int stage = 1;    // ìŠ¤í…Œì´ì§€
+    [Range(1, 3)] public int round = 1;    // ë¼ìš´ë“œ
 
     [Header("Stat")]
     public int attackDamage = 5;
     public int maxHP = 5;
 
-    [Header("ÀÏ¹İ µå¶ø")]
+    [Header("ì¼ë°˜ ë“œë")]
     public int minGoldDrop = 5;
     public int maxGoldDrop = 10;
-    public string uniqueDropName = "°íºí¸°ÀÇ °¡Á×";
+    public string uniqueDropName = "ê³ ë¸”ë¦°ì˜ ê°€ì£½";
     public int minUniqueDrop = 0;
     public int maxUniqueDrop = 3;
 
-    [Header("Áß°£º¸½º µå¶ø(ÀÎ½ºÆåÅÍ Á¶Àı)")]
+    [Header("ì¤‘ê°„ë³´ìŠ¤ ë“œë(ì¸ìŠ¤í™í„° ì¡°ì ˆ)")]
     public int bossMinGoldDrop = 100;
     public int bossMaxGoldDrop = 200;
     public int bossMinUniqueDrop = 1;
     public int bossMaxUniqueDrop = 5;
 
-    [Header("µå¶ø ÇÁ¸®ÆÕ")]
-    public GameObject goldPickupPrefab;    // GoldPickup ºÙÀº ¿ÀºêÁ§Æ®
-    public GameObject uniquePickupPrefab;  // UniqueItemPickup ºÙÀº ¿ÀºêÁ§Æ®
-
-    [Header("»ç¸Á ¿¬Ãâ")]
+    [Header("ì‚¬ë§ ì—°ì¶œ")]
     public float deathAnimHold = 1f;
     public float fadeOutDuration = 1.5f;
 
-    [Header("¿¬°á")]
+    [Header("ì—°ê²°")]
     public EnemyAI ai;
     public EnemyHealth health;
     public Animator animator;
 
     public event Action onDeath;
-    bool deadInvoked;
+    private bool deadInvoked;
 
     void Awake()
     {
@@ -56,10 +52,13 @@ public class EnemyController : MonoBehaviour
         ApplyRegionDefaults();
         if (health) health.Init(maxHP, this);
 
-        // ±ÔÄ¢: °¢ ¿µÁöÀÇ "3-3"Àº Áß°£º¸½º
+        // ê·œì¹™: ê° ì˜ì§€ì˜ "3-3"ì€ ì¤‘ê°„ë³´ìŠ¤
         if (!isBoss && stage == 3 && round == 3) isBoss = true;
     }
 
+    // ==============================================
+    // ğŸ§© ì§€ì—­ë³„ ê¸°ë³¸ ìŠ¤íƒ¯ ìë™ ì ìš©
+    // ==============================================
     void ApplyRegionDefaults()
     {
         switch (region)
@@ -67,27 +66,29 @@ public class EnemyController : MonoBehaviour
             case 1:
                 attackDamage = 5; maxHP = 5;
                 minGoldDrop = 5; maxGoldDrop = 10;
-                uniqueDropName = "°íºí¸°ÀÇ °¡Á×"; break;
+                uniqueDropName = "ê³ ë¸”ë¦°ì˜ ê°€ì£½"; break;
             case 2:
                 attackDamage = 25; maxHP = 15;
                 minGoldDrop = 10; maxGoldDrop = 25;
-                uniqueDropName = "°ñ·½ÀÇ ÆÄÆí"; break;
+                uniqueDropName = "ê³¨ë ˜ì˜ íŒŒí¸"; break;
             case 3:
                 attackDamage = 30; maxHP = 50;
                 minGoldDrop = 25; maxGoldDrop = 50;
-                uniqueDropName = "È­¿°±¸½½"; break;
+                uniqueDropName = "í™”ì—¼ êµ¬ìŠ¬"; break;
             case 4:
                 attackDamage = 35; maxHP = 100;
                 minGoldDrop = 50; maxGoldDrop = 75;
-                uniqueDropName = "´«¹°Á¶°¢"; break;
+                uniqueDropName = "ëˆˆë¬¼ ì¡°ê°"; break;
             case 5:
                 attackDamage = 40; maxHP = 150;
                 minGoldDrop = 75; maxGoldDrop = 100;
-                uniqueDropName = "Âõ¾îÁø °í¼­"; break;
+                uniqueDropName = "ì°¢ì–´ì§„ ê³ ì„œ"; break;
         }
     }
 
-    // ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ®·ÎºÎÅÍ È£ÃâµÊ(EnemyAI.OnAttackAnimationEvent)
+    // ==============================================
+    // ğŸ—¡ï¸ í”Œë ˆì´ì–´ ê³µê²© (EnemyAIì—ì„œ í˜¸ì¶œ)
+    // ==============================================
     public void AttackPlayer()
     {
         Vector3 center = transform.position + transform.forward * 1.2f + Vector3.up * 0.8f;
@@ -99,19 +100,20 @@ public class EnemyController : MonoBehaviour
         {
             var pc = c.GetComponent<PlayerController>();
             if (pc != null)
-            {
-                pc.TakeHit(attackDamage); // PlayerController¸¦ ÅëÇØ µ¥¹ÌÁö ¹× ¾Ö´Ï¸ŞÀÌ¼Ç Ã³¸®
-            }
+                pc.TakeHit(attackDamage);
         }
     }
 
-
+    // ==============================================
+    // ğŸ’€ ì‚¬ë§ ì²˜ë¦¬ ë£¨í‹´
+    // ==============================================
     public void OnDeath()
     {
         if (deadInvoked) return;
         deadInvoked = true;
         StartCoroutine(DeathRoutine());
     }
+
     void DisableColliders()
     {
         foreach (var c in GetComponentsInChildren<Collider>())
@@ -134,53 +136,48 @@ public class EnemyController : MonoBehaviour
             ? UnityEngine.Random.Range(bossMinUniqueDrop, bossMaxUniqueDrop + 1)
             : UnityEngine.Random.Range(minUniqueDrop, maxUniqueDrop + 1);
 
-        SpawnDrops(gold, uniqueCnt);
+        // âœ… ìƒˆ DropManager ì‹œìŠ¤í…œìœ¼ë¡œ ë“œë ì²˜ë¦¬
+        if (DropManager.Instance != null)
+        {
+            for (int i = 0; i < uniqueCnt; i++)
+            {
+                DropManager.Instance.SpawnDrops(transform.position, region);
+            }
+
+            // ê³¨ë“œë„ ê°™ì´ ë“œë
+            // DropManager ì•ˆì—ì„œ region ê¸°ì¤€ìœ¼ë¡œ ê³¨ë“œ ìë™ ìƒì„±í•˜ë¯€ë¡œ ë”°ë¡œ í•„ìš” ì—†ìŒ
+        }
+        else
+        {
+            Debug.LogWarning("[EnemyController] DropManager ì¸ìŠ¤í„´ìŠ¤ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+        }
+
         yield return FadeOutAndDestroy();
         onDeath?.Invoke();
     }
 
-    void SpawnDrops(int gold, int uniqueCnt)
-    {
-        Vector3 basePos = transform.position;
-        if (TryGetComponent<Collider>(out var col))
-            basePos.y = col.bounds.min.y + 0.2f; // ¹Ù´Ú¿¡¼­ ¾à°£ À§
-        else
-            basePos += Vector3.up * 0.2f;
-
-        if (goldPickupPrefab)
-        {
-            var go = Instantiate(goldPickupPrefab, basePos, Quaternion.identity);
-            var gp = go.GetComponent<IGoldPickup>();
-            if (gp != null) gp.SetGold(gold);
-        }
-
-        if (uniquePickupPrefab && uniqueCnt > 0)
-        {
-            for (int i = 0; i < uniqueCnt; i++)
-            {
-                Vector3 offset = new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 0, UnityEngine.Random.Range(-0.5f, 0.5f));
-                var go = Instantiate(uniquePickupPrefab, basePos + offset, Quaternion.identity);
-                var up = go.GetComponent<IUniquePickup>();
-                if (up != null) up.SetItem(uniqueDropName, 1);
-            }
-        }
-    }
-
+    // ==============================================
+    // ğŸŒ«ï¸ ì‚¬ë§ í›„ í˜ì´ë“œ ì•„ì›ƒ
+    // ==============================================
     IEnumerator FadeOutAndDestroy()
     {
         float t = 0f;
         var rends = GetComponentsInChildren<Renderer>(true);
-        foreach (var r in rends) r.material = new Material(r.material); // ÀÎ½ºÅÏ½ºÈ­
+        foreach (var r in rends)
+            r.material = new Material(r.material); // ì¸ìŠ¤í„´ìŠ¤í™”
 
         while (t < fadeOutDuration)
         {
             t += Time.deltaTime;
             float a = 1f - t / fadeOutDuration;
+
             foreach (var r in rends)
             {
                 if (r.material.HasProperty("_Color"))
                 {
-                    var c = r.material.color; c.a = a; r.material.color = c;
+                    var c = r.material.color;
+                    c.a = a;
+                    r.material.color = c;
                 }
             }
             yield return null;

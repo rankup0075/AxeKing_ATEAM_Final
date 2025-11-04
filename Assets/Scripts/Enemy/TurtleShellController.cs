@@ -186,6 +186,8 @@ public class TurtleShellController : MonoBehaviour
     {
         yield return new WaitForSeconds(2f); // 60프레임 (2초)
 
+        DropManager.Instance?.SpawnDrops(transform.position, 2);
+
         UIManager.Instance?.HideEnemyHUD();
         onDeath?.Invoke();
 
