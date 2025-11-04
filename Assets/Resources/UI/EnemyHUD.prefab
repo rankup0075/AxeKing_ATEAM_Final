@@ -85,7 +85,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.92333335
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -251,6 +251,7 @@ GameObject:
   - component: {fileID: 1812085497356993272}
   - component: {fileID: 8456273247238451401}
   - component: {fileID: 3562928891284594126}
+  - component: {fileID: 2762601976507148059}
   m_Layer: 5
   m_Name: EnemyHUD
   m_TagString: Untagged
@@ -331,8 +332,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHUDController
   nameText: {fileID: 1759773935503511101}
   hpBar: {fileID: 3797261965599143204}
-  canvasGroup: {fileID: 0}
+  canvasGroup: {fileID: 2762601976507148059}
   hideDelay: 3
+--- !u!225 &2762601976507148059
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4658770527681688310}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &6599375305719472143
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,7 +447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: God Root Phase1
+  m_text: "\uACE0\uBE14\uB9B0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1b356b5daebda32499487417d7f51bac, type: 2}
   m_sharedMaterial: {fileID: 2655526217342710958, guid: 1b356b5daebda32499487417d7f51bac, type: 2}

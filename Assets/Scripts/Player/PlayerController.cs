@@ -14,20 +14,17 @@ public class PlayerController : MonoBehaviour
     public float attackRange = 2f;
     public LayerMask enemyLayers;
 
-
     [SerializeField] float attackInterval = 0.4f;
     float nextAttackTime = 0f;
 
     [Header("Attack Point")]
     public Transform attackPoint;
 
-    // Components
     private Rigidbody rb;
     private Animator animator;
     private PlayerHealth playerHealth;
     private PlayerInventory inventory;
 
-    // State
     private bool isGrounded = true;
     private bool isAttacking = false;
     private bool isStunned = false;
@@ -39,7 +36,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float stepCheckDistance = 0.5f;
     [SerializeField] LayerMask groundLayer;
 
-    // Animator hashes
     private int speedHash = Animator.StringToHash("Speed");
     private int groundedHash = Animator.StringToHash("IsGrounded");
     private int attackHash = Animator.StringToHash("Attack");
@@ -147,7 +143,6 @@ public class PlayerController : MonoBehaviour
     // ================= Movement =================
     void HandleMovement(float horizontal)
     {
-        // 지상 공격 중에는 이동 금지, 공중은 허용
         if (isAttacking && isGrounded) return;
 
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
@@ -158,7 +153,6 @@ public class PlayerController : MonoBehaviour
         if (horizontal > 0) transform.rotation = Quaternion.Euler(0, 0, 0);
         else if (horizontal < 0) transform.rotation = Quaternion.Euler(0, 180, 0);
     }
-
 
     float _stepCooldown;
     void OnFootstep()
@@ -183,11 +177,11 @@ public class PlayerController : MonoBehaviour
         SFXManager.Instance?.Play(SfxId.Jump);
     }
 
-    // ================= Attack (B형식) =================
+    // ================= Attack =================
     void HandleAttack()
     {
         if (isStunned || !canMove) return;
-        if (Time.time < nextAttackTime) return;   // 쿨타임 미도래 시 무시
+        if (Time.time < nextAttackTime) return;
 
         StartAttack();
         nextAttackTime = Time.time + attackInterval;
@@ -209,7 +203,7 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger(airAttackHash);
     }
 
-    public void EndAttack() // 애니메이션 이벤트
+    public void EndAttack()
     {
         isAttacking = false;
 
@@ -221,6 +215,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // ✅ 수정된 부분: 돌거북 포함
     public void ProcessAttackHit()
     {
         bool hitAny = false;
@@ -237,6 +232,22 @@ public class PlayerController : MonoBehaviour
             else if (enemy.TryGetComponent(out BossHealth b))
             {
                 b.TakeDamage(attackDamage);
+                hitAny = true;
+            }
+            else if (enemy.TryGetComponent(out SlimeController s))
+            {
+                s.TakeDamage(attackDamage);
+                hitAny = true;
+            }
+            else if (enemy.TryGetComponent(out GoblinController g))
+            {
+                g.TakeDamage(attackDamage);
+                hitAny = true;
+            }
+            // ✅ 추가: 돌거북
+            else if (enemy.TryGetComponent(out TurtleShellController t))
+            {
+                t.TakeDamage(attackDamage);
                 hitAny = true;
             }
         }
@@ -282,7 +293,6 @@ public class PlayerController : MonoBehaviour
         GameManager.Instance.GameOver();
     }
 
-    // ================= Collision =================
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -306,7 +316,6 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
     }
 
-    // ================= Interaction =================
     void HandlePotions()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) inventory.UsePotion(0);
@@ -332,7 +341,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // ================= StopImmediately =================
     public void StopImmediately()
     {
         if (rb != null)
@@ -375,7 +383,6 @@ public class PlayerController : MonoBehaviour
         else animator.SetFloat(speedHash, 0f);
     }
 
-    // ================= Gizmos =================
     void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;

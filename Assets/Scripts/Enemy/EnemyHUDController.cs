@@ -1,56 +1,99 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
+[DisallowMultipleComponent]
 public class EnemyHUDController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private Slider hpBar;
     [SerializeField] private CanvasGroup canvasGroup;
-    [SerializeField] private float hideDelay = 3f; // °ø°İ ¾øÀ» ¶§ ÀÚµ¿ ¼û±è ´ë±â½Ã°£
+    [SerializeField] private float hideDelay = 3f; // ê³µê²© ì—†ì„ ë•Œ ìë™ ìˆ¨ê¹€ ëŒ€ê¸°ì‹œê°„
 
     private Coroutine hideRoutine;
 
+    void Awake()
+    {
+        // âœ… ì»´í¬ë„ŒíŠ¸ ìë™ ì—°ê²° (Inspector ëˆ„ë½ ëŒ€ë¹„)
+        if (canvasGroup == null)
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                canvasGroup.alpha = 0f;
+            }
+        }
+
+        if (hpBar == null)
+            hpBar = GetComponentInChildren<Slider>(true);
+
+        if (nameText == null)
+            nameText = GetComponentInChildren<TextMeshProUGUI>(true);
+    }
+
     public void Setup(string enemyName, float ratio)
     {
-        nameText.text = enemyName;
-        hpBar.value = ratio;
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        if (nameText != null)
+            nameText.text = enemyName;
+
+        if (hpBar != null)
+            hpBar.value = Mathf.Clamp01(ratio);
+
         Show();
     }
 
     public void UpdateHP(float ratio)
     {
-        hpBar.value = Mathf.Clamp01(ratio);
-        Show(); // »õ·Î ¸ÂÀ¸¸é HUD À¯Áö½Ã°£ ¸®¼Â
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        if (hpBar != null)
+            hpBar.value = Mathf.Clamp01(ratio);
+
+        Show(); // ìƒˆë¡œ ë§ìœ¼ë©´ HUD ìœ ì§€ì‹œê°„ ë¦¬ì…‹
     }
 
     public void Show()
     {
+        // âœ… ì•ˆì „í•˜ê²Œ HUD í™œì„±í™”
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
-        if (canvasGroup)
+        if (canvasGroup != null)
             canvasGroup.alpha = 1f;
 
-        // ÀÌÀü Å¸ÀÌ¸Ó Áß´Ü
+        // âœ… ì´ì „ ì½”ë£¨í‹´ ì¤‘ë‹¨ í›„ ë‹¤ì‹œ ì‹œì‘
         if (hideRoutine != null)
             StopCoroutine(hideRoutine);
 
-        //  ÇÁ·¹ÀÓ ³¡±îÁö ´ë±â ÈÄ ÄÚ·çÆ¾ ½ÃÀÛ 
-        StartCoroutine(DelayedAutoHide());
+        hideRoutine = StartCoroutine(SafeDelayedHide());
     }
 
-    private IEnumerator DelayedAutoHide()
+    private IEnumerator SafeDelayedHide()
     {
-        yield return null; // 1 ÇÁ·¹ÀÓ ´ë±â ¡æ GameObject È°¼ºÈ­ ¿Ï·á º¸Àå
+        yield return null;
+
+        // ë¹„í™œì„± ìƒíƒœë©´ ì¢…ë£Œ
+        if (!isActiveAndEnabled || !gameObject.activeInHierarchy)
+            yield break;
+
+        // ì¼ì • ì‹œê°„ ë’¤ ìë™ ìˆ¨ê¹€
         hideRoutine = StartCoroutine(AutoHideRoutine());
     }
 
     public void Hide()
     {
-        if (canvasGroup) canvasGroup.alpha = 0f;
-        gameObject.SetActive(false);
+        // âœ… ë¹„í™œì„± ìƒíƒœë‚˜ ì»´í¬ë„ŒíŠ¸ ëˆ„ë½ ë°©ì–´
+        if (!isActiveAndEnabled) return;
+        if (canvasGroup == null) return;
+
+        canvasGroup.alpha = 0f;
+        Debug.Log("[EnemyHUDController] HUD ìˆ¨ê¹€ ì²˜ë¦¬ë¨");
     }
 
     private IEnumerator AutoHideRoutine()

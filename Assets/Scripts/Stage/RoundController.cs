@@ -1,69 +1,121 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class RoundController : MonoBehaviour
 {
-    [Header("¶ó¿îµå ¼³Á¤")]
-    [Tooltip("GameManager¿¡¼­ ¶ó¿îµå »óÅÂ¸¦ ±¸ºĞÇÒ °íÀ¯ ID (¿¹: Stage101_R1)")]
+    [Header("ë¼ìš´ë“œ ì„¤ì •")]
+    [Tooltip("GameManagerì—ì„œ ë¼ìš´ë“œ ìƒíƒœë¥¼ êµ¬ë¶„í•  ê³ ìœ  ID (ì˜ˆ: Stage101_R1)")]
     public string roundId;
 
-    [Tooltip("ÀÌ ¶ó¿îµå¿¡ µîÀåÇÏ´Â ÀûµéÀ» ¾À¿¡ ¹èÄ¡ ÈÄ µå·¡±× µå·Ó")]
+    [Tooltip("ì´ ë¼ìš´ë“œì— ë“±ì¥í•˜ëŠ” ì ë“¤ì„ ì”¬ì—ì„œ ìë™ìœ¼ë¡œ ì°¾ê±°ë‚˜ ì§ì ‘ ì§€ì •")]
     public GameObject[] enemies;
 
-    [Tooltip("¶ó¿îµå Å¬¸®¾î ÈÄ È°¼ºÈ­µÉ Ãâ±¸ Æ÷Å»")]
+    [Tooltip("ë¼ìš´ë“œ í´ë¦¬ì–´ í›„ í™œì„±í™”ë  ì¶œêµ¬ í¬íƒˆ")]
     public Portal exitPortal;
 
     private int aliveCount;
 
     void Start()
     {
-        // ÀÌ¹Ì Å¬¸®¾îµÈ ¶ó¿îµå¶ó¸é ¡æ Æ÷Å» Áï½Ã È°¼ºÈ­
+        // âœ… 1ï¸âƒ£ ì”¬ ë‚´ ëª¨ë“  EnemyController / SlimeController / GoblinController / TurtleShellController ìë™ íƒìƒ‰
+        if (enemies == null || enemies.Length == 0)
+        {
+            var foundEnemies = FindObjectsOfType<MonoBehaviour>();
+            var list = new System.Collections.Generic.List<GameObject>();
+
+            foreach (var comp in foundEnemies)
+            {
+                if (comp is EnemyController || comp is SlimeController || comp is GoblinController || comp is TurtleShellController)
+                    list.Add(comp.gameObject);
+            }
+            enemies = list.ToArray();
+        }
+
+        // âœ… 2ï¸âƒ£ ì´ë¯¸ í´ë¦¬ì–´ëœ ë¼ìš´ë“œë¼ë©´ í¬íƒˆ ì¦‰ì‹œ ì—´ê¸°
         if (exitPortal != null)
         {
             bool cleared = GameManager.Instance.IsRoundCleared(roundId);
             exitPortal.SetActiveState(cleared);
         }
 
-        // Àû °³¼ö Ä«¿îÆ®
         aliveCount = enemies.Length;
 
-        // °¢ Àû¿¡ ÀÌº¥Æ® ¿¬°á
+        // âœ… 3ï¸âƒ£ ì ë§ˆë‹¤ onDeath ì´ë²¤íŠ¸ ì—°ê²°
         foreach (var enemy in enemies)
         {
             if (enemy == null) continue;
 
+            // EnemyController
             var ec = enemy.GetComponent<EnemyController>();
             if (ec != null)
             {
-                // º¸½ºÀÎÁö ¿©ºÎ¿¡ µû¶ó ±¸ºĞ
                 if (ec.isBoss)
                     ec.onDeath += OnBossDeath;
                 else
                     ec.onDeath += OnEnemyDeath;
+                continue;
+            }
+
+            // SlimeController
+            var sc = enemy.GetComponent<SlimeController>();
+            if (sc != null)
+            {
+                sc.onDeath += OnEnemyDeath;
+                continue;
+            }
+
+            // GoblinController
+            var gc = enemy.GetComponent<GoblinController>();
+            if (gc != null)
+            {
+                gc.onDeath += OnEnemyDeath;
+                continue;
+            }
+
+            // âœ… TurtleShellController
+            var tc = enemy.GetComponent<TurtleShellController>();
+            if (tc != null)
+            {
+                tc.onDeath += OnEnemyDeath;
+                continue;
             }
         }
+
+        Debug.Log($"[RoundController] ë¼ìš´ë“œ ì‹œì‘: {roundId}, ì  {aliveCount}ëª… ë“±ë¡ ì™„ë£Œ");
     }
 
+    // âœ… ì¼ë°˜ ì  ì‚¬ë§ ì‹œ
     void OnEnemyDeath()
     {
         aliveCount--;
-        if (aliveCount <= 0) ClearRound();
+        Debug.Log($"[RoundController] ì  ì²˜ì¹˜ë¨ â†’ ë‚¨ì€ ìˆ˜ {aliveCount}");
+
+        if (aliveCount <= 0)
+            ClearRound();
     }
 
+    // âœ… ë³´ìŠ¤ ì‚¬ë§ ì‹œ
     void OnBossDeath()
     {
-        // º¸½º Ã³Ä¡ ±â·Ï
         GameManager.Instance.SetBossDefeated(roundId);
         aliveCount--;
-        if (aliveCount <= 0) ClearRound();
+        Debug.Log($"[RoundController] ë³´ìŠ¤ ì²˜ì¹˜ë¨ â†’ ë‚¨ì€ ìˆ˜ {aliveCount}");
+
+        if (aliveCount <= 0)
+            ClearRound();
     }
 
+    // âœ… í¬íƒˆ í™œì„±í™”
     void ClearRound()
     {
         if (exitPortal != null)
         {
             exitPortal.SetActiveState(true);
             GameManager.Instance.SetRoundCleared(roundId);
-            Debug.Log($"[RoundController] {roundId} Å¬¸®¾î ¡æ Æ÷Å» È°¼ºÈ­");
+            Debug.Log($"[RoundController] {roundId} í´ë¦¬ì–´ â†’ í¬íƒˆ í™œì„±í™” ì™„ë£Œ âœ…");
+        }
+        else
+        {
+            Debug.LogWarning($"[RoundController] {roundId} í´ë¦¬ì–´ â†’ í¬íƒˆì´ ì—°ê²°ë˜ì§€ ì•ŠìŒ âš ï¸");
         }
     }
 }
