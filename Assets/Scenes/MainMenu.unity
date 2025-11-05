@@ -13278,6 +13278,53 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1662628225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1662628227}
+  - component: {fileID: 1662628226}
+  m_Layer: 0
+  m_Name: DropManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1662628226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662628225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b55e3e0e5f5384188344630a04a7ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DropManager
+  goldPrefab: {fileID: 1498403948531744, guid: fa2c57d3f28a5e6419393e8bc3eeb32a, type: 3}
+  defaultMaterialPrefab: {fileID: -6689036041284674117, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
+  coinLandingEffectPrefab: {fileID: 4646265600311704019, guid: c420a90041e6d9548bfc75f351e4986f, type: 3}
+--- !u!4 &1662628227
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662628225}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.678, y: 8.1746, z: 11.678}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1674708886 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7301070649228654934, guid: a468fefa848c80540a4a13ed4cb090d2, type: 3}
@@ -14027,7 +14074,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 907100508}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9997555
+  m_Size: 0.9864698
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -17464,3 +17511,4 @@ SceneRoots:
   - {fileID: 2094929598}
   - {fileID: 4859014917493870075}
   - {fileID: 5854712224869168834}
+  - {fileID: 1662628227}

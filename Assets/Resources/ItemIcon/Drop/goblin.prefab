@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: goblin
       objectReference: {fileID: 0}
+    - target: {fileID: -6689036041284674117, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
+      propertyPath: m_TagString
+      value: DroppedItem
+      objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.32176

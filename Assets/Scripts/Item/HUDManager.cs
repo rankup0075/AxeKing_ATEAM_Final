@@ -52,7 +52,30 @@ public class HUDManager : MonoBehaviour
 
     private void UpdateMaterialUI(string itemName, int count)
     {
-        if (uiSlots.TryGetValue(itemName, out var ui))
+        // ✅ 영어 키 → 한글 HUD 이름 자동 변환
+        string mappedName = ConvertItemKey(itemName);
+
+        if (uiSlots.TryGetValue(mappedName, out var ui))
+        {
             ui.UpdateCount(count);
+        }
+        else
+        {
+            Debug.LogWarning($"[HUDManager] '{mappedName}'에 해당하는 HUD 슬롯을 찾을 수 없음");
+        }
+    }
+
+    // ✅ 아이템 키 이름을 HUD에 맞게 자동 변환
+    private string ConvertItemKey(string key)
+    {
+        switch (key)
+        {
+            case "goblin": return "고블린의 가죽";
+            case "golem": return "골렘의 파편";
+            case "flaming_orb": return "화염 구슬";
+            case "red_ice_crystals": return "눈물 조각";
+            case "Cross_LP": return "십자가";
+            default: return key;
+        }
     }
 }

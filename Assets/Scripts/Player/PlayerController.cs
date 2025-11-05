@@ -255,6 +255,12 @@ public class PlayerController : MonoBehaviour
                 ice.TakeDamage(attackDamage);
                 hitAny = true;
             }
+            // ✅ 신봉자(Mutant) 추가
+            else if (enemy.TryGetComponent(out MutantController cult))
+            {
+                cult.TakeDamage(attackDamage);
+                hitAny = true;
+            }
         }
 
         if (hitAny)

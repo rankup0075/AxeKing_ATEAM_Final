@@ -64,7 +64,7 @@ public class PlayerInventory : MonoBehaviour
         items["골렘의 파편"] = 0;
         items["화염 구슬"] = 0;
         items["눈물 조각"] = 0;
-        items["찢어진 고서"] = 0;
+        items["십자가"] = 0;
     }
 
     // ==============================
@@ -95,6 +95,7 @@ public class PlayerInventory : MonoBehaviour
     // ==============================
     public void AddMaterial(string itemName, int amount)
     {
+
         if (!items.ContainsKey(itemName))
             items[itemName] = 0;
 
@@ -233,7 +234,7 @@ public class PlayerInventory : MonoBehaviour
             UIManager.Instance.golemStoneText.text = GetItemCount("골렘의 파편").ToString();
             UIManager.Instance.flameBeadsText.text = GetItemCount("화염 구슬").ToString();
             UIManager.Instance.pieceofTearsText.text = GetItemCount("눈물 조각").ToString();
-            UIManager.Instance.tornOldBookText.text = GetItemCount("찢어진 고서").ToString();
+            UIManager.Instance.tornOldBookText.text = GetItemCount("십자가").ToString();
         }
     }
 

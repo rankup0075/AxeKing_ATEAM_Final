@@ -18,9 +18,10 @@ public class DropManager : MonoBehaviour
     private readonly Dictionary<int, string[]> regionMaterialNames = new Dictionary<int, string[]>
     {
         { 1, new [] { "goblin" } },
-        { 2, new [] { "golem" } },
+        { 2, new [] { "GOLEMLP" } },
         { 3, new [] { "flaming_orb" } },
-        { 4, new [] { "red_ice_crystals" } },
+        { 4, new [] { "MC_10009" } },
+        { 5, new [] { "Cross_LP" } },
     };
 
     void Awake()
@@ -62,7 +63,7 @@ public class DropManager : MonoBehaviour
             if (prefab != null)
             {
                 Vector3 matPos = position + new Vector3(Random.Range(-0.2f, 0.2f), 0.15f, Random.Range(-0.2f, 0.2f));
-                GameObject drop = Instantiate(prefab, matPos, Quaternion.identity);
+                GameObject drop = Instantiate(prefab, matPos, prefab.transform.rotation);
                 SetupDropPhysicsAndPickup(drop, ConvertToKoreanName(key), 1, 0.2f);
                 PlayLandingEffect(matPos);
             }
@@ -86,6 +87,8 @@ public class DropManager : MonoBehaviour
     /// </summary>
     private void SetupDropPhysicsAndPickup(GameObject obj, string itemName, int amount, float mass)
     {
+        obj.layer = LayerMask.NameToLayer("DroppedItem");
+
         // 1) 루트 콜라이더(비-트리거) 보장
         Collider rootCol = obj.GetComponent<Collider>();
         if (rootCol == null)
@@ -140,7 +143,10 @@ public class DropManager : MonoBehaviour
 
             var sphere = triggerGO.AddComponent<SphereCollider>();
             sphere.isTrigger = true;
-            sphere.radius = 0.6f;
+            if (obj.name.Contains("MC_10009"))
+                sphere.radius = 0.01f; // ✅ 작게 조정
+            else
+                sphere.radius = 0.6f;
         }
 
         // 4) DropItem 데이터 부착
@@ -163,9 +169,12 @@ public class DropManager : MonoBehaviour
         {
             case "gold": return "골드";
             case "goblin": return "고블린의 가죽";
+            case "GOLEMLP": return "골렘의 파편";   // ✅ 추가
             case "golem": return "골렘의 파편";
             case "flaming_orb": return "화염 구슬";
             case "red_ice_crystals": return "눈물 조각";
+            case "MC_10009": return "눈물 조각"; // 추가
+            case "Cross_LP": return "십자가";
             default: return key;
         }
     }

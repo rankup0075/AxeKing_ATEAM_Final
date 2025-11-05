@@ -10,6 +10,8 @@ TagManager:
   - NPC
   - Root
   - Pet
+  - RockSet_01
+  - DroppedItem
   layers:
   - Default
   - TransparentFX
@@ -24,7 +26,7 @@ TagManager:
   - NPC
   - Wall
   - EnemyAttack
-  - 
+  - DroppedItem
   - 
   - 
   - 

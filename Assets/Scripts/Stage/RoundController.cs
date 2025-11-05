@@ -25,7 +25,8 @@ public class RoundController : MonoBehaviour
             foreach (var comp in foundEnemies)
             {
                 if (comp is EnemyController || comp is SlimeController || comp is GoblinController ||
-                    comp is TurtleShellController || comp is IceSpiritController) // ✅ 추가
+                    comp is TurtleShellController || comp is IceSpiritController ||
+                    comp is MutantController) // ✅ 신봉자 추가
                     list.Add(comp.gameObject);
             }
             enemies = list.ToArray();
@@ -70,9 +71,16 @@ public class RoundController : MonoBehaviour
                 continue;
             }
 
-            if (enemy.TryGetComponent(out IceSpiritController ic)) // ✅ 추가
+            if (enemy.TryGetComponent(out IceSpiritController ic))
             {
                 ic.onDeath += OnEnemyDeath;
+                continue;
+            }
+
+            // ✅ 신봉자 (MutantController) 추가
+            if (enemy.TryGetComponent(out MutantController mc))
+            {
+                mc.onDeath += OnEnemyDeath;
                 continue;
             }
         }

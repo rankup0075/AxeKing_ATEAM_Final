@@ -5350,53 +5350,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4763728976229326, guid: 9b77d12e48b7f364a82333485eca4473, type: 3}
   m_PrefabInstance: {fileID: 1059443073}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &619030311
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 619030313}
-  - component: {fileID: 619030312}
-  m_Layer: 0
-  m_Name: DropManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &619030312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619030311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52b55e3e0e5f5384188344630a04a7ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DropManager
-  goldPrefab: {fileID: 1498403948531744, guid: fa2c57d3f28a5e6419393e8bc3eeb32a, type: 3}
-  defaultMaterialPrefab: {fileID: -6689036041284674117, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
-  coinLandingEffectPrefab: {fileID: 4646265600311704019, guid: c420a90041e6d9548bfc75f351e4986f, type: 3}
---- !u!4 &619030313
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619030311}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.678, y: 8.1746, z: 11.678}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &782692127
 GameObject:
   m_ObjectHideFlags: 0
@@ -6898,4 +6851,3 @@ SceneRoots:
   - {fileID: 354010140}
   - {fileID: 826492249}
   - {fileID: 852399595}
-  - {fileID: 619030313}
