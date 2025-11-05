@@ -1,3 +1,4 @@
+ï»¿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -22,47 +23,60 @@ public class PlayerInventory : MonoBehaviour
     private PlayerHealth playerHealth;
     private PlayerController playerController;
 
+    // âœ… [NEW] ì¬ë£Œ ë³€í™” ì´ë²¤íŠ¸ (HUDManager ì—°ê²°ìš©)
+    public event Action<string, int> OnMaterialChanged;
+
     void Start()
     {
         playerHealth = GetComponent<PlayerHealth>();
         playerController = GetComponent<PlayerController>();
 
-        // === ¼¼ÀÌºê Á¸Àç ¿©ºÎ È®ÀÎ ===
+        // âœ… PickupInteractor ìë™ ë¶€ì°©
+        if (GetComponent<PickupInteractor>() == null)
+        {
+            var interactor = gameObject.AddComponent<PickupInteractor>();
+            interactor.inventory = this;
+
+            // íŠ¸ë¦¬ê±°ìš© Sphere Colliderë„ ìë™ ìƒì„±
+            SphereCollider col = gameObject.AddComponent<SphereCollider>();
+            col.isTrigger = true;
+            col.radius = 1.5f;
+            Debug.Log("[PlayerInventory] PickupInteractor ìë™ ì¶”ê°€ë¨ âœ…");
+        }
+
+        // ì„¸ì´ë¸Œ ì²´í¬ ë° ì´ˆê¸°í™”
         bool hasSave =
-            File.Exists(Path.Combine(Application.persistentDataPath, "save_auto.json")) ||
-            File.Exists(Path.Combine(Application.persistentDataPath, "save_slot1.json")) ||
-            File.Exists(Path.Combine(Application.persistentDataPath, "save_slot2.json")) ||
-            File.Exists(Path.Combine(Application.persistentDataPath, "save_slot3.json"));
+            System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "save_auto.json")) ||
+            System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "save_slot1.json")) ||
+            System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "save_slot2.json")) ||
+            System.IO.File.Exists(Path.Combine(Application.persistentDataPath, "save_slot3.json"));
 
         if (!hasSave)
-        {
-            // ¼¼ÀÌºê ¾øÀ» ¶§¸¸ ±âº» ¾ÆÀÌÅÛ ¸ñ·Ï ÃÊ±âÈ­
             InitializeItems();
-        }
 
         UpdateUI();
     }
 
     public void InitializeItems()
     {
-        // ±âº» ÀÚ¿ø ÃÊ±âÈ­
-        items["°íºí¸°ÀÇ °¡Á×"] = 0;
-        items["°ñ·½ÀÇ ÆÄÆí"] = 0;
-        items["È­¿° ±¸½½"] = 0;
-        items["´«¹° Á¶°¢"] = 0;
-        items["Âõ¾îÁø °í¼­"] = 0;
+        // ê¸°ë³¸ ìì› ì´ˆê¸°í™”
+        items["ê³ ë¸”ë¦°ì˜ ê°€ì£½"] = 0;
+        items["ê³¨ë ˜ì˜ íŒŒí¸"] = 0;
+        items["í™”ì—¼ êµ¬ìŠ¬"] = 0;
+        items["ëˆˆë¬¼ ì¡°ê°"] = 0;
+        items["ì°¢ì–´ì§„ ê³ ì„œ"] = 0;
     }
 
-    // ¾ÆÀÌÅÛ Ãß°¡
+    // ==============================
+    // ì•„ì´í…œ ì¶”ê°€ (ê³¨ë“œ ë“± ì¼ë°˜ ì•„ì´í…œ)
+    // ==============================
     public void AddItem(string itemName, int amount)
     {
         if (!items.ContainsKey(itemName))
-        {
             items[itemName] = 0;
-        }
 
         items[itemName] += amount;
-        Debug.Log($"[Inventory] {itemName} {amount}°³ Ãß°¡ (ÃÑ {items[itemName]}°³)");
+        Debug.Log($"[Inventory] {itemName} {amount}ê°œ ì¶”ê°€ (ì´ {items[itemName]}ê°œ)");
 
         if (QuestManager.Instance != null)
             QuestManager.Instance.UpdateQuestProgress();
@@ -70,12 +84,14 @@ public class PlayerInventory : MonoBehaviour
         UIManager.Instance?.UpdateHUDPotions(smallPotions, mediumPotions, largePotions);
 
         UpdateUI();
-
         GameManager.Instance?.SavePlayerData();
+
+        // âœ… HUD ìë™ ë°˜ì˜ (ì´ë²¤íŠ¸ ë°œì†¡)
+        OnMaterialChanged?.Invoke(itemName, items[itemName]);
     }
 
     // ==============================
-    // [NEW] Àç·á Àü¿ë Ãß°¡ ÇÔ¼ö (µå¶ø ¾ÆÀÌÅÛ È¹µæ¿ë)
+    // [NEW] ì¬ë£Œ ì „ìš© ì¶”ê°€ í•¨ìˆ˜ (ë“œë ì•„ì´í…œ íšë“ìš©)
     // ==============================
     public void AddMaterial(string itemName, int amount)
     {
@@ -83,46 +99,56 @@ public class PlayerInventory : MonoBehaviour
             items[itemName] = 0;
 
         items[itemName] += amount;
-        Debug.Log($"[Inventory] Àç·á '{itemName}' {amount}°³ È¹µæ (ÃÑ {items[itemName]}°³)");
+        Debug.Log($"[Inventory] ì¬ë£Œ '{itemName}' {amount}ê°œ íšë“ (ì´ {items[itemName]}ê°œ)");
 
         UpdateUI();
 
-        // Äù½ºÆ® ¾÷µ¥ÀÌÆ®
-        if (QuestManager.Instance != null)
-            QuestManager.Instance.UpdateQuestProgress();
+        // í€˜ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        QuestManager.Instance?.UpdateQuestProgress();
 
-        // UI¿¡ ¾Ë¸² (ÇÃ·ÎÆÃ ÅØ½ºÆ®)
+        // UI ì•Œë¦¼ (í”Œë¡œíŒ… í…ìŠ¤íŠ¸)
         UIManager.Instance?.ShowFloatingText($"+{amount} {itemName}", transform.position + Vector3.up * 2f);
 
         GameManager.Instance?.SavePlayerData();
+
+        // âœ… HUD ìë™ ë°˜ì˜ (ì´ë²¤íŠ¸ ë°œì†¡)
+        OnMaterialChanged?.Invoke(itemName, items[itemName]);
     }
 
-
-    // ¾ÆÀÌÅÛ Á¦°Å
+    // ==============================
+    // ì•„ì´í…œ ì œê±°
+    // ==============================
     public bool RemoveItem(string itemName, int amount)
     {
         if (items.ContainsKey(itemName) && items[itemName] >= amount)
         {
             items[itemName] -= amount;
-            Debug.Log($"[Inventory] {itemName} {amount}°³ Á¦°Å (³²Àº {items[itemName]}°³)");
+            Debug.Log($"[Inventory] {itemName} {amount}ê°œ ì œê±° (ë‚¨ì€ {items[itemName]}ê°œ)");
 
-            if (QuestManager.Instance != null)
-                QuestManager.Instance.UpdateQuestProgress();
+            QuestManager.Instance?.UpdateQuestProgress();
 
             UpdateUI();
 
+            // âœ… HUD ê°±ì‹  ì´ë²¤íŠ¸
+            OnMaterialChanged?.Invoke(itemName, items[itemName]);
+
             return true;
         }
-        Debug.LogWarning($"[Inventory] {itemName} ºÎÁ· (½Ãµµ: {amount}, º¸À¯: {GetItemCount(itemName)})");
+        Debug.LogWarning($"[Inventory] {itemName} ë¶€ì¡± (ì‹œë„: {amount}, ë³´ìœ : {GetItemCount(itemName)})");
         return false;
     }
 
-    // °³¼ö Á¶È¸
+    // ==============================
+    // ê°œìˆ˜ ì¡°íšŒ
+    // ==============================
     public int GetItemCount(string itemName)
     {
         return items.ContainsKey(itemName) ? items[itemName] : 0;
     }
 
+    // ==============================
+    // ì¥ë¹„ ê´€ë ¨
+    // ==============================
     public void AddEquipment(string itemName, ShopUI.ItemType type, int statBonus, Sprite icon = null)
     {
         ItemEquipment newEquipment = new ItemEquipment
@@ -136,12 +162,12 @@ public class PlayerInventory : MonoBehaviour
         if (type == ShopUI.ItemType.Weapon)
         {
             weaponStorage.Add(newEquipment);
-            Debug.Log($"[Inventory] ¹«±â {itemName} Ã¢°í¿¡ Ãß°¡µÊ (ÃÑ {weaponStorage.Count}°³ º¸À¯)");
+            Debug.Log($"[Inventory] ë¬´ê¸° {itemName} ì°½ê³ ì— ì¶”ê°€ë¨ (ì´ {weaponStorage.Count}ê°œ ë³´ìœ )");
         }
         else if (type == ShopUI.ItemType.Armor)
         {
             armorStorage.Add(newEquipment);
-            Debug.Log($"[Inventory] ¹æ¾î±¸ {itemName} Ã¢°í¿¡ Ãß°¡µÊ (ÃÑ {armorStorage.Count}°³ º¸À¯)");
+            Debug.Log($"[Inventory] ë°©ì–´êµ¬ {itemName} ì°½ê³ ì— ì¶”ê°€ë¨ (ì´ {armorStorage.Count}ê°œ ë³´ìœ )");
         }
     }
 
@@ -153,9 +179,7 @@ public class PlayerInventory : MonoBehaviour
                 currentWeapon.RemoveStats(playerController, playerHealth);
 
             currentWeapon = equipment;
-
-            if (equipment != null)
-                equipment.ApplyStats(playerController, playerHealth);
+            currentWeapon?.ApplyStats(playerController, playerHealth);
         }
         else if (type == ShopUI.ItemType.Armor)
         {
@@ -163,12 +187,13 @@ public class PlayerInventory : MonoBehaviour
                 currentArmor.RemoveStats(playerController, playerHealth);
 
             currentArmor = equipment;
-
-            if (equipment != null)
-                equipment.ApplyStats(playerController, playerHealth);
+            currentArmor?.ApplyStats(playerController, playerHealth);
         }
     }
 
+    // ==============================
+    // í¬ì…˜ ì‚¬ìš©/ì¶”ê°€
+    // ==============================
     public void UsePotion(int potionType)
     {
         if (playerHealth.CurrentHealth >= playerHealth.MaxHealth) return;
@@ -194,54 +219,74 @@ public class PlayerInventory : MonoBehaviour
         UpdateUI();
     }
 
+    // ==============================
+    // UI ê°±ì‹ 
+    // ==============================
     void UpdateUI()
     {
         UIManager.Instance.UpdatePotionCount(smallPotions, mediumPotions, largePotions);
-
-        // [NEW] HUD Æ÷¼Ç UIµµ °»½Å
         UIManager.Instance.UpdateHUDPotions(smallPotions, mediumPotions, largePotions);
 
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.goblinLeatherText.text = GetItemCount("°íºí¸°ÀÇ °¡Á×").ToString();
-            UIManager.Instance.golemStoneText.text = GetItemCount("°ñ·½ÀÇ ÆÄÆí").ToString();
-            UIManager.Instance.flameBeadsText.text = GetItemCount("È­¿° ±¸½½").ToString();
-            UIManager.Instance.pieceofTearsText.text = GetItemCount("´«¹° Á¶°¢").ToString();
-            UIManager.Instance.tornOldBookText.text = GetItemCount("Âõ¾îÁø °í¼­").ToString();
+            UIManager.Instance.goblinLeatherText.text = GetItemCount("ê³ ë¸”ë¦°ì˜ ê°€ì£½").ToString();
+            UIManager.Instance.golemStoneText.text = GetItemCount("ê³¨ë ˜ì˜ íŒŒí¸").ToString();
+            UIManager.Instance.flameBeadsText.text = GetItemCount("í™”ì—¼ êµ¬ìŠ¬").ToString();
+            UIManager.Instance.pieceofTearsText.text = GetItemCount("ëˆˆë¬¼ ì¡°ê°").ToString();
+            UIManager.Instance.tornOldBookText.text = GetItemCount("ì°¢ì–´ì§„ ê³ ì„œ").ToString();
         }
     }
 
     // ==============================
-    // Å×½ºÆ®¿ë: Å° ÀÔ·ÂÀ¸·Î ¾ÆÀÌÅÛ ¼ö Á¶Á¤
+    // í…ŒìŠ¤íŠ¸ìš© í‚¤ ì…ë ¥
     // ==============================
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J)) AddItem("°íºí¸°ÀÇ °¡Á×", 10);
-        if (Input.GetKeyDown(KeyCode.K)) AddItem("°ñ·½ÀÇ ÆÄÆí", 10);
-        if (Input.GetKeyDown(KeyCode.L)) AddItem("È­¿° ±¸½½", 10);
-        //if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem("´«¹° Á¶°¢", 10);
-        //if (Input.GetKeyDown(KeyCode.Alpha5)) AddItem("Âõ¾îÁø °í¼­", 10);
-
+        if (Input.GetKeyDown(KeyCode.J)) AddItem("ê³ ë¸”ë¦°ì˜ ê°€ì£½", 10);
+        if (Input.GetKeyDown(KeyCode.K)) AddItem("ê³¨ë ˜ì˜ íŒŒí¸", 10);
+        if (Input.GetKeyDown(KeyCode.L)) AddItem("í™”ì—¼ êµ¬ìŠ¬", 10);
         if (Input.GetKeyDown(KeyCode.Q))
-            Debug.Log($"[Inventory] °íºí¸°ÀÇ °¡Á×: {GetItemCount("°íºí¸°ÀÇ °¡Á×")}");
+            Debug.Log($"[Inventory] ê³ ë¸”ë¦°ì˜ ê°€ì£½: {GetItemCount("ê³ ë¸”ë¦°ì˜ ê°€ì£½")}");
     }
 
-
     // ==============================
-    // Æê AI ¿¬µ¿¿ë: ÇöÀç Àåºñ ÀÌ¸§ ¹İÈ¯
+    // í« AI ì—°ë™ìš©
     // ==============================
     public string GetEquippedWeaponName()
     {
         if (currentWeapon != null && !string.IsNullOrEmpty(currentWeapon.EquipmentitemName))
             return currentWeapon.EquipmentitemName;
-        return "¹«±â ¾øÀ½";
+        return "ë¬´ê¸° ì—†ìŒ";
     }
 
     public string GetEquippedArmorName()
     {
         if (currentArmor != null && !string.IsNullOrEmpty(currentArmor.EquipmentitemName))
             return currentArmor.EquipmentitemName;
-        return "¹æ¾î±¸ ¾øÀ½";
+        return "ë°©ì–´êµ¬ ì—†ìŒ";
+    }
+    void OnEnable()
+    {
+        // HUDManager ìë™ ì—°ê²°
+        TryAttachHUDManager();
+    }
+
+    private void TryAttachHUDManager()
+    {
+        // HUDManagerê°€ ì´ë¯¸ ìˆë‹¤ë©´ ìŠ¤í‚µ
+        if (FindObjectOfType<HUDManager>() != null) return;
+
+        // PlayerHUDCanvas ì°¾ê¸° (ëŸ°íƒ€ì„ ìƒì„±ëœ ê²½ìš° í¬í•¨)
+        var hudCanvas = GameObject.Find("PlayerHUDCanvas(Clone)");
+        if (hudCanvas == null)
+        {
+            Debug.LogWarning("[PlayerInventory] PlayerHUDCanvasë¥¼ ì°¾ì§€ ëª»í•¨");
+            return;
+        }
+
+        // ìë™ìœ¼ë¡œ HUDManager ë¶™ì´ê¸°
+        var manager = hudCanvas.AddComponent<HUDManager>();
+        Debug.Log("[PlayerInventory] HUDManagerë¥¼ PlayerHUDCanvasì— ìë™ ë¶€ì°© ì™„ë£Œ");
     }
 
 }

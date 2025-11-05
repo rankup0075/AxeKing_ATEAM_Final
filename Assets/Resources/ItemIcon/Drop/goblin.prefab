@@ -67,9 +67,6 @@ PrefabInstance:
       addedObject: {fileID: 2616541861868115083}
     - targetCorrespondingSourceObject: {fileID: 2484665033948473043, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2417576649229633360}
-    - targetCorrespondingSourceObject: {fileID: 2484665033948473043, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2084011991724947269}
   m_SourcePrefab: {fileID: -5645937942226959685, guid: 2c1a83fe4fc19fd489a3337536d8dcf2, type: 3}
 --- !u!1 &7852837227811002566 stripped
@@ -137,20 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f922830bc7b82474babc58daf38031d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DropItem
-  ItemName: "\uACE8\uB4DC"
+  ItemName: "\uACE0\uBE14\uB9B0\uC758 \uAC00\uC8FD"
   Amount: 1
---- !u!114 &2417576649229633360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7852837227811002566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de14e728653a3f34895a6baec75461fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickupInteractor
 --- !u!135 &2084011991724947269
 SphereCollider:
   m_ObjectHideFlags: 0
