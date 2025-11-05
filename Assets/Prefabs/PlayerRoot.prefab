@@ -87,16 +87,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   walkSpeed: 3
   runSpeed: 7
-  jumpForce: 7
+  jumpForce: 8
   attackDamage: 1
   hitStunDuration: 0.5
   attackRange: 2
   enemyLayers:
     serializedVersion: 2
     m_Bits: 128
+  attackInterval: 0.4
   attackPoint: {fileID: 1499504704093531569}
-  allowAirAttackLoop: 1
-  airAttackCooldown: 0.14
   canMove: 1
   stepHeight: 0.4
   stepSmooth: 6
@@ -233,7 +232,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 919f9ee09a1c2584fbefa96746a37bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
-  currentGold: 0
 --- !u!114 &3149507815565706143
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -25,7 +25,8 @@ public class PickupInteractor : MonoBehaviour
         // 인벤토리 추가
         if (drop.ItemName == "골드")
         {
-            inventory.AddItem("골드", drop.Amount);
+            // [수정] 골드는 GameManager에 직접 반영
+            GameManager.Instance.AddGold(drop.Amount);
         }
         else
         {

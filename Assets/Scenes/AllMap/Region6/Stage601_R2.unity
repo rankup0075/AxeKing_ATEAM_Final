@@ -2794,9 +2794,25 @@ PrefabInstance:
       value: 0.020455014
       objectReference: {fileID: 0}
     - target: {fileID: 5035250364490710673, guid: 2940f7806f2f1924491d9111b966feb6, type: 3}
+      propertyPath: enemyPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5035250364490710673, guid: 2940f7806f2f1924491d9111b966feb6, type: 3}
       propertyPath: cylindricalExplosionPrefab
       value: 
       objectReference: {fileID: 4230280858414834434, guid: d49b6055bded72648b418cfb21c2ef1b, type: 3}
+    - target: {fileID: 5035250364490710673, guid: 2940f7806f2f1924491d9111b966feb6, type: 3}
+      propertyPath: 'enemyPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 3661650219869078337, guid: f3f26804650d6ff4bbb724bb568ae6de, type: 3}
+    - target: {fileID: 5035250364490710673, guid: 2940f7806f2f1924491d9111b966feb6, type: 3}
+      propertyPath: 'enemyPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6753617674297473082, guid: 24a0663f813d4beb91fc0c6b1e8fef36, type: 3}
+    - target: {fileID: 5035250364490710673, guid: 2940f7806f2f1924491d9111b966feb6, type: 3}
+      propertyPath: 'enemyPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 7153141402127884706, guid: 5e38cf3f6bb8c6740842aac5d249198b, type: 3}
     - target: {fileID: 6307824544190064851, guid: 2940f7806f2f1924491d9111b966feb6, type: 3}
       propertyPath: m_Radius
       value: 0.25
@@ -17710,6 +17726,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1125513918415327767, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125513918415327767, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.464
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125513918415327767, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.033
+      objectReference: {fileID: 0}
     - target: {fileID: 2030208651741085127, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.51
@@ -17761,6 +17789,18 @@ PrefabInstance:
     - target: {fileID: 6696326291051428537, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
       propertyPath: m_Name
       value: God Phase1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8832186976128304996, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
+      propertyPath: pSkillA
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8832186976128304996, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
+      propertyPath: pSkillB
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8832186976128304996, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
+      propertyPath: pSkillC
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8832186976128304996, guid: 48e535c424345fa47b66048ca37dc1a6, type: 3}
       propertyPath: phase2Model

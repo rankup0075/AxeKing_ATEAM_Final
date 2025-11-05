@@ -78,6 +78,19 @@ public class StageAnnouncementUI : MonoBehaviour
             if (mainSplit.Length > 1 && mainSplit[1].StartsWith("R"))
                 int.TryParse(mainSplit[1].Substring(1), out roundNum);
 
+            // === 특정 조건: 영지6 스테이지1 라운드1 → ???
+            if (regionNum == 6 && stageNum == 1 && roundNum == 1)
+            {
+                ShowStageText("???");
+                return;
+            }
+
+            if (regionNum == 6 && stageNum == 1 && roundNum == 2)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             // 표시
             ShowStageText($"스테이지 {stageNum} 라운드 {roundNum}");
             return;
