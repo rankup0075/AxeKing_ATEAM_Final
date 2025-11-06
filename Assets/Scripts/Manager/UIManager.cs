@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -110,6 +111,7 @@ public class UIManager : MonoBehaviour
             if (DialogueManager.Instance != null && DialogueManager.Instance.IsOpen)
             {
                 DialogueManager.Instance.ForceClose();
+                ClearUISelection(); // ← 추가
                 return;
             }
 
@@ -123,42 +125,65 @@ public class UIManager : MonoBehaviour
             if (potionShopPanel != null && potionShopPanel.activeSelf)
             {
                 ClosePotionShopUI();
+                ClearUISelection(); // ← 추가
+
                 return;
             }
             if (equipmentShopPanel != null && equipmentShopPanel.activeSelf)
             {
                 CloseEquipmentShopUI();
+                ClearUISelection(); // ← 추가
+
                 return;
             }
             if (questBoardPanel != null && questBoardPanel.activeSelf)
             {
                 CloseQuestBoardUI();
+                ClearUISelection(); // ← 추가
+
                 return;
             }
             if (inventoryPanel != null && inventoryPanel.activeSelf)
             {
                 CloseWareHouseUI();
+                ClearUISelection(); // ← 추가
+
                 return;
             }
             if (saveSelectUI != null && saveSelectUI.gameObject.activeSelf)
             {
                 saveSelectUI.CloseSelf();
+                ClearUISelection(); // ← 추가
+
                 return;
             }
 
             if (stageSelectPanel != null && stageSelectPanel.activeSelf)
+            {
+                ClearUISelection(); // ← 추가
                 return;
+            }
 
             if (settingsPanel_InGame != null)
             {
                 var cg = settingsPanel_InGame.GetComponent<CanvasGroup>();
                 if (cg == null) return;
 
-                if (cg.alpha > 0.5f) CloseSettings();
+                if (cg.alpha > 0.5f)
+                {
+                    CloseSettings();
+                    ClearUISelection(); // ← 추가
+                }
                 else OpenSettings();
             }
 
         }
+    }
+
+    private void ClearUISelection()
+    {
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
     }
 
     //카메라 초기화를 위한 메소드
@@ -479,7 +504,7 @@ public class UIManager : MonoBehaviour
         if (healthBar == null) return;
 
         float ratio = (float)current / Mathf.Max(1, max);
-        healthBar.value = ratio;  // [수정] 비율로 지정
+        healthBar.SetValueWithoutNotify(ratio); 
     }
 
     public void UpdateGoldDisplay(long gold)
@@ -553,7 +578,7 @@ public class UIManager : MonoBehaviour
         if (hudHealthBar == null) return;
 
         float ratio = (float)current / Mathf.Max(1, max);
-        hudHealthBar.value = ratio;  // [수정] 비율로 지정
+        hudHealthBar.SetValueWithoutNotify(ratio);
     }
 
     public void UpdateHUDPotions(int small, int medium, int large)
@@ -564,6 +589,16 @@ public class UIManager : MonoBehaviour
             hudMediumPotionText.text = $"{medium:N0}";
         if (hudLargePotionText != null)
             hudLargePotionText.text = $"{large:N0}";
+    }
+
+    private void MakeSliderReadOnly(Slider s)
+    {
+        if (s == null) return;
+        s.interactable = false;                    // 클릭/드래그 불가
+        var nav = s.navigation;
+        nav.mode = Navigation.Mode.None;           // 키보드/패드로 포커스 이동 불가
+        s.navigation = nav;
+        s.transition = Selectable.Transition.None; // 하이라이트 연출도 제거
     }
 
     // EnemyHealthHUD
@@ -940,10 +975,13 @@ public class UIManager : MonoBehaviour
         if (playerHUD == null)
             playerHUD = GameObject.Find("PlayerHUDCanvas/PlayerHUD");
 
+        if (healthBar != null) MakeSliderReadOnly(healthBar); // ← 추가
+
         if (playerHUD != null)
         {
             hudGoldText = playerHUD.transform.Find("UIContainer/GoldText")?.GetComponent<TextMeshProUGUI>();
             hudHealthBar = playerHUD.transform.Find("UIContainer/HP")?.GetComponent<Slider>();
+            MakeSliderReadOnly(hudHealthBar);
             hudHealthText = playerHUD.transform.Find("UIContainer/HP/HealthText")?.GetComponent<TextMeshProUGUI>();
             hudSmallPotionText = playerHUD.transform.Find("UIContainer/SmallPotionCount/SmallPotionCountText")?.GetComponent<TextMeshProUGUI>();
             hudMediumPotionText = playerHUD.transform.Find("UIContainer/MiddlePotionCount/MiddlePotionCountText")?.GetComponent<TextMeshProUGUI>();

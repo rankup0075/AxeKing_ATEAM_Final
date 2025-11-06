@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -131,10 +132,18 @@ public class StageManager : MonoBehaviour
         }
 
         // 시작 영지/스테이지만 해금 (필요에 맞게 조정)
-        if (regions.Count > 0 && regions[0].stages != null && regions[0].stages.Count > 0)
+        // === 1영지 1스테이지만 기본 해금 ===
+        if (regions.Count > 0 && regions[0].stages.Count > 0)
         {
             regions[0].isUnlocked = true;
             regions[0].stages[0].isUnlocked = true;
+        }
+
+        // === 6영지는 항상 열려 있도록 설정 ===
+        if (regions.Count >= 6 && regions[5].stages != null && regions[5].stages.Count > 0)
+        {
+            regions[5].isUnlocked = true;
+            regions[5].stages[0].isUnlocked = true;
         }
 
         RefreshStageList();

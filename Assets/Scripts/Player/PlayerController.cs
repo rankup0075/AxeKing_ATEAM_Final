@@ -84,7 +84,12 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         }
-
+        var es = UnityEngine.EventSystems.EventSystem.current;
+        if (es != null && es.currentSelectedGameObject != null)
+        {
+            var s = es.currentSelectedGameObject.GetComponent<UnityEngine.UI.Slider>();
+            if (s != null) es.SetSelectedGameObject(null); // ← HUD 슬라이더에 포커스가 붙으면 즉시 해제
+        }
         if (!canControl)
         {
             StopHorizontalMotion();
