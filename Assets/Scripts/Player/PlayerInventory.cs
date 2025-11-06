@@ -23,7 +23,7 @@ public class PlayerInventory : MonoBehaviour
     private PlayerHealth playerHealth;
     private PlayerController playerController;
 
-    // ✅ [NEW] 재료 변화 이벤트 (HUDManager 연결용)
+    // [NEW] 재료 변화 이벤트 (HUDManager 연결용)
     public event Action<string, int> OnMaterialChanged;
 
     void Start()
@@ -31,7 +31,7 @@ public class PlayerInventory : MonoBehaviour
         playerHealth = GetComponent<PlayerHealth>();
         playerController = GetComponent<PlayerController>();
 
-        // ✅ PickupInteractor 자동 부착
+        // PickupInteractor 자동 부착
         if (GetComponent<PickupInteractor>() == null)
         {
             var interactor = gameObject.AddComponent<PickupInteractor>();
@@ -41,7 +41,7 @@ public class PlayerInventory : MonoBehaviour
             SphereCollider col = gameObject.AddComponent<SphereCollider>();
             col.isTrigger = true;
             col.radius = 1.5f;
-            Debug.Log("[PlayerInventory] PickupInteractor 자동 추가됨 ✅");
+            Debug.Log("[PlayerInventory] PickupInteractor 자동 추가됨");
         }
 
         // 세이브 체크 및 초기화
@@ -86,7 +86,7 @@ public class PlayerInventory : MonoBehaviour
         UpdateUI();
         GameManager.Instance?.SavePlayerData();
 
-        // ✅ HUD 자동 반영 (이벤트 발송)
+        // HUD 자동 반영 (이벤트 발송)
         OnMaterialChanged?.Invoke(itemName, items[itemName]);
     }
 
@@ -112,7 +112,7 @@ public class PlayerInventory : MonoBehaviour
 
         GameManager.Instance?.SavePlayerData();
 
-        // ✅ HUD 자동 반영 (이벤트 발송)
+        // HUD 자동 반영 (이벤트 발송)
         OnMaterialChanged?.Invoke(itemName, items[itemName]);
     }
 
@@ -130,7 +130,7 @@ public class PlayerInventory : MonoBehaviour
 
             UpdateUI();
 
-            // ✅ HUD 갱신 이벤트
+            // HUD 갱신 이벤트
             OnMaterialChanged?.Invoke(itemName, items[itemName]);
 
             return true;
@@ -243,11 +243,14 @@ public class PlayerInventory : MonoBehaviour
     // ==============================
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J)) AddItem("고블린의 가죽", 10);
-        if (Input.GetKeyDown(KeyCode.K)) AddItem("골렘의 파편", 10);
-        if (Input.GetKeyDown(KeyCode.L)) AddItem("화염 구슬", 10);
-        if (Input.GetKeyDown(KeyCode.Q))
-            Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
+        if (Input.GetKeyDown(KeyCode.I)) AddItem("고블린의 가죽", 10);
+        if (Input.GetKeyDown(KeyCode.O)) AddItem("골렘의 파편", 10);
+        if (Input.GetKeyDown(KeyCode.P)) AddItem("화염 구슬", 10);
+        if (Input.GetKeyDown(KeyCode.J)) AddItem("눈물 조각", 10);
+        if (Input.GetKeyDown(KeyCode.K)) AddItem("십자가", 10);
+
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //    Debug.Log($"[Inventory] 고블린의 가죽: {GetItemCount("고블린의 가죽")}");
     }
 
     // ==============================

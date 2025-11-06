@@ -26,8 +26,6 @@ public class QuestManager : MonoBehaviour
         allQuests = new List<QuestData>();
         Debug.Log("[QuestManager] 빈 퀘스트 리스트 생성 (인스펙터 비어 있음)");
     }
-
-
     void Awake()
     {
         if (Instance == null)
@@ -146,5 +144,18 @@ public class QuestManager : MonoBehaviour
 
         UpdateQuestProgress();
     }
+
+    public void ResetForNewGame()
+    {
+        if (allQuests == null) return;
+        foreach (var q in allQuests)
+        {
+            q.isAccepted = false;
+            q.isCompleted = false;
+            q.currentProgress = 0;
+        }
+        UpdateQuestProgress();
+    }
+
 
 }

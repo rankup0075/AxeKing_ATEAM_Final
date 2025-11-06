@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private bool isAttacking = false;
     private bool isStunned = false;
     public bool canMove = true;
+    private bool isDead = false;
 
     private float horizontalInput;
     [SerializeField] float stepHeight = 0.4f;
@@ -292,10 +293,23 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        if (isDead) return;   // ← 추가: 중복 사망 방지
+        isDead = true;
+
         SFXManager.Instance?.Play(SfxId.PlayerDeath);
         canMove = false;
         animator.SetTrigger(dieHash);
         StartCoroutine(DeathSequence());
+    }
+
+    public void Revive()
+    {
+        isDead = false;
+        canMove = true;
+        canControl = true;
+        animator.Rebind();
+        animator.Update(0f);
+        animator.Play("Idle", 0, 0f);
     }
 
     IEnumerator DeathSequence()

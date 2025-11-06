@@ -74,6 +74,11 @@ public class MenuManager : MonoBehaviour
         if (File.Exists(autoPath))
             File.Delete(autoPath);
 
+        if (GameManager.Instance != null) GameManager.Instance.ResetForNewGame();
+        if (QuestManager.Instance != null) QuestManager.Instance.ResetForNewGame();
+        if (StageManager.Instance != null) StageManager.Instance.ResetForNewGame();
+        if (SaveLoadManager.Instance != null) SaveLoadManager.Instance.currentSlot = -1;
+
         StartCoroutine(LoadSceneAndLoadGame(firstSceneName, false));
     }
 

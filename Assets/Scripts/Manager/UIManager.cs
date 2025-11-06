@@ -943,7 +943,7 @@ public class UIManager : MonoBehaviour
         if (playerHUD != null)
         {
             hudGoldText = playerHUD.transform.Find("UIContainer/GoldText")?.GetComponent<TextMeshProUGUI>();
-            hudHealthBar = playerHUD.transform.Find("UIContainer/HP/Fill")?.GetComponent<Slider>();
+            hudHealthBar = playerHUD.transform.Find("UIContainer/HP")?.GetComponent<Slider>();
             hudHealthText = playerHUD.transform.Find("UIContainer/HP/HealthText")?.GetComponent<TextMeshProUGUI>();
             hudSmallPotionText = playerHUD.transform.Find("UIContainer/SmallPotionCount/SmallPotionCountText")?.GetComponent<TextMeshProUGUI>();
             hudMediumPotionText = playerHUD.transform.Find("UIContainer/MiddlePotionCount/MiddlePotionCountText")?.GetComponent<TextMeshProUGUI>();

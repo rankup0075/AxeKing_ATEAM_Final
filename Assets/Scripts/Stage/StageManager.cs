@@ -113,4 +113,31 @@ public class StageManager : MonoBehaviour
         GameManager.Instance.BeginTransition(TransitionKind.ReturnToTown, "Town", null, "ReturnPoint");
         SceneManager.LoadScene("Town");
     }
+
+    public void ResetForNewGame()
+    {
+        if (regions == null) return;
+
+        // 전체 초기화
+        foreach (var r in regions)
+        {
+            r.isUnlocked = false;
+            if (r?.stages == null) continue;
+            foreach (var s in r.stages)
+            {
+                s.isUnlocked = false;
+                s.isCompleted = false;
+            }
+        }
+
+        // 시작 영지/스테이지만 해금 (필요에 맞게 조정)
+        if (regions.Count > 0 && regions[0].stages != null && regions[0].stages.Count > 0)
+        {
+            regions[0].isUnlocked = true;
+            regions[0].stages[0].isUnlocked = true;
+        }
+
+        RefreshStageList();
+    }
+
 }

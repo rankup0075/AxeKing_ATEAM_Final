@@ -64,6 +64,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U)) AddGold(1000);
+    }
+
     public void BeginTransition(TransitionKind kind, string toScene, string portalId = null, string namedPoint = null)
     {
         ctx.kind = kind;
@@ -293,27 +298,21 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene("Town");
     }
+    public void ResetForNewGame()
+    {
+        gold = 0;
+        currentTerritory = 1;
+        currentStage = 1;
+        currentRound = 1;
 
-    //public void SavePlayerData()
-    //{
-    //    PlayerPrefs.SetString("Gold", gold.ToString("N0"));
-    //    PlayerPrefs.SetInt("CurrentTerritory", currentTerritory);
-    //    PlayerPrefs.SetInt("CurrentStage", currentStage);
-    //    PlayerPrefs.SetInt("CurrentRound", currentRound);
-    //    PlayerPrefs.Save();
-    //}
+        // 라운드/보스 진행 초기화
+        clearedRounds.Clear();
+        defeatedBosses.Clear();
 
-    //public void LoadPlayerData()
-    //{
-    //    string savedGold = PlayerPrefs.GetString("Gold", "0");
-    //    if (!long.TryParse(savedGold, out gold)) gold = 0;
-    //    currentTerritory = PlayerPrefs.GetInt("CurrentTerritory", 1);
-    //    currentStage = PlayerPrefs.GetInt("CurrentStage", 1);
-    //    currentRound = PlayerPrefs.GetInt("CurrentRound", 1);
-
-    //    UIManager.Instance?.UpdateGoldDisplay(gold);
-    //    UIManager.Instance?.UpdateHUDGold(gold);
-    //}
+        // UI 동기화
+        UIManager.Instance?.UpdateGoldDisplay(gold);
+        UIManager.Instance?.UpdateHUDGold(gold);
+    }
 
     public void SavePlayerData()
     {
@@ -332,6 +331,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
 
+
         // ===== 플레이어 회복 =====
         var player = PlayerController.Instance;
         if (player != null)
@@ -347,10 +347,12 @@ public class GameManager : MonoBehaviour
             var anim = player.GetComponent<Animator>();
             if (anim != null)
             {
-                anim.speed = 1f;
+                anim.Rebind();      // ← 애니메이터 파라미터/트리거 완전 초기화
+                anim.Update(0f);
                 anim.Play("Idle", 0, 0f); // Idle로 초기화
             }
 
+            player.Revive();
             player.canMove = true;
             player.canControl = true;
         }
