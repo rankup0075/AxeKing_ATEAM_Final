@@ -246,22 +246,60 @@ public class MutantController : MonoBehaviour
 
     IEnumerator DieRoutine()
     {
-        yield return new WaitForSeconds(1.3f);
+        Debug.Log("[Mutant] DieRoutine 시작");
+        yield return new WaitForSeconds(1.3f); // 사망 애니메이션 대기
 
-        DropManager.Instance?.SpawnDrops(transform.position, 5); // ✅ 5영지 재료 드롭
+        // ✅ 드랍 설정
+        int regionId = 5; // 신봉자(Mutant)는 5영지
+        int goldAmount = UnityEngine.Random.Range(150, 251);   // 150~250 골드
+        int materialCount = UnityEngine.Random.Range(2, 6);    // 2~5개 재료
 
-        UIManager.Instance?.HideEnemyHUD();
+        if (DropManager.Instance != null)
+        {
+            DropManager.Instance.SpawnDrops(transform.position, regionId, goldAmount, materialCount);
+            Debug.Log($"[Mutant] 골드 {goldAmount} + 재료 {materialCount}개 드랍됨");
+        }
+        else
+        {
+            Debug.LogWarning("[Mutant] DropManager 인스턴스가 존재하지 않습니다.");
+        }
 
+        // ✅ HUD 숨김 처리
+        try
+        {
+            UIManager.Instance?.HideEnemyHUD();
+            if (hudController != null)
+                hudController.Hide();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[Mutant] HUD 숨김 중 오류: {ex.Message}");
+        }
+
+        // ✅ 포탈 생성
+        try
+        {
+            if (portalPrefab != null)
+            {
+                Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
+                Debug.Log($"[Mutant] Portal 생성 완료! 위치: {transform.position + Vector3.up * 0.2f}");
+            }
+            else
+            {
+                Debug.LogWarning("[Mutant] Portal Prefab not assigned!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Mutant] Portal 생성 중 오류: {ex.Message}");
+        }
+
+        // ✅ 라운드 컨트롤러 통신
         onDeath?.Invoke();
-
-        if (portalPrefab != null)
-            Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
-
-        if (hudController != null)
-            hudController.Hide();
 
         Destroy(gameObject, 0.5f);
     }
+
 
     // ==========================
     // 시각화 (Gizmos)

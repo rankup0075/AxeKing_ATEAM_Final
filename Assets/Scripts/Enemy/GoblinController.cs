@@ -206,9 +206,22 @@ public class GoblinController : MonoBehaviour
         Debug.Log("[Goblin] DieRoutine 시작");
         yield return new WaitForSeconds(1.3f);
 
-        DropManager.Instance?.SpawnDrops(transform.position, 1);
+        // ✅ 고블린 드랍 처리 추가
+        int regionId = 1;
+        int goldAmount = UnityEngine.Random.Range(50, 101);
+        int materialCount = UnityEngine.Random.Range(1, 3);
 
-        // ✅ HUD 끄기 (예외 방지)
+        if (DropManager.Instance != null)
+        {
+            DropManager.Instance.SpawnDrops(transform.position, regionId, goldAmount, materialCount);
+            Debug.Log($"[Goblin] 골드 {goldAmount} + 재료 {materialCount}개 드랍됨");
+        }
+        else
+        {
+            Debug.LogWarning("[Goblin] DropManager 인스턴스가 존재하지 않습니다.");
+        }
+
+        // ✅ HUD 끄기
         try
         {
             if (hudController != null)
@@ -240,9 +253,7 @@ public class GoblinController : MonoBehaviour
             Debug.LogError($"[Goblin] Portal 생성 중 오류: {ex.Message}");
         }
 
-        // ✅ 라운드 컨트롤러에 사망 알림
         onDeath?.Invoke();
-
         Destroy(gameObject, 0.5f);
     }
 

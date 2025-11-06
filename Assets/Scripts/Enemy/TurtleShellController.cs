@@ -184,21 +184,60 @@ public class TurtleShellController : MonoBehaviour
 
     IEnumerator DieRoutine()
     {
-        yield return new WaitForSeconds(2f); // 60프레임 (2초)
+        Debug.Log("[TurtleShell] DieRoutine 시작");
+        yield return new WaitForSeconds(2f); // 사망 애니메이션 대기
 
-        DropManager.Instance?.SpawnDrops(transform.position, 2);
+        // ✅ 드랍 설정
+        int regionId = 2; // 돌거북은 골렘 지역 계열
+        int goldAmount = UnityEngine.Random.Range(80, 151);   // 80~150골드
+        int materialCount = UnityEngine.Random.Range(1, 3);   // 1~2 재료
 
-        UIManager.Instance?.HideEnemyHUD();
+        if (DropManager.Instance != null)
+        {
+            DropManager.Instance.SpawnDrops(transform.position, regionId, goldAmount, materialCount);
+            Debug.Log($"[TurtleShell] 골드 {goldAmount}, 재료 {materialCount}개 드랍됨");
+        }
+        else
+        {
+            Debug.LogWarning("[TurtleShell] DropManager 인스턴스가 존재하지 않습니다.");
+        }
+
+        // ✅ HUD 정리
+        try
+        {
+            UIManager.Instance?.HideEnemyHUD();
+            if (hudController != null)
+                hudController.Hide();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[TurtleShell] HUD 숨김 중 오류: {ex.Message}");
+        }
+
+        // ✅ 포탈 생성
+        try
+        {
+            if (portalPrefab != null)
+            {
+                Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
+                Debug.Log($"[TurtleShell] Portal 생성 완료! 위치: {transform.position + Vector3.up * 0.2f}");
+            }
+            else
+            {
+                Debug.LogWarning("[TurtleShell] Portal Prefab not assigned!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[TurtleShell] Portal 생성 중 오류: {ex.Message}");
+        }
+
+        // ✅ 라운드 컨트롤러에 사망 알림
         onDeath?.Invoke();
-
-        if (portalPrefab != null)
-            Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
-
-        if (hudController != null)
-            hudController.Hide();
 
         Destroy(gameObject, 0.5f);
     }
+
 
     void OnDrawGizmosSelected()
     {

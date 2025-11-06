@@ -211,22 +211,60 @@ public class SlimeController : MonoBehaviour
 
     IEnumerator DieRoutine()
     {
-        yield return new WaitForSeconds(1.2f);
+        Debug.Log("[Slime] DieRoutine 시작");
+        yield return new WaitForSeconds(1.2f); // 사망 애니메이션 대기
 
-        DropManager.Instance?.SpawnDrops(transform.position, 3);
+        // ✅ 드랍 설정
+        int regionId = 1; // 슬라임은 1지역 몬스터
+        int goldAmount = UnityEngine.Random.Range(20, 51);   // 20~50 골드
+        int materialCount = UnityEngine.Random.Range(0, 2);  // 0~1 재료
 
-        UIManager.Instance?.HideEnemyHUD();
+        if (DropManager.Instance != null)
+        {
+            DropManager.Instance.SpawnDrops(transform.position, regionId, goldAmount, materialCount);
+            Debug.Log($"[Slime] 골드 {goldAmount} + 재료 {materialCount}개 드랍됨");
+        }
+        else
+        {
+            Debug.LogWarning("[Slime] DropManager 인스턴스가 존재하지 않습니다.");
+        }
 
+        // ✅ HUD 끄기
+        try
+        {
+            UIManager.Instance?.HideEnemyHUD();
+            if (hudController != null)
+                hudController.Hide();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[Slime] HUD 숨김 중 오류: {ex.Message}");
+        }
+
+        // ✅ 포탈 생성
+        try
+        {
+            if (portalPrefab != null)
+            {
+                Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
+                Debug.Log($"[Slime] Portal 생성 완료! 위치: {transform.position + Vector3.up * 0.2f}");
+            }
+            else
+            {
+                Debug.LogWarning("[Slime] Portal Prefab not assigned!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Slime] Portal 생성 중 오류: {ex.Message}");
+        }
+
+        // ✅ 라운드 컨트롤러 통신
         onDeath?.Invoke();
-
-        if (portalPrefab != null)
-            Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
-
-        if (hudController != null)
-            hudController.Hide();
 
         Destroy(gameObject, 0.5f);
     }
+
 
     void OnDrawGizmosSelected()
     {

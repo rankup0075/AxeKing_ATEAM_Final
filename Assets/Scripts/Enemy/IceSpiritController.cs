@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,30 +6,30 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class IceSpiritController : MonoBehaviour
 {
-    [Header("Å½Áö / ÀüÅõ ¼³Á¤")]
-    [Tooltip("ÇÃ·¹ÀÌ¾î¸¦ ÀÎ½ÄÇÏ´Â °Å¸®")]
+    [Header("íƒì§€ / ì „íˆ¬ ì„¤ì •")]
+    [Tooltip("í”Œë ˆì´ì–´ë¥¼ ì¸ì‹í•˜ëŠ” ê±°ë¦¬")]
     public float detectionRange = 7f;
-    [Tooltip("°ø°İ »ç°Å¸®")]
+    [Tooltip("ê³µê²© ì‚¬ê±°ë¦¬")]
     public float attackRange = 2.2f;
-    [Tooltip("ÇÃ·¹ÀÌ¾î°¡ ¸Ö¾îÁ®µµ ÂÑ¾Æ°¡´Â °Å¸®")]
+    [Tooltip("í”Œë ˆì´ì–´ê°€ ë©€ì–´ì ¸ë„ ì«“ì•„ê°€ëŠ” ê±°ë¦¬")]
     public float reChaseDistance = 18f;
     public float attackCooldown = 2f;
     public float moveSpeed = 2.5f;
     public float rotationSpeed = 6f;
-    public float jumpInterval = 8f; // ÀÏÁ¤ ÁÖ±â¸¶´Ù Á¡ÇÁ ¿¬Ãâ
+    public float jumpInterval = 8f; // ì¼ì • ì£¼ê¸°ë§ˆë‹¤ ì í”„ ì—°ì¶œ
 
-    [Header("Ã¼·Â ¼³Á¤")]
+    [Header("ì²´ë ¥ ì„¤ì •")]
     public int maxHP = 25;
     public int currentHP;
     public bool isDead = false;
 
-    [Header("ÂüÁ¶")]
+    [Header("ì°¸ì¡°")]
     public Transform player;
     public Animator animator;
     public Transform attackOrigin;
     public GameObject portalPrefab;
     public EnemyHUDController hudController;
-    public string displayName = "¾óÀ½ Á¤·É";
+    public string displayName = "ì–¼ìŒ ì •ë ¹";
 
     public Action onDeath;
 
@@ -47,7 +47,7 @@ public class IceSpiritController : MonoBehaviour
         if (attackOrigin == null)
             attackOrigin = transform;
 
-        // ÇÃ·¹ÀÌ¾î ÀÚµ¿ Å½»ö
+        // í”Œë ˆì´ì–´ ìë™ íƒìƒ‰
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -56,12 +56,12 @@ public class IceSpiritController : MonoBehaviour
             if (playerObj != null)
                 player = playerObj.transform;
             else
-                Debug.LogWarning("ÇÃ·¹ÀÌ¾î¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+                Debug.LogWarning("í”Œë ˆì´ì–´ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
         }
 
         currentHP = maxHP;
 
-        // HUD ¿¬°á
+        // HUD ì—°ê²°
         if (hudController == null)
             hudController = FindObjectOfType<EnemyHUDController>();
 
@@ -75,7 +75,7 @@ public class IceSpiritController : MonoBehaviour
 
         float dist = Vector3.Distance(transform.position, player.position);
 
-        // Å½Áö »óÅÂ ÀüÈ¯
+        // íƒì§€ ìƒíƒœ ì „í™˜
         if (dist <= detectionRange && !playerDetected)
         {
             playerDetected = true;
@@ -87,17 +87,17 @@ public class IceSpiritController : MonoBehaviour
             animator.SetBool("PlayerDetected", false);
         }
 
-        // Çàµ¿ ºĞ±â
+        // í–‰ë™ ë¶„ê¸°
         if (playerDetected)
         {
-            // Á¡ÇÁ ¿¬Ãâ
+            // ì í”„ ì—°ì¶œ
             if (Time.time >= lastJumpTime + jumpInterval && !isAttacking && !isJumping)
             {
                 StartCoroutine(JumpRoutine());
                 return;
             }
 
-            // °ø°İ °¡´É
+            // ê³µê²© ê°€ëŠ¥
             if (dist <= attackRange && Time.time >= lastAttackTime + attackCooldown && !isAttacking)
             {
                 lastAttackTime = Time.time;
@@ -138,7 +138,7 @@ public class IceSpiritController : MonoBehaviour
         animator.Play("Ice_Jump");
         lastJumpTime = Time.time;
 
-        yield return new WaitForSeconds(1.2f); // Á¡ÇÁ ¸ğ¼Ç ½Ã°£
+        yield return new WaitForSeconds(1.2f); // ì í”„ ëª¨ì…˜ ì‹œê°„
         isJumping = false;
     }
 
@@ -149,14 +149,14 @@ public class IceSpiritController : MonoBehaviour
         animator.Play("Ice_Attack");
 
         float elapsed = 0f;
-        float attackTime = 0.45f; // °ø°İ ÆÇÁ¤ Å¸ÀÌ¹Ö
-        float totalDuration = 1.2f; // ¸ğ¼Ç ±æÀÌ
+        float attackTime = 0.45f; // ê³µê²© íŒì • íƒ€ì´ë°
+        float totalDuration = 1.2f; // ëª¨ì…˜ ê¸¸ì´
 
         while (elapsed < totalDuration)
         {
             float dist = Vector3.Distance(transform.position, player.position);
 
-            // ÇÃ·¹ÀÌ¾î°¡ ³Ê¹« ¸Ö¸® °¡¸é ÃßÀû
+            // í”Œë ˆì´ì–´ê°€ ë„ˆë¬´ ë©€ë¦¬ ê°€ë©´ ì¶”ì 
             if (dist > attackRange && dist < reChaseDistance)
             {
                 isAttacking = false;
@@ -173,7 +173,7 @@ public class IceSpiritController : MonoBehaviour
                     {
                         var pc = col.GetComponent<PlayerController>();
                         if (pc != null)
-                            pc.TakeHit(20); // µ¥¹ÌÁö
+                            pc.TakeHit(20); // ë°ë¯¸ì§€
                     }
                 }
             }
@@ -186,7 +186,7 @@ public class IceSpiritController : MonoBehaviour
     }
 
     // ==========================
-    // ÇÇ°İ ¹× »ç¸Á
+    // í”¼ê²© ë° ì‚¬ë§
     // ==========================
     public void TakeDamage(int dmg)
     {
@@ -218,22 +218,60 @@ public class IceSpiritController : MonoBehaviour
 
     IEnumerator DieRoutine()
     {
-        yield return new WaitForSeconds(1.5f);
+        Debug.Log("[IceSpirit] DieRoutine ì‹œì‘");
+        yield return new WaitForSeconds(1.5f); // ì‚¬ë§ ì• ë‹ˆë©”ì´ì…˜ ëŒ€ê¸°
 
-        DropManager.Instance?.SpawnDrops(transform.position, 4);
+        // âœ… ë“œë ì„¤ì •
+        int regionId = 4; // ì–¼ìŒ ì •ë ¹ì€ 4ì˜ì—­
+        int goldAmount = UnityEngine.Random.Range(100, 181);  // 100~180 ê³¨ë“œ
+        int materialCount = UnityEngine.Random.Range(1, 4);   // 1~3 ì¬ë£Œ
 
-        UIManager.Instance?.HideEnemyHUD();
+        if (DropManager.Instance != null)
+        {
+            DropManager.Instance.SpawnDrops(transform.position, regionId, goldAmount, materialCount);
+            Debug.Log($"[IceSpirit] ê³¨ë“œ {goldAmount} + ì¬ë£Œ {materialCount}ê°œ ë“œëë¨");
+        }
+        else
+        {
+            Debug.LogWarning("[IceSpirit] DropManager ì¸ìŠ¤í„´ìŠ¤ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+        }
 
+        // âœ… HUD ìˆ¨ê¹€
+        try
+        {
+            UIManager.Instance?.HideEnemyHUD();
+            if (hudController != null)
+                hudController.Hide();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[IceSpirit] HUD ìˆ¨ê¹€ ì¤‘ ì˜¤ë¥˜: {ex.Message}");
+        }
+
+        // âœ… í¬íƒˆ ìƒì„±
+        try
+        {
+            if (portalPrefab != null)
+            {
+                Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
+                Debug.Log($"[IceSpirit] Portal ìƒì„± ì™„ë£Œ! ìœ„ì¹˜: {transform.position + Vector3.up * 0.2f}");
+            }
+            else
+            {
+                Debug.LogWarning("[IceSpirit] Portal Prefab not assigned!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[IceSpirit] Portal ìƒì„± ì¤‘ ì˜¤ë¥˜: {ex.Message}");
+        }
+
+        // âœ… ë¼ìš´ë“œ ì»¨íŠ¸ë¡¤ëŸ¬ í†µì‹ 
         onDeath?.Invoke();
-
-        if (portalPrefab != null)
-            Instantiate(portalPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
-
-        if (hudController != null)
-            hudController.Hide();
 
         Destroy(gameObject, 0.5f);
     }
+
 
     void OnDrawGizmosSelected()
     {

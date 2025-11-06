@@ -1,18 +1,17 @@
-﻿// 스탯/드랍/사망 페이드 담당. 중간보스 인스펙터 조절 가능.
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class EnemyController : MonoBehaviour
+public abstract class EnemyController : MonoBehaviour
 {
     [Header("중간보스 여부")]
-    public bool isBoss = false; // 수동 지정 가능
+    public bool isBoss = false;
 
     [Header("Stage (Region-Stage-Round)")]
-    [Range(1, 5)] public int region = 1;   // 영지
-    [Range(1, 3)] public int stage = 1;    // 스테이지
-    [Range(1, 3)] public int round = 1;    // 라운드
+    [Range(1, 5)] public int region = 1;
+    [Range(1, 3)] public int stage = 1;
+    [Range(1, 3)] public int round = 1;
 
     [Header("Stat")]
     public int attackDamage = 5;
@@ -41,9 +40,9 @@ public class EnemyController : MonoBehaviour
     public Animator animator;
 
     public event Action onDeath;
-    private bool deadInvoked;
+    protected bool deadInvoked;
 
-    void Awake()
+    protected virtual void Awake()
     {
         if (!ai) ai = GetComponent<EnemyAI>();
         if (!health) health = GetComponent<EnemyHealth>();
@@ -52,14 +51,12 @@ public class EnemyController : MonoBehaviour
         ApplyRegionDefaults();
         if (health) health.Init(maxHP, this);
 
-        // 규칙: 각 영지의 "3-3"은 중간보스
-        if (!isBoss && stage == 3 && round == 3) isBoss = true;
+        if (!isBoss && stage == 3 && round == 3)
+            isBoss = true;
     }
 
-    // ==============================================
-    // 🧩 지역별 기본 스탯 자동 적용
-    // ==============================================
-    void ApplyRegionDefaults()
+    // 지역별 기본 스탯 자동 적용
+    protected virtual void ApplyRegionDefaults()
     {
         switch (region)
         {
@@ -86,10 +83,8 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // ==============================================
-    // 🗡️ 플레이어 공격 (EnemyAI에서 호출)
-    // ==============================================
-    public void AttackPlayer()
+    // 공격 처리
+    public virtual void AttackPlayer()
     {
         Vector3 center = transform.position + transform.forward * 1.2f + Vector3.up * 0.8f;
         float radius = 1.2f;
@@ -104,23 +99,22 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // ==============================================
-    // 💀 사망 처리 루틴
-    // ==============================================
-    public void OnDeath()
+    // 사망 처리 공통 루틴
+    public virtual void OnDeath()
     {
         if (deadInvoked) return;
         deadInvoked = true;
         StartCoroutine(DeathRoutine());
     }
 
-    void DisableColliders()
+    protected virtual void DisableColliders()
     {
         foreach (var c in GetComponentsInChildren<Collider>())
             c.enabled = false;
     }
 
-    IEnumerator DeathRoutine()
+    // 사망 루틴
+    protected virtual IEnumerator DeathRoutine()
     {
         if (ai) ai.enabled = false;
         DisableColliders();
@@ -136,30 +130,22 @@ public class EnemyController : MonoBehaviour
             ? UnityEngine.Random.Range(bossMinUniqueDrop, bossMaxUniqueDrop + 1)
             : UnityEngine.Random.Range(minUniqueDrop, maxUniqueDrop + 1);
 
-        // ✅ 새 DropManager 시스템으로 드랍 처리
+        // DropManager 호출
         if (DropManager.Instance != null)
         {
-            for (int i = 0; i < uniqueCnt; i++)
-            {
-                DropManager.Instance.SpawnDrops(transform.position, region);
-            }
-
-            // 골드도 같이 드랍
-            // DropManager 안에서 region 기준으로 골드 자동 생성하므로 따로 필요 없음
+            DropManager.Instance.SpawnDrops(transform.position, region, gold, uniqueCnt);
         }
         else
         {
-            Debug.LogWarning("[EnemyController] DropManager 인스턴스가 존재하지 않습니다.");
+            Debug.LogWarning($"[{name}] DropManager 인스턴스 없음");
         }
 
         yield return FadeOutAndDestroy();
         onDeath?.Invoke();
     }
 
-    // ==============================================
-    // 🌫️ 사망 후 페이드 아웃
-    // ==============================================
-    IEnumerator FadeOutAndDestroy()
+    // 페이드 아웃
+    protected virtual IEnumerator FadeOutAndDestroy()
     {
         float t = 0f;
         var rends = GetComponentsInChildren<Renderer>(true);
